@@ -1,0 +1,52 @@
+kind: pipeline
+type: docker
+name: default
+steps:
+
+- name: build-react
+  image: node
+  commands:
+  - npm install --legacy-peer-deps
+  - npm run build
+  - npm run preview
+
+- name: tag-docker-image
+  image: alpine
+  commands:
+  - echo -n "$(date +'%Y-%m-%d_%H-%M')_${DRONE_COMMIT}, latest" > .tags
+
+- name: build-docker-image
+  image: plugins/docker
+  settings:
+    repo: gitea.turtlelazy.com/turtle/turtle-frontend
+    registry: gitea.turtlelazy.com
+    username:
+      from_secret: registry_username
+    password:
+      from_secret: registry_password
+
+- name: update-to-gke-cluster
+  image: gitea.turtlelazy.com/devop/gke-docker
+  pull: always
+  settings:
+    cluster_name: cluster-1
+    cluster_location: us-central1-a
+    project_name: lazyturtle-393117
+    helm_chart_registry_name: registry
+    helm_chart_registry_url: https://gitea.turtlelazy.com/api/packages/DevOp/helm
+    helm_chart_registry_username:
+      from_secret: registry_username
+    helm_chart_registry_password:
+      from_secret: registry_password
+    deploy_namespace: turtle
+    release_name: turtle
+    helm_chart_repo_name: turtle
+    image_indicator: frontend.image.tag
+image_pull_secrets:
+- dockerconfigjson 
+  
+trigger: 
+  event:
+  - push
+  branch:
+  - deploy
