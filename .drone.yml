@@ -8,7 +8,6 @@ steps:
   commands:
   - npm install --legacy-peer-deps
   - npm run build
-  - npm run preview
 
 - name: tag-docker-image
   image: alpine
