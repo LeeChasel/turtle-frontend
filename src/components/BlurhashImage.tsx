@@ -9,7 +9,7 @@ type BlurhashImageProp = {
 
 function BlurhashImage({imageId, blurhash}: BlurhashImageProp) {
   const [ imageLoaded, setImageLoaded ] = useState(false);
-  const src = import.meta.env.VITE_PUBLIC_TURTLE_BACKEND_IMAGE_URL + "/" + imageId;
+  const src = import.meta.env.VITE_TURTLE_BACKEND_IMAGE_URL + "/" + imageId;
   useEffect(() => {
     const img = new Image();
     img.onload = () => setImageLoaded(true);

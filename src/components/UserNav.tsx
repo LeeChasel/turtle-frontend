@@ -59,7 +59,7 @@ function SideNavbar() {
     <nav>
       <ul className="w-40 gap-2 menu bg-base-200 rounded-box h-52">
         <li>
-          <Link to="/user/setting">設定</Link>
+          <Link to="/user/setting">基本設定</Link>
         </li>
         <li>
           <Link to="/user/updatePassword">修改密碼</Link>

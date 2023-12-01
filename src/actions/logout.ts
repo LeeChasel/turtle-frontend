@@ -1,4 +1,4 @@
-const URL = import.meta.env.VITE_PUBLIC_TURTLE_AUTH_URL + '/user/@me/logout';
+const URL = import.meta.env.VITE_TURTLE_AUTH_URL + '/user/@me/logout';
 
 async function logout(token: string) {
   const res = await fetch(URL, {

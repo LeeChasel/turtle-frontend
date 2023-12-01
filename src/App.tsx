@@ -1,9 +1,20 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { Home, LoginOrSignup, NewProducts, Product, Products, ShoppingCart, UserSetting, UpdatePassword, Notfound_404, AddProduct } from './pages/Index';
 import RootLayout from './components/RootLayout';
 import UserNav from "./components/UserNav";
+import { useEffect } from "react";
 
 function App() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    if (pathname.startsWith('/product/')) {
+      const pathArray = pathname.replace(/^\//, '').split("/");
+      const productName = pathArray[pathArray.length - 1];
+      document.title = productName + ' | LazyTurtle';
+    } else {
+      document.title = 'Lazy Turtle';
+    }
+  }, [pathname]);
 
   return (
     <RootLayout>

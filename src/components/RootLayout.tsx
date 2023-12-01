@@ -21,7 +21,7 @@ function Header() {
       <ul className="flex items-center gap-6 ">
         <li className='translate-y-1'>
           <Link to='/' aria-label='Logo image can link to homepage'>
-            <img src={import.meta.env.VITE_PUBLIC_TURTLE_FRONTEND_IMAGE_URL + '/Logo.webp'} alt="Logo image" width={120} height={81} className='pointer-events-none'/>
+            <img src={import.meta.env.VITE_TURTLE_FRONTEND_IMAGE_URL + '/Logo.webp'} alt="Logo image" width={120} height={81} className='pointer-events-none'/>
           </Link>
         </li>
         <li><Link to="/products" className='relative p-1 text-4xl font-normal rounded-md text-sky-50 top-1 hover:bg-gray-700'>全部商品</Link></li>
