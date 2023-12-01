@@ -6,15 +6,16 @@ import { useEffect } from "react";
 
 function App() {
   const { pathname } = useLocation();
+  const decodePathName = decodeURI(pathname);
   useEffect(() => {
-    if (pathname.startsWith('/product/')) {
-      const pathArray = pathname.replace(/^\//, '').split("/");
+    if (decodePathName.startsWith('/product/')) {
+      const pathArray = decodePathName.replace(/^\//, '').split("/");
       const productName = pathArray[pathArray.length - 1];
       document.title = productName + ' | LazyTurtle';
     } else {
       document.title = 'Lazy Turtle';
     }
-  }, [pathname]);
+  }, [decodePathName]);
 
   return (
     <RootLayout>
