@@ -42,7 +42,7 @@ function UpdatePassword() {
       if(error instanceof Error){
         console.log(error)
         if(error.message === "帳號或密碼錯誤，登入失敗！"){
-          showToast("error" , "原密碼錯誤!" + email)
+          showToast("error" , "原密碼錯誤!" )
         }else{
           showToast("error" , error.message)
         }
