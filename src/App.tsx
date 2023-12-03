@@ -3,11 +3,15 @@ import { Home, LoginOrSignup, NewProducts, Product, Products, ShoppingCart, User
 import RootLayout from './components/RootLayout';
 import UserNav from "./components/UserNav";
 import { useEffect } from "react";
+import ReactGA from 'react-ga';
 
 function App() {
-  const { pathname } = useLocation();
-  const decodePathName = decodeURI(pathname);
+  ReactGA.initialize('G-SX2EH6Z0B5');
+  const location = useLocation();
+  
   useEffect(() => {
+    ReactGA.pageview(location.pathname + location.search);
+    const decodePathName = decodeURI(location.pathname);
     if (decodePathName.startsWith('/product/')) {
       const pathArray = decodePathName.replace(/^\//, '').split("/");
       const productName = pathArray[pathArray.length - 1];
@@ -15,7 +19,7 @@ function App() {
     } else {
       document.title = 'Lazy Turtle';
     }
-  }, [decodePathName]);
+  }, [location]);
 
   return (
     <RootLayout>
