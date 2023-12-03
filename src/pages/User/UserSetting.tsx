@@ -26,12 +26,12 @@ function UserSetting() {
           <th style={{textAlign: 'right'}}>性別</th>
           <td><div className="form-control">
             <label className="cursor-default label">
-              <input type="radio" name="radio-10" className="radio"  />
-              <span className="label-text">男性</span> 
+              <input type="radio" name="radio-10" className="radio"  id = "male"/>
+              <label className="label-text" htmlFor="male">男性</label> 
+              <input type="radio" name="radio-10" className="radio" id= "female"/>
+              <label className="label-text" htmlFor="female">女性</label> 
               <input type="radio" name="radio-10" className="radio" />
-              <span className="label-text">女性</span> 
-              <input type="radio" name="radio-10" className="radio" />
-              <span className="label-text">不願透漏</span> 
+              <label className="label-text">不願透漏</label> 
             </label>
           </div></td>
         </tr>
