@@ -1,4 +1,4 @@
-import {useRef , useState} from "react";
+import { useRef, useState } from "react";
 import login from "../../actions/login";
 import useUserTokenCookie from "../../hooks/useUserTokenCookie";
 import getUserInfo from "../../actions/getUserInfo";
@@ -7,7 +7,6 @@ import updateNewpassword from "../../actions/updateNewpassword";
 import { useNavigate } from "react-router-dom";
 
 function UpdatePassword() {
-  
   const oldPasswordRef = useRef<HTMLInputElement>(null);
   const newPasswordRef = useRef<HTMLInputElement>(null);
   const checkNewpasswordRef = useRef<HTMLInputElement>(null);
@@ -18,36 +17,29 @@ function UpdatePassword() {
   async function submit(e : any){
     e.preventDefault();
     setIsSending(true);
-    const result = await getUserInfo(tokenCookie!)
+    const result = await getUserInfo(tokenCookie!);
     const email = result.email;
     const oldPassword = oldPasswordRef.current?.value!;
     const newPassword = newPasswordRef.current?.value!;
     const checkNewpassword = checkNewpasswordRef.current?.value!;
   
     try {
-      
-      await login({email , password : oldPassword})
+      await login({email , password : oldPassword}, "原密碼錯誤！");
       if (newPassword != checkNewpassword) {             //之後修改成登入前確認新舊密碼一不一致、新密碼及確認一不一致
         throw new Error("修改密碼不一致!");
-        ;  
       }
       if (oldPassword == newPassword) {
         throw new Error("新舊密碼一致!");          
       }
       const jwt = await updateNewpassword(tokenCookie! , newPassword);
-      showToast("success" , "修改成功")
+      showToast("success" , "修改成功");
       setUserTokenCookie(jwt);
       navigate('/');
-    }catch(error){
-      if(error instanceof Error){
-        console.log(error)
-        if(error.message === "帳號或密碼錯誤，登入失敗！"){
-          showToast("error" , "原密碼錯誤!" )
-        }else{
-          showToast("error" , error.message)
-        }
+    } catch (error) {
+      if (error instanceof Error) {
+        showToast("error" , error.message);
       }
-    }finally{
+    } finally {
       setIsSending(false);
     }
   }
@@ -56,6 +48,7 @@ function UpdatePassword() {
     e.preventDefault() ;
     navigate('/');
   }
+
   return (
     <form className="overflow-x-auto border square border-dark " style={{backgroundColor: "white"}} onSubmit={submit}>
       <table className="table-lg w-max" style={{borderCollapse:"collapse"}}>
@@ -87,6 +80,5 @@ function UpdatePassword() {
   </form>
   )
 }
-
 
 export default UpdatePassword;
