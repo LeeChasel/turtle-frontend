@@ -4,6 +4,7 @@ const config = {
   tabWidth: 2,
   semi: true,
   singleQuote: false,
+  arrowParens: "avoid",
 };
 
 export default config;

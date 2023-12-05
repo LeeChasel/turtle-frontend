@@ -1,7 +1,7 @@
 module.exports = {
-  "settings": {
-    "react": {
-      "version": "detect",
+  settings: {
+    react: {
+      version: "detect",
     },
   },
   root: true,
@@ -12,9 +12,9 @@ module.exports = {
     "plugin:react-hooks/recommended",
     "plugin:react/jsx-runtime",
     "plugin:@typescript-eslint/recommended-type-checked",
-
-    // Need to place at the end of extends list
-    "plugin:prettier/recommand",
+    "plugin:@typescript-eslint/stylistic-type-checked",
+    // Need to be place at the end of extends list
+    "prettier",
   ],
   ignorePatterns: ["dist", ".eslintrc.cjs"],
   parser: "@typescript-eslint/parser",
@@ -24,16 +24,16 @@ module.exports = {
     project: ["./tsconfig.json", "./tsconfig.node.json"],
     tsconfigRootDir: __dirname,
   },
-  plugins: [
-    "react-refresh",
-    "prettier",
-  ],
+  plugins: ["react-refresh", "@typescript-eslint/eslint-plugin", "prettier"],
   rules: {
     "react-refresh/only-export-components": [
       "warn",
       { allowConstantExport: true },
     ],
     "@typescript-eslint/no-misused-promises": "warn",
+    "@typescript-eslint/consistent-type-definitions": ["warn", "type"],
     "react/display-name": "off",
+    "arrow-body-style": "off",
+    "prefer-arrow-callback": "off",
   },
 };
