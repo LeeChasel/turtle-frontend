@@ -12,6 +12,9 @@ module.exports = {
     "plugin:react-hooks/recommended",
     "plugin:react/jsx-runtime",
     "plugin:@typescript-eslint/recommended-type-checked",
+
+    // Need to place at the end of extends list
+    "plugin:prettier/recommand",
   ],
   ignorePatterns: ["dist", ".eslintrc.cjs"],
   parser: "@typescript-eslint/parser",
@@ -21,7 +24,10 @@ module.exports = {
     project: ["./tsconfig.json", "./tsconfig.node.json"],
     tsconfigRootDir: __dirname,
   },
-  plugins: ["react-refresh"],
+  plugins: [
+    "react-refresh",
+    "prettier",
+  ],
   rules: {
     "react-refresh/only-export-components": [
       "warn",
