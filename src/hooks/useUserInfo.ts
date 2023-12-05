@@ -5,9 +5,8 @@ import useUserTokenCookie from './useUserTokenCookie';
 function useUserInfo() {
   const { tokenCookie } = useUserTokenCookie();
   return useQuery({
-    queryKey: ['userInfo'],
+    queryKey: ['userInfo', tokenCookie],
     queryFn: () => getUserInfo(tokenCookie!),
-    refetchOnWindowFocus: false,
   });
 }
 

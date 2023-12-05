@@ -5,7 +5,6 @@ function useProductByName(name: string) {
   return useQuery({
     queryKey: ['product', name],
     queryFn: () => getProductByName(name),
-    refetchOnWindowFocus: false,
   });
 }
 
