@@ -7,7 +7,7 @@ Frontend page of lazyTurtle e-commerce site.
 - [Online website](https://turtle.turtlelazy.com)
 - [Gitea repository](https://gitea.turtlelazy.com/Turtle/Turtle_React)
 - [DroneCI](https://drone.turtlelazy.com)
-- [Swagger API](https://turtle.turtlelazy.com/api/webjars/swagger-ui/index.html)
+- [Swagger API](https://turtle.turtlelazy.com/api/swagger)
 - [Google cloud](https://console.cloud.google.com/welcome?project=lazyturtle-393117)
 - [Redmine](https://redmine.turtlelazy.com/projects/turtlelazy)
 - [Google analytics](https://analytics.google.com/analytics/web/#/p404402597/reports/reportinghub)
@@ -48,7 +48,7 @@ Default it will run application at port 3000
    - Editor: Format On Paste: `Enable`
    - Editor: Format On Save: `Enable`
 
-## Teck Stack
+## Tech Stack
 
 - React
 - Typescript
