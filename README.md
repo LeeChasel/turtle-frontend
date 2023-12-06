@@ -1,30 +1,103 @@
-# React + TypeScript + Vite
+# Turtle Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend page of lazyTurtle e-commerce site.
 
-Currently, two official plugins are available:
+## Useful links
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- [Online website](https://turtle.turtlelazy.com)
+- [Gitea repository](https://gitea.turtlelazy.com/Turtle/Turtle_React)
+- [DroneCI](https://drone.turtlelazy.com)
+- [Swagger API](https://turtle.turtlelazy.com/api/webjars/swagger-ui/index.html)
+- [Google cloud](https://console.cloud.google.com/welcome?project=lazyturtle-393117)
+- [Redmine](https://redmine.turtlelazy.com/projects/turtlelazy)
+- [Google analytics](https://analytics.google.com/analytics/web/#/p404402597/reports/reportinghub)
 
-## Expanding the ESLint configuration
+## How to use
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### Installation
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+```bash
+git clone https://gitea.turtlelazy.com/Turtle/Turtle_React.git
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+### Install dependencies
+
+```bash
+npm install
+```
+
+### Start develop
+
+```bash
+npm run dev
+```
+
+Default it will run application at port 3000
+
+## VSCode Setting for ESLint and Prettier
+
+1. Install VSCode extensions
+
+   - [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+   - [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+
+2. To open the Settings editor, navigate to `File` > `Preferences` > `Settings`
+
+3. Search `formatter` and change the following settings
+   - Editor: Default Formatter: `Prettier - Code formatter`
+   - Editor: Format On Paste: `Enable`
+   - Editor: Format On Save: `Enable`
+
+## Teck Stack
+
+- React
+- Typescript
+- Vite
+- React-Hook-Form
+
+### Manage State
+
+- React-Query: Server state
+- Zustand: Client state
+
+[Difference between server state and client state](https://dev.to/jeetvora331/server-state-vs-client-state-in-react-for-beginners-3pl6)
+
+### CSS frame
+
+- TailwindCSS
+- DaisyUI
+
+### Testing
+
+- [ ] Vitest
+
+## Project Architecture
+
+```
+src
+ |-- actions
+ |-- components
+ |-- hooks
+ |-- pages
+ |-- Provider
+ |-- types
+ |-- utils
+```
+
+- actions: Fetch backend resource functions
+- components: Shared and independent components
+- hooks: Custom hook can be used in component function
+- pages: Route pages
+- Provider: Some provider settings and Context provider (_will be replace by zustand_)
+- types: Sharable object types
+
+## ESLint Rules
+
+Use this command to scan eslint in whole prject
+
+```bash
+npm run lint
+```
+
+- Warn: Can ignore it
+- Error: Must be fixed
