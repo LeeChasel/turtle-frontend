@@ -1,13 +1,15 @@
-import React, { createContext, useContext, useMemo, useState } from 'react';
-import type { TProduct } from '../types/Product';
+import React, { createContext, useContext, useMemo, useState } from "react";
+import type { TProduct } from "../types/Product";
 
 /**
  * 建立 Context, 定義 Context 中 value 的型別
  */
 type TProductContextData = {
   product: TProduct;
-}
-const ProductContext = createContext<TProductContextData | undefined>(undefined);
+};
+const ProductContext = createContext<TProductContextData | undefined>(
+  undefined,
+);
 
 /**
  * 建立 Provider 元件, 定義 Provider 元件 Props 的型別
@@ -15,15 +17,17 @@ const ProductContext = createContext<TProductContextData | undefined>(undefined)
 type TProductProviderProps = {
   defaultProduct: TProduct;
   children: React.ReactNode;
-}
+};
 
-export function ProductProvider({ defaultProduct ,children }: TProductProviderProps)
-{
+export function ProductProvider({
+  defaultProduct,
+  children,
+}: TProductProviderProps) {
   const [product] = useState(defaultProduct);
 
-  const productContextData : TProductContextData = useMemo(() => {
+  const productContextData: TProductContextData = useMemo(() => {
     return {
-      product
+      product,
     };
   }, [product]);
 
@@ -31,14 +35,13 @@ export function ProductProvider({ defaultProduct ,children }: TProductProviderPr
     <ProductContext.Provider value={productContextData}>
       {children}
     </ProductContext.Provider>
-  )
+  );
 }
 
-export function useProductContext()
-{
+export function useProductContext() {
   const contextData = useContext(ProductContext);
   if (contextData === undefined) {
-    throw new Error('useProduct must be used within a ProductProvider');
+    throw new Error("useProduct must be used within a ProductProvider");
   }
   return contextData;
 }

@@ -1,7 +1,7 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc'
-import checker from 'vite-plugin-checker'
-import { VitePluginRadar } from 'vite-plugin-radar'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react-swc";
+import checker from "vite-plugin-checker";
+import { VitePluginRadar } from "vite-plugin-radar";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -13,8 +13,8 @@ export default defineConfig({
     VitePluginRadar({
       // Google Analytics tag injection
       analytics: {
-        id: 'G-SX2EH6Z0B5',
+        id: "G-SX2EH6Z0B5",
       },
-    })
+    }),
   ],
-})
+});

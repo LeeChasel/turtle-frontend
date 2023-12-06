@@ -3,4 +3,4 @@ export type TJWTResponse = {
   token: string;
   issueAt: string;
   expiresAt: string;
-}
+};

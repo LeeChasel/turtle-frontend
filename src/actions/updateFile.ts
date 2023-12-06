@@ -1,15 +1,15 @@
 type JsonType = {
   field: string;
-}
+};
 
-const URL = import.meta.env.VITE_TURTLE_AUTH_URL + '/file';
+const URL = import.meta.env.VITE_TURTLE_AUTH_URL + "/file";
 
 async function updateFile(file: File, token: string): Promise<JsonType> {
   const form = new FormData();
   form.append("file", file);
   const res = await fetch(URL, {
     headers: {
-      "Authorization" : 'Bearer ' + token
+      Authorization: "Bearer " + token,
     },
     method: "POST",
     body: form,
@@ -18,8 +18,8 @@ async function updateFile(file: File, token: string): Promise<JsonType> {
   if (!res.ok) {
     throw new Error("上傳圖片失敗");
   }
-  const json = await res.json();
-  return json;
+
+  return res.json() as Promise<JsonType>;
 }
 
 export default updateFile;

@@ -1,12 +1,12 @@
 import type { TShoppingCartDetail } from "../types/ShoppingCart";
 
-const URL = import.meta.env.VITE_TURTLE_AUTH_URL + '/cart/@me';
+const URL = import.meta.env.VITE_TURTLE_AUTH_URL + "/cart/@me";
 
-async function getShoppingCart(token: string): Promise<TShoppingCartDetail> {
+async function getShoppingCart(token: string) {
   const res = await fetch(URL, {
     headers: {
-      "Authorization" : 'Bearer ' + token,
-      "Content-Type": "application/json"
+      Authorization: "Bearer " + token,
+      "Content-Type": "application/json",
     },
   });
 
@@ -14,8 +14,7 @@ async function getShoppingCart(token: string): Promise<TShoppingCartDetail> {
     throw new Error("取得購物車資料失敗");
   }
 
-  const json = res.json();
-  return json;
+  return res.json() as Promise<TShoppingCartDetail>;
 }
 
 export default getShoppingCart;

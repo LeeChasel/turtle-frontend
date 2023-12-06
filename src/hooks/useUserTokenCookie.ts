@@ -1,17 +1,17 @@
-import { useCookies } from 'react-cookie';
-import { TJWTResponse } from '../types/JWT';
+import { useCookies } from "react-cookie";
+import { TJWTResponse } from "../types/JWT";
 
 const userTokenName = "userToken";
 
 function useUserTokenCookie() {
-  const [ cookies ,setCookie, removeCookie ] = useCookies([userTokenName]);
+  const [cookies, setCookie, removeCookie] = useCookies([userTokenName]);
 
   const tokenCookie = cookies.userToken as string | undefined;
 
   function setUserTokenCookie(jwt: TJWTResponse) {
     const token = jwt.token;
     const expiresTime = new Date(jwt.expiresAt);
-    setCookie(userTokenName, token, { expires: expiresTime, path: '/' });
+    setCookie(userTokenName, token, { expires: expiresTime, path: "/" });
   }
 
   function deleteUserTokenCookie() {
@@ -21,8 +21,8 @@ function useUserTokenCookie() {
   return {
     tokenCookie,
     setUserTokenCookie,
-    deleteUserTokenCookie
-  }
+    deleteUserTokenCookie,
+  };
 }
 
-export default useUserTokenCookie
+export default useUserTokenCookie;

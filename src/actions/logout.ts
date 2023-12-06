@@ -1,9 +1,9 @@
-const URL = import.meta.env.VITE_TURTLE_AUTH_URL + '/user/@me/logout';
+const URL = import.meta.env.VITE_TURTLE_AUTH_URL + "/user/@me/logout";
 
 async function logout(token: string) {
   const res = await fetch(URL, {
     headers: {
-      "Authorization" : 'Bearer ' + token,
+      Authorization: "Bearer " + token,
     },
   });
 
@@ -12,4 +12,4 @@ async function logout(token: string) {
   }
 }
 
-export default logout
+export default logout;

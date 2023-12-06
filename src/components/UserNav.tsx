@@ -1,37 +1,35 @@
-import { Link, Outlet, useNavigate } from 'react-router-dom'
-import useUserTokenCookie from '../hooks/useUserTokenCookie';
-import { useMutation } from '@tanstack/react-query';
-import logout from '../actions/logout';
-import { showToast } from '../utils/toastAlert';
-import { jwtDecode, type JwtPayload } from 'jwt-decode';
+import { Link, Outlet, useNavigate } from "react-router-dom";
+import useUserTokenCookie from "../hooks/useUserTokenCookie";
+import { useMutation } from "@tanstack/react-query";
+import logout from "../actions/logout";
+import { showToast } from "../utils/toastAlert";
+import { jwtDecode, type JwtPayload } from "jwt-decode";
 
-interface IJWTPayload extends JwtPayload
-{
-  role: string[]
-}
+type IJWTPayload = JwtPayload & {
+  role: string[];
+};
 
 function UserNav() {
   return (
     <div className="flex gap-2 p-5">
-      <SideNavbar/>
+      <SideNavbar />
       <section className="w-3/4">
-        <Outlet/>
+        <Outlet />
       </section>
     </div>
-  )
+  );
 }
 
 const validateAdmin = (token: string) => {
   const jwtInfo = jwtDecode<IJWTPayload>(token);
   const isAdmin = jwtInfo.role.includes("ROLE_ADMIN");
   return isAdmin;
-}
+};
 
 function SideNavbar() {
   const navigate = useNavigate();
   const { tokenCookie, deleteUserTokenCookie } = useUserTokenCookie();
   const isAdmin = validateAdmin(tokenCookie!);
-
 
   // If user doesn't login, navigate to homepage
   // if (!token) {
@@ -45,15 +43,15 @@ function SideNavbar() {
   const handleLogout = async () => {
     try {
       await logoutMutation.mutateAsync(tokenCookie!);
-      showToast('success', '登出成功');
+      showToast("success", "登出成功");
       deleteUserTokenCookie();
-      navigate('/');
+      navigate("/");
     } catch (error) {
       if (error instanceof Error) {
-        showToast('error', error.message);
+        showToast("error", error.message);
       }
     }
-  }
+  };
 
   return (
     <nav>
@@ -74,7 +72,7 @@ function SideNavbar() {
         </li>
       </ul>
     </nav>
-  )
+  );
 }
 
-export default UserNav
+export default UserNav;

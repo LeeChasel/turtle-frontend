@@ -8,30 +8,33 @@ function NewProducts() {
       {/* Too ugly need to design */}
       <h1 className="text-4xl">新上市產品！ (醜到要設計)</h1>
       <div className="grid grid-cols-3 gap-[100px] w-full px-[260px]">
-        <Products/>
+        <Products />
       </div>
     </div>
-  )
+  );
 }
 
 function Products() {
   const { data: products, error, status } = useNewArrivalProducts();
   return (
     <>
-    {status === 'pending' ? (
-      <p>Loading...</p>
-    ): status === 'error' ? (
-      <p>Error happened: {error.message}</p>
-    ): (
-      products.map(banner => (
-        <Fragment key={banner.productId}>
-          <BannerCard productName={banner.productName} currentPrice={banner.currentPrice!} bannerImage={banner.bannerImage}/>
-        </Fragment>
-      ))
-    )}
+      {status === "pending" ? (
+        <p>Loading...</p>
+      ) : status === "error" ? (
+        <p>Error happened: {error.message}</p>
+      ) : (
+        products.map((banner) => (
+          <Fragment key={banner.productId}>
+            <BannerCard
+              productName={banner.productName}
+              currentPrice={banner.currentPrice!}
+              bannerImage={banner.bannerImage}
+            />
+          </Fragment>
+        ))
+      )}
     </>
-  )
+  );
 }
 
-
-export default NewProducts
+export default NewProducts;

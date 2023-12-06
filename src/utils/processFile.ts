@@ -5,8 +5,8 @@ import updateFile from "../actions/updateFile";
 export async function getImageData(data: TImageData, token: string) {
   try {
     const imageData: TImage = {
-      description: (data.description === undefined) ? "" : data.description,
-    }
+      description: data.description ?? "",
+    };
     if (data.image !== null) {
       const imageId = await updateFile(data.image, token);
       const { blurhash, width, height } = await imageToBlurhash(data.image);
@@ -23,24 +23,22 @@ export async function getImageData(data: TImageData, token: string) {
   }
 }
 
-export async function imageToBlurhash(file: File)
-{
+export async function imageToBlurhash(file: File) {
   // Can't use remote storage as src, it would cause error
-  const loadImage = async () => 
+  const loadImage = async () =>
     new Promise<HTMLImageElement>((resolve, reject) => {
       const img = new Image();
       img.onload = () => {
         resolve(img);
         URL.revokeObjectURL(img.src);
-      }
-      img.onerror = (...args) => {
-        alert("errors: " + args);
-        reject(args);
-      }
+      };
+      img.onerror = () => {
+        reject("Error happened when transform image to blurhash");
+      };
       img.src = URL.createObjectURL(file);
-    })
-  
-  const getImageData = (image:HTMLImageElement) => {
+    });
+
+  const getImageData = (image: HTMLImageElement) => {
     const canvas = document.createElement("canvas");
     canvas.width = image.width;
     canvas.height = image.height;
@@ -51,10 +49,16 @@ export async function imageToBlurhash(file: File)
 
   const image = await loadImage();
   const imageData = getImageData(image);
-  const blurhash = encode(imageData.data, imageData.width, imageData.height, 4, 4);
+  const blurhash = encode(
+    imageData.data,
+    imageData.width,
+    imageData.height,
+    4,
+    4,
+  );
   return {
     blurhash: blurhash,
     width: image.width,
-    height: image.height
-  }
+    height: image.height,
+  };
 }

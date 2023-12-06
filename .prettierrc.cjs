@@ -6,5 +6,3 @@ const config = {
   singleQuote: false,
   arrowParens: "avoid",
 };
-
-export default config;

@@ -16,7 +16,12 @@ module.exports = {
     // Need to be place at the end of extends list
     "prettier",
   ],
-  ignorePatterns: ["dist", ".eslintrc.cjs"],
+  ignorePatterns: [
+    "dist",
+    ".eslintrc.cjs",
+    "tailwind.config.js",
+    "postcss.config.js",
+  ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaVersion: "latest",

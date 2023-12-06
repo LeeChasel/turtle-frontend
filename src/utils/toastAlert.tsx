@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 type toastType = "success" | "error" | "warn" | "info";
 
 export function showToast(type: toastType, message: string) {
-  switch(type) {
+  switch (type) {
     case "success":
       return toast.success(message);
     case "error":
