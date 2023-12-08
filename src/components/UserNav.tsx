@@ -3,11 +3,7 @@ import useUserTokenCookie from "../hooks/useUserTokenCookie";
 import { useMutation } from "@tanstack/react-query";
 import logout from "../actions/logout";
 import { showToast } from "../utils/toastAlert";
-import { jwtDecode, type JwtPayload } from "jwt-decode";
-
-type IJWTPayload = JwtPayload & {
-  role: string[];
-};
+import validateTokenRole from "../utils/validateTokenRole";
 
 function UserNav() {
   return (
@@ -20,16 +16,10 @@ function UserNav() {
   );
 }
 
-const validateAdmin = (token: string) => {
-  const jwtInfo = jwtDecode<IJWTPayload>(token);
-  const isAdmin = jwtInfo.role.includes("ROLE_ADMIN");
-  return isAdmin;
-};
-
 function SideNavbar() {
   const navigate = useNavigate();
   const { tokenCookie, deleteUserTokenCookie } = useUserTokenCookie();
-  const isAdmin = validateAdmin(tokenCookie!);
+  const isAdmin = validateTokenRole(tokenCookie!, "ROLE_ADMIN");
 
   // If user doesn't login, navigate to homepage
   // if (!token) {
