@@ -30,5 +30,4 @@ If you have a identity-related API response and are **sure** you want to update 
 - Expires &#8594; property `expiresAt`
 - Path &#8594; /
 
-> [!TIP]
-> You can use a [custom hook](/src/hooks/useUserTokenCookie.ts) to achieve above operations, it provides get, set and delete function to userToken cookie
+You can use a [custom hook](/src/hooks/useUserTokenCookie.ts) to achieve above operations, it provides get, set and delete function to userToken cookie
