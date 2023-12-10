@@ -43,7 +43,7 @@ function UserSetting() {
               }}
             >
               個人檔案
-            </th>{" "}
+            </th>
           </tr>
         </thead>
         <tbody>

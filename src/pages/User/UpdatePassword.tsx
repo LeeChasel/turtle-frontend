@@ -1,10 +1,12 @@
 import { useRef, useState } from "react";
-import login from "../../actions/login";
+//import login from "../../actions/login";
 import useUserTokenCookie from "../../hooks/useUserTokenCookie";
-import getUserInfo from "../../actions/getUserInfo";
+//import getUserInfo from "../../actions/getUserInfo";
 import { showToast } from "../../utils/toastAlert";
 import updateNewpassword from "../../actions/updateNewpassword";
 import { useNavigate } from "react-router-dom";
+import refreshToken from "../../actions/refreshToken";
+import validateTokenRole from "../../utils/validateTokenRole";
 
 function UpdatePassword() {
   const oldPasswordRef = useRef<HTMLInputElement>(null);
@@ -17,14 +19,13 @@ function UpdatePassword() {
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setIsSending(true);
-    const result = await getUserInfo(tokenCookie!);
-    const email = result.email;
+    //const result = await getUserInfo(tokenCookie!);
+    //const email = result.email;
     const oldPassword = oldPasswordRef.current?.value;
     const newPassword = newPasswordRef.current?.value;
     const checkNewpassword = checkNewpasswordRef.current?.value;
 
     try {
-      await login({ email, password: oldPassword! }, "原密碼錯誤！");
       if (newPassword != checkNewpassword) {
         //之後修改成登入前確認新舊密碼一不一致、新密碼及確認一不一致
         throw new Error("修改密碼不一致!");
@@ -32,10 +33,16 @@ function UpdatePassword() {
       if (oldPassword == newPassword) {
         throw new Error("新舊密碼一致!");
       }
-      const jwt = await updateNewpassword(tokenCookie!, newPassword!);
-      showToast("success", "修改成功");
-      setUserTokenCookie(jwt);
-      navigate("/");
+      const newToken = await refreshToken(tokenCookie!, oldPassword!);
+      if (validateTokenRole(newToken.token, "ROLE_CHANGE_PASSWORD")) {
+        const jwt = await updateNewpassword(newToken.token, newPassword!);
+        showToast("success", "修改成功");
+        setUserTokenCookie(jwt);
+        navigate("/");
+      } else {
+        setUserTokenCookie(newToken);
+        throw new Error("密碼錯誤！");
+      }
     } catch (error) {
       if (error instanceof Error) {
         showToast("error", error.message);
@@ -85,7 +92,7 @@ function UpdatePassword() {
               }}
             >
               修改密碼
-            </th>{" "}
+            </th>
           </tr>
         </thead>
         <tbody>
