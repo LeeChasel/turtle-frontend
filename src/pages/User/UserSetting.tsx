@@ -52,6 +52,7 @@ function UserSetting() {
             <td>
               <input
                 type="text"
+                defaultValue={userinfo.username}
                 className="w-full max-w-xs input input-bordered"
                 style={{ width: "300px" }}
               />
@@ -66,22 +67,32 @@ function UserSetting() {
                     type="radio"
                     name="radio-10"
                     className="radio"
-                    id="male"
+                    id="MALE"
+                    defaultChecked={userinfo.gender === "MALE"}
                   />
-                  <label className="label-text" htmlFor="male">
+                  <label className="label-text" htmlFor="MALE">
                     男性
                   </label>
                   <input
                     type="radio"
                     name="radio-10"
                     className="radio"
-                    id="female"
+                    id="FEMALE"
+                    defaultChecked={userinfo.gender === "FEMALE"}
                   />
-                  <label className="label-text" htmlFor="female">
+                  <label className="label-text" htmlFor="FEMALE">
                     女性
                   </label>
-                  <input type="radio" name="radio-10" className="radio" />
-                  <label className="label-text">不願透漏</label>
+                  <input
+                    type="radio"
+                    name="radio-10"
+                    className="radio"
+                    id="UNKNOW"
+                    defaultChecked={userinfo.gender === "UNKNOW"}
+                  />
+                  <label className="label-text" htmlFor="UNKNOW">
+                    不願透漏
+                  </label>
                 </label>
               </div>
             </td>
@@ -90,7 +101,8 @@ function UserSetting() {
             <th style={{ textAlign: "right" }}>生日</th>
             <td>
               <input
-                type="text"
+                type="date"
+                defaultValue={userinfo.birthday}
                 className="w-full max-w-xs input input-bordered"
               />
             </td>
@@ -99,7 +111,8 @@ function UserSetting() {
             <th style={{ textAlign: "right" }}>手機</th>
             <td>
               <input
-                type="text"
+                type="tel"
+                defaultValue={userinfo.phone}
                 className="w-full max-w-xs input input-bordered"
               />
             </td>
@@ -108,7 +121,7 @@ function UserSetting() {
             <th style={{ textAlign: "right" }}>電子郵件</th>
             <td>
               <input
-                type="text"
+                type="email"
                 defaultValue={userinfo.email}
                 className="w-full max-w-xs cursor-default input input-bordered"
               />

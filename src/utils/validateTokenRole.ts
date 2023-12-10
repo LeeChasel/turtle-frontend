@@ -1,13 +1,8 @@
 import { jwtDecode, type JwtPayload } from "jwt-decode";
-
-type Roles =
-  | "ROLE_ADMIN"
-  | "ROLE_CUSTOMER"
-  | "ROLE_CHANGE_PASSWORD"
-  | "ROLE_VERIFY_EMAIL";
+import type { TRole } from "../types/User";
 
 type TJWTPayload = JwtPayload & {
-  role: Roles[];
+  role: TRole[];
 };
 
 /**
@@ -15,7 +10,7 @@ type TJWTPayload = JwtPayload & {
  * @param role Validate target role
  * @returns
  */
-function validateTokenRole(token: string, role: Roles) {
+function validateTokenRole(token: string, role: TRole) {
   const jwtInfo = jwtDecode<TJWTPayload>(token);
   return jwtInfo.role.includes(role);
 }
