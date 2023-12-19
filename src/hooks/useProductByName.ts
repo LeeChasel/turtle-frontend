@@ -5,6 +5,7 @@ function useProductByName(name: string) {
   return useQuery({
     queryKey: ["product", name],
     queryFn: () => getProductByName(name),
+    select: (data) => data[0],
   });
 }
 

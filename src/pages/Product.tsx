@@ -4,19 +4,27 @@ import { ProductProvider } from "../Provider/ProductProvider";
 import { VariationProvider } from "../Provider/VariationProvider";
 import DetailImagesContainer from "../components/Product/DetailImagesContainer";
 import InfoContainer from "../components/Product/InfoContainer";
+import { useEffect } from "react";
 
 function Product() {
   // The name of productName is defined in route file as dynamic placeholder
   const productName = useParams().productName!;
-  const { data, status, error } = useProductByName(productName);
 
+  // Change document title when component mount and unmount
+  useEffect(() => {
+    document.title = productName + " | LazyTurtle";
+    return () => {
+      document.title = "Lazy Turtle";
+    };
+  }, [productName]);
+
+  const { data: productData, status, error } = useProductByName(productName);
   if (status === "pending") {
     return <div>Loading...</div>;
   } else if (status === "error") {
     return <div>Error: {error.message}</div>;
   }
 
-  const productData = data[0];
   const defaultVariation = productData.variation?.find(
     (item) => item.available,
   );
