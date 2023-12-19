@@ -1,7 +1,7 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import cx from "clsx";
 import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import login from "../actions/login";
 import { showToast } from "../utils/toastAlert";
 import useUserTokenCookie from "../hooks/useUserTokenCookie";
@@ -13,12 +13,14 @@ function LoginOrSignup() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<TLogin>();
-  const { setUserTokenCookie } = useUserTokenCookie();
+  const { tokenCookie, setUserTokenCookie } = useUserTokenCookie();
   const navigate = useNavigate();
 
   const loginMutation = useMutation({
     mutationFn: login,
   });
+
+  if (tokenCookie) return <Navigate to="/user/setting" />;
 
   const onSubmit: SubmitHandler<TLogin> = async (formData) => {
     try {

@@ -1,14 +1,14 @@
 import { FormEvent } from "react";
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
 import useUserTokenCookie from "../hooks/useUserTokenCookie";
 
-function RootLayout({ children }: { children: React.ReactNode }) {
+function RootLayout() {
   return (
     <>
       <Header />
-      {children}
+      <Outlet />
       <Footer />
     </>
   );

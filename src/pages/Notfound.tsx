@@ -1,4 +1,4 @@
-function Notfound_404() {
+function Notfound() {
   return (
     <div>
       <h1 className="text-2xl font-bold text-center">此頁面不存在</h1>
@@ -11,4 +11,4 @@ function Notfound_404() {
   );
 }
 
-export default Notfound_404;
+export default Notfound;

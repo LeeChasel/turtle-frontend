@@ -11,7 +11,7 @@ function useUserTokenCookie() {
   function setUserTokenCookie(jwt: TJWTResponse) {
     const token = jwt.token;
     const expiresTime = new Date(jwt.expiresAt);
-    setCookie(userTokenName, token, { expires: expiresTime, path: "/" });
+    setCookie(userTokenName, token, { expires: expiresTime });
   }
 
   function deleteUserTokenCookie() {

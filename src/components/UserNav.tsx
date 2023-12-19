@@ -21,11 +21,6 @@ function SideNavbar() {
   const { tokenCookie, deleteUserTokenCookie } = useUserTokenCookie();
   const isAdmin = validateTokenRole(tokenCookie!, "ROLE_ADMIN");
 
-  // If user doesn't login, navigate to homepage
-  // if (!token) {
-  //   return redirect('/');
-  // }
-
   const logoutMutation = useMutation({
     mutationFn: logout,
   });
