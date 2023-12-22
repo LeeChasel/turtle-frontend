@@ -21,3 +21,10 @@ export type TRole =
   | "ROLE_CUSTOMER"
   | "ROLE_CHANGE_PASSWORD"
   | "ROLE_VERIFY_EMAIL";
+
+export type TUpdateInfo = {
+  username?: string;
+  birthday?: string;
+  phone?: string;
+  gender?: "MALE" | "FEMALE" | "UNKNOW";
+};

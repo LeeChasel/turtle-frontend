@@ -1,7 +1,5 @@
 import { useRef, useState } from "react";
-//import login from "../../actions/login";
 import useUserTokenCookie from "../../hooks/useUserTokenCookie";
-//import getUserInfo from "../../actions/getUserInfo";
 import { showToast } from "../../utils/toastAlert";
 import updateNewpassword from "../../actions/updateNewpassword";
 import { useNavigate } from "react-router-dom";
@@ -19,8 +17,6 @@ function UpdatePassword() {
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setIsSending(true);
-    //const result = await getUserInfo(tokenCookie!);
-    //const email = result.email;
     const oldPassword = oldPasswordRef.current?.value;
     const newPassword = newPasswordRef.current?.value;
     const checkNewpassword = checkNewpasswordRef.current?.value;

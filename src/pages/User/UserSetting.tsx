@@ -1,18 +1,80 @@
 import useUserInfo from "../../hooks/useUserInfo";
+import { useRef, useState } from "react";
+import { showToast } from "../../utils/toastAlert";
+import updateUserInfo from "../../actions/updateUserInfo";
+import { useNavigate } from "react-router-dom";
+import { TUpdateInfo } from "../../types/User";
+import useUserTokenCookie from "../../hooks/useUserTokenCookie";
+import { useQueryClient } from "@tanstack/react-query";
 
 function UserSetting() {
   const { data: userinfo, status, error } = useUserInfo();
+  const nameRef = useRef<HTMLInputElement>(null);
+  const birthdayRef = useRef<HTMLInputElement>(null);
+  const phoneNumberRef = useRef<HTMLInputElement>(null);
+  const { tokenCookie } = useUserTokenCookie();
+  const navigate = useNavigate();
+  const [isSending, setIsSending] = useState(false);
+  const [gender, setGender] = useState<"MALE" | "FEMALE" | "UNKNOW">();
+  const queryClient = useQueryClient();
 
   if (status === "pending") {
     return <></>;
   } else if (status === "error") {
     return <div>Error happened: {error.message}</div>;
   }
+  async function submit(e: React.FormEvent<HTMLFormElement>) {
+    try {
+      e.preventDefault();
+      setIsSending(true);
+      const name = nameRef.current?.value;
+      const birthday = birthdayRef.current?.value;
+      const phoneNumber = phoneNumberRef.current?.value;
+      const updateInfo: TUpdateInfo = {};
+      if (name != userinfo?.username) {
+        updateInfo.username = name;
+      }
+      if (birthday != userinfo?.birthday) {
+        updateInfo.birthday = birthday;
+      }
+      if (phoneNumber != userinfo?.phone) {
+        updateInfo.phone = phoneNumber;
+      }
+      if (gender != userinfo?.gender) {
+        updateInfo.gender = gender;
+      }
+      if (updateInfo != null) {
+        await updateUserInfo(tokenCookie!, updateInfo);
+        await queryClient.invalidateQueries({ queryKey: ["userInfo"] });
+        showToast("success", "修改成功");
+        navigate("/");
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        showToast("error", error.message);
+      }
+    } finally {
+      setIsSending(false);
+    }
+  }
+
+  function onChangeGender(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value;
+    if (value === "MALE" || value === "FEMALE" || value === "UNKNOW") {
+      setGender(value);
+    }
+  }
+
+  function cancel(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    navigate("/");
+  }
 
   return (
-    <div
+    <form
       className="overflow-x-auto border square border-dark "
       style={{ backgroundColor: "white" }}
+      onSubmit={submit}
     >
       <table className="table-lg w-max" style={{ borderCollapse: "collapse" }}>
         <thead>
@@ -55,6 +117,7 @@ function UserSetting() {
                 defaultValue={userinfo.username}
                 className="w-full max-w-xs input input-bordered"
                 style={{ width: "300px" }}
+                ref={nameRef}
               />
             </td>
           </tr>
@@ -68,7 +131,9 @@ function UserSetting() {
                     name="radio-10"
                     className="radio"
                     id="MALE"
+                    value="MALE"
                     defaultChecked={userinfo.gender === "MALE"}
+                    onChange={onChangeGender}
                   />
                   <label className="label-text" htmlFor="MALE">
                     男性
@@ -78,7 +143,9 @@ function UserSetting() {
                     name="radio-10"
                     className="radio"
                     id="FEMALE"
+                    value="FEMALE"
                     defaultChecked={userinfo.gender === "FEMALE"}
+                    onChange={onChangeGender}
                   />
                   <label className="label-text" htmlFor="FEMALE">
                     女性
@@ -88,7 +155,9 @@ function UserSetting() {
                     name="radio-10"
                     className="radio"
                     id="UNKNOW"
+                    value="UNKNOW"
                     defaultChecked={userinfo.gender === "UNKNOW"}
+                    onChange={onChangeGender}
                   />
                   <label className="label-text" htmlFor="UNKNOW">
                     不願透漏
@@ -104,6 +173,7 @@ function UserSetting() {
                 type="date"
                 defaultValue={userinfo.birthday}
                 className="w-full max-w-xs input input-bordered"
+                ref={birthdayRef}
               />
             </td>
           </tr>
@@ -114,6 +184,7 @@ function UserSetting() {
                 type="tel"
                 defaultValue={userinfo.phone}
                 className="w-full max-w-xs input input-bordered"
+                ref={phoneNumberRef}
               />
             </td>
           </tr>
@@ -124,6 +195,7 @@ function UserSetting() {
                 type="email"
                 defaultValue={userinfo.email}
                 className="w-full max-w-xs cursor-default input input-bordered"
+                disabled={true}
               />
             </td>
           </tr>
@@ -131,10 +203,14 @@ function UserSetting() {
       </table>
 
       <p className="text-center">
-        <button className="btn">確認</button>
-        <button className="btn">取消</button>
+        <button className="btn" disabled={isSending}>
+          確認
+        </button>
+        <button className="btn" onClick={cancel}>
+          取消
+        </button>
       </p>
-    </div>
+    </form>
   );
 }
 
