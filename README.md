@@ -4,10 +4,10 @@ Frontend page of lazyTurtle e-commerce site.
 
 ## Useful links
 
-- [Online website](https://turtle.turtlelazy.com)
+- [Online website](https://turtlelazy.com)
 - [Gitea repository](https://gitea.turtlelazy.com/Turtle/Turtle_React)
 - [DroneCI](https://drone.turtlelazy.com)
-- [Swagger API](https://turtle.turtlelazy.com/api/swagger)
+- [Swagger API](https://turtlelazy.com/api/swagger)
 - [Google cloud](https://console.cloud.google.com/welcome?project=lazyturtle-393117)
 - [Redmine](https://redmine.turtlelazy.com/projects/turtlelazy)
 - [Google analytics](https://analytics.google.com/analytics/web/#/p404402597/reports/reportinghub)
