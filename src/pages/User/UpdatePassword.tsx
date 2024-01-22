@@ -96,7 +96,7 @@ function UpdatePassword() {
             <th style={{ textAlign: "right" }}>請輸入原密碼</th>
             <td>
               <input
-                type="text"
+                type="password"
                 className="w-full max-w-xs input input-bordered"
                 ref={oldPasswordRef}
               />
@@ -106,7 +106,7 @@ function UpdatePassword() {
             <th style={{ textAlign: "right" }}>請輸入新密碼</th>
             <td>
               <input
-                type="text"
+                type="password"
                 className="w-full max-w-xs input input-bordered"
                 ref={newPasswordRef}
               />
@@ -116,7 +116,7 @@ function UpdatePassword() {
             <th style={{ textAlign: "right" }}>再次輸入密碼</th>
             <td>
               <input
-                type="text"
+                type="password"
                 className="w-full max-w-xs input input-bordered"
                 ref={checkNewpasswordRef}
               />
