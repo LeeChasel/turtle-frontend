@@ -1,14 +1,14 @@
-import { TShoppingCartBrief } from "../types/ShoppingCart";
+import { TItemBrief } from "../types/ShoppingCart";
 
 const URL = import.meta.env.VITE_TURTLE_AUTH_URL + "/cart/@me";
 
-async function updateShoppingCart(items: TShoppingCartBrief, token: string) {
+async function updateShoppingCart(items: TItemBrief[], token: string) {
   const res = await fetch(URL, {
     headers: {
       Authorization: "Bearer " + token,
       "Content-Type": "application/json",
     },
-    method: "PUT",
+    method: "POST",
     body: JSON.stringify(items),
   });
 

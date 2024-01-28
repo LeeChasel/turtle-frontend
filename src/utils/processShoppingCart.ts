@@ -4,6 +4,7 @@ import {
   TItemBrief,
 } from "../types/ShoppingCart";
 
+// deprecated since updateShoppingCart api is changed
 export function parseShoppingCart(detailedShoppingCart: TShoppingCartDetail) {
   const resultBriefShoppingCart: TItemBrief[] = [];
   for (const item of detailedShoppingCart.shoppingCartItems) {

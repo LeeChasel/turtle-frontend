@@ -3,13 +3,8 @@ import { useState } from "react";
 import { useVariationContext } from "../../Provider/VariationProvider";
 import { useProductContext } from "../../Provider/ProductProvider";
 import { showToast } from "../../utils/toastAlert";
-import {
-  addNewItemToBriefShoppingCart,
-  parseShoppingCart,
-} from "../../utils/processShoppingCart";
 import useUserTokenCookie from "../../hooks/useUserTokenCookie";
 import { TItemBrief } from "../../types/ShoppingCart";
-import getShoppingCart from "../../actions/getShoppingCart";
 import updateShoppingCart from "../../actions/updateShoppingCart";
 
 export default function PurchaseInfo() {
@@ -38,8 +33,6 @@ export default function PurchaseInfo() {
       if (!tokenCookie) {
         throw new Error("身分驗證錯誤，請登入！");
       }
-      const shoppingCartDetailInfo = await getShoppingCart(tokenCookie);
-      const briefShoppingCart = parseShoppingCart(shoppingCartDetailInfo);
       const newItem: TItemBrief = {
         productId: product.productId!,
         variationName: variation.variationName,
@@ -47,11 +40,7 @@ export default function PurchaseInfo() {
         quantity: itemNumber,
         addedTime: new Date().toISOString(),
       };
-      const newBriefs = addNewItemToBriefShoppingCart(
-        newItem,
-        briefShoppingCart,
-      );
-      await updateShoppingCart(newBriefs, tokenCookie);
+      await updateShoppingCart([newItem], tokenCookie);
       showToast("success", `成功新增商品「${product.productName}」到購物車！`);
     } catch (error) {
       if (error instanceof Error) {
