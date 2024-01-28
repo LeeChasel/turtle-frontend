@@ -23,14 +23,16 @@ function SideNavbar() {
 
   const logoutMutation = useMutation({
     mutationFn: logout,
+    onSuccess: () => {
+      deleteUserTokenCookie();
+      showToast("success", "登出成功");
+      navigate("/");
+    },
   });
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     try {
-      await logoutMutation.mutateAsync(tokenCookie!);
-      showToast("success", "登出成功");
-      deleteUserTokenCookie();
-      navigate("/");
+      logoutMutation.mutate(tokenCookie!);
     } catch (error) {
       if (error instanceof Error) {
         showToast("error", error.message);
