@@ -14,7 +14,7 @@ async function getShoppingCart(token: string) {
     throw new Error("取得購物車資料失敗");
   }
 
-  return res.json() as Promise<TShoppingCartDetail>;
+  return res.json() as Promise<TShoppingCartDetail[]>;
 }
 
 export default getShoppingCart;
