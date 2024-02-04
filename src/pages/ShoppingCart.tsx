@@ -1,10 +1,10 @@
-import { useState } from "react";
+// import { useState } from "react";
 import useShoppingCart from "../hooks/useShoppingCart";
 import ShoppingCartItem from "../components/ShoppingCart/Item";
-import { TOrderItem } from "../types/Order";
+// import { TOrderItem } from "../types/Order";
 
 function ShoppingCart() {
-  const [selectedItems, setSelectedItems] = useState<TOrderItem[]>([]);
+  // const [selectedItems, setSelectedItems] = useState<TOrderItem[]>([]);
   const { data: items, error, status } = useShoppingCart();
   if (status === "pending") {
     return <p>Loading...</p>;

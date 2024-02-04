@@ -1,5 +1,5 @@
 import { FormEvent } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
 import useUserTokenCookie from "../hooks/useUserTokenCookie";
@@ -15,6 +15,48 @@ function RootLayout() {
 }
 
 function Header() {
+  const location = useLocation();
+  if (location.pathname.startsWith("/special")) {
+    return <AnonymousHeader />;
+  }
+  return <RegisteredHeader />;
+}
+
+function AnonymousHeader() {
+  return (
+    <header className="flex items-center justify-between w-full h-[100px] bg-gray-800 px-[260px]">
+      <nav>
+        <ul className="flex items-center">
+          <li className="translate-y-1">
+            <img
+              src={
+                import.meta.env.VITE_TURTLE_FRONTEND_IMAGE_URL + "/Logo.webp"
+              }
+              alt="Logo image"
+              width={120}
+              height={81}
+              className="pointer-events-none"
+            />
+          </li>
+        </ul>
+      </nav>
+
+      <div className="flex items-center gap-7">
+        {/* <div className="flex justify-between gap-3"> */}
+        <Link
+          to="#"
+          className="text-2xl font-normal rounded-md text-sky-50 hover:bg-gray-700"
+        >
+          訂單查詢
+        </Link>
+        {/* </div> */}
+      </div>
+    </header>
+  );
+}
+
+// 可登入的記名使用者
+function RegisteredHeader() {
   return (
     <header className="flex items-center justify-between w-full h-[100px] bg-gray-800 px-[260px]">
       <nav>

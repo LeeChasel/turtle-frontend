@@ -10,7 +10,8 @@ type TJWTPayload = JwtPayload & {
  * @param role Validate target role
  * @returns
  */
-function validateTokenRole(token: string, role: TRole) {
+function validateTokenRole(token: string | undefined, role: TRole) {
+  if (!token) return false;
   const jwtInfo = jwtDecode<TJWTPayload>(token);
   return jwtInfo.role.includes(role);
 }

@@ -32,6 +32,8 @@ const routerData: RouteObject[] = [
       { path: "/products", Component: Products },
       { path: "/loginOrSignup", Component: LoginOrSignup },
       { path: "/newProducts", Component: NewProducts },
+      // TODO: should be :productId, but it would cause error
+      { path: "/special/:productName", Component: Product },
       {
         Component: AuthRoutes,
         children: [
@@ -62,7 +64,7 @@ function AuthRoutes() {
 
 function AdminRoutes() {
   const { tokenCookie } = useUserTokenCookie();
-  const isAdmin = validateTokenRole(tokenCookie!, "ROLE_ADMIN");
+  const isAdmin = validateTokenRole(tokenCookie, "ROLE_ADMIN");
   return isAdmin ? <Outlet /> : <Navigate to="/loginOrSignup" />;
 }
 

@@ -1,15 +1,21 @@
 import { GrFormAdd, GrFormSubtract } from "react-icons/gr";
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { useVariationContext } from "../../Provider/VariationProvider";
 import { useProductContext } from "../../Provider/ProductProvider";
 import { showToast } from "../../utils/toastAlert";
 import useUserTokenCookie from "../../hooks/useUserTokenCookie";
 import { TShoppingCartBrief } from "../../types/ShoppingCart";
 import updateShoppingCart from "../../actions/updateShoppingCart";
+import useBeOrderedProductsStore from "../../store/useBeOrderedProductsStore";
 
 export default function PurchaseInfo() {
+  const increaseProduct = useBeOrderedProductsStore(
+    (state) => state.increaseProduct,
+  );
+  const isSpecial = useLocation().pathname.startsWith("/special");
   const [itemNumber, setItemNumber] = useState(1);
-  const [addingToShoppingCart, setAddingToShoppingCart] = useState(false);
+  const [buttonTriggered, setButtonTriggered] = useState(false);
   const { variation } = useVariationContext();
   const { product } = useProductContext();
   const { tokenCookie } = useUserTokenCookie();
@@ -23,13 +29,31 @@ export default function PurchaseInfo() {
     }
   }
 
-  function handlePurchase() {
+  function handleDirectPurchase() {
+    try {
+      setButtonTriggered(true);
+      if (!isSpecial && !tokenCookie) {
+        throw new Error("身分驗證錯誤，請登入！");
+      }
+      increaseProduct({
+        productId: product.productId!,
+        variationName: variation.variationName,
+        variationSpec: variation.variationSpec,
+        quantity: itemNumber,
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        showToast("error", error.message);
+      }
+    } finally {
+      setButtonTriggered(false);
+    }
     showToast("success", "直接購買，導向創造訂單頁面");
   }
 
   async function handleAddToShoppingCart() {
     try {
-      setAddingToShoppingCart(true);
+      setButtonTriggered(true);
       if (!tokenCookie) {
         throw new Error("身分驗證錯誤，請登入！");
       }
@@ -47,7 +71,7 @@ export default function PurchaseInfo() {
         showToast("error", error.message);
       }
     } finally {
-      setAddingToShoppingCart(false);
+      setButtonTriggered(false);
     }
   }
 
@@ -67,18 +91,33 @@ export default function PurchaseInfo() {
           <GrFormAdd className="w-7 h-7" />
         </button>
       </div>
-      <div>
-        <button onClick={handlePurchase} className="mr-3 btn btn-lg">
-          直接購買
-        </button>
+
+      {isSpecial ? (
         <button
-          onClick={handleAddToShoppingCart}
+          onClick={handleDirectPurchase}
           className="btn btn-lg"
-          disabled={addingToShoppingCart}
+          disabled={buttonTriggered}
         >
-          加入購物車
+          加入訂單
         </button>
-      </div>
+      ) : (
+        <div>
+          <button
+            onClick={handleDirectPurchase}
+            className="mr-3 btn btn-lg"
+            disabled={buttonTriggered}
+          >
+            直接購買
+          </button>
+          <button
+            onClick={handleAddToShoppingCart}
+            className="btn btn-lg"
+            disabled={buttonTriggered}
+          >
+            加入購物車
+          </button>
+        </div>
+      )}
     </div>
   );
 }

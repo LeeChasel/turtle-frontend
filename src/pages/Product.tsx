@@ -7,8 +7,9 @@ import InfoContainer from "../components/Product/InfoContainer";
 import { useEffect } from "react";
 
 function Product() {
-  // The name of productName is defined in route file as dynamic placeholder
-  const productName = useParams().productName!;
+  // The productName and productId is defined in route file as dynamic placeholder
+  const productName = useParams().productName;
+  const productId = useParams().productId;
 
   // Change document title when component mount and unmount
   useEffect(() => {
@@ -16,9 +17,9 @@ function Product() {
     return () => {
       document.title = "Lazy Turtle";
     };
-  }, [productName]);
+  }, [productName, productId]);
 
-  const { data: productData, status, error } = useProductByName(productName);
+  const { data: productData, status, error } = useProductByName(productName!);
   if (status === "pending") {
     return <div>Loading...</div>;
   } else if (status === "error") {

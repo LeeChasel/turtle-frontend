@@ -20,6 +20,8 @@ export type TRole =
   | "ROLE_ADMIN"
   | "ROLE_CUSTOMER"
   | "ROLE_CHANGE_PASSWORD"
+  | "ROLE_ANONYMITY_CUSTOMER"
+  | "ROLE_USER"
   | "ROLE_VERIFY_EMAIL";
 
 export type TUpdateInfo = {
