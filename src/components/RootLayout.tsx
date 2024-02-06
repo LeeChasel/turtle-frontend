@@ -1,8 +1,9 @@
-import { FormEvent } from "react";
+import { FormEvent, useEffect } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
 import useUserTokenCookie from "../hooks/useUserTokenCookie";
+import validateTokenRole from "../utils/validateTokenRole";
 
 function RootLayout() {
   return (
@@ -16,9 +17,26 @@ function RootLayout() {
 
 function Header() {
   const location = useLocation();
-  if (location.pathname.startsWith("/special")) {
+  const { tokenCookie, deleteUserTokenCookie } = useUserTokenCookie();
+  const isSpecialRoute = location.pathname.startsWith("/special");
+
+  useEffect(() => {
+    if (
+      !isSpecialRoute &&
+      tokenCookie &&
+      validateTokenRole(tokenCookie, "ROLE_ANONYMITY_CUSTOMER")
+    ) {
+      deleteUserTokenCookie();
+    }
+  }, [isSpecialRoute, tokenCookie]);
+
+  if (
+    isSpecialRoute ||
+    validateTokenRole(tokenCookie, "ROLE_ANONYMITY_CUSTOMER")
+  ) {
     return <AnonymousHeader />;
   }
+
   return <RegisteredHeader />;
 }
 
