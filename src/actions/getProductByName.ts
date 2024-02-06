@@ -1,5 +1,10 @@
 import type { TProduct } from "../types/Product";
 
+/**
+ * Get product by name, if not found, return empty array
+ * @param name name of product
+ * @returns array of product
+ */
 async function getProductByName(name: string) {
   const URL = import.meta.env.VITE_TURTLE_PUBLIC_URL + "/product/name/" + name;
   const res = await fetch(URL);

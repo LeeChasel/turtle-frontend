@@ -32,8 +32,7 @@ const routerData: RouteObject[] = [
       { path: "/products", Component: Products },
       { path: "/loginOrSignup", Component: LoginOrSignup },
       { path: "/newProducts", Component: NewProducts },
-      // TODO: should be :productId, but it would cause error
-      { path: "/special/:productName", Component: Product },
+      { path: "/special/:productId", Component: Product },
       {
         Component: AuthRoutes,
         children: [

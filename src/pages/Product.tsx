@@ -5,27 +5,41 @@ import { VariationProvider } from "../Provider/VariationProvider";
 import DetailImagesContainer from "../components/Product/DetailImagesContainer";
 import InfoContainer from "../components/Product/InfoContainer";
 import { useEffect } from "react";
+import useProductById from "../hooks/useProductById";
+import Notfound from "./Notfound";
 
 function Product() {
   // The productName and productId is defined in route file as dynamic placeholder
-  const productName = useParams().productName;
-  const productId = useParams().productId;
+  const { productName, productId } = useParams();
+
+  const { data: dataById, error: dataByIdError } = useProductById(productId);
+  const { data: dataByName, error: dataByNameError } =
+    useProductByName(productName);
 
   // Change document title when component mount and unmount
   useEffect(() => {
-    document.title = productName + " | LazyTurtle";
+    if (productName) {
+      document.title = productName + " | LazyTurtle";
+    } else if (dataById) {
+      document.title = dataById.productName + " | LazyTurtle";
+    }
     return () => {
       document.title = "Lazy Turtle";
     };
-  }, [productName, productId]);
+  }, [productName, dataById]);
 
-  const { data: productData, status, error } = useProductByName(productName!);
-  if (status === "pending") {
-    return <div>Loading...</div>;
-  } else if (status === "error") {
-    return <div>Error: {error.message}</div>;
+  // handle productName or productId not found, meaning no product found
+  if (dataByIdError instanceof Error || dataByNameError instanceof Error) {
+    return <Notfound />;
   }
 
+  const productData = dataById ? dataById : dataByName;
+  // data is loading
+  if (!productData) {
+    return <div className="fixed w-full h-full bg-base-100"></div>;
+  }
+
+  // process no variation can buy now
   const defaultVariation = productData.variation?.find(
     (item) => item.available,
   );
