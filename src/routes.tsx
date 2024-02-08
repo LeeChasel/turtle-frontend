@@ -21,6 +21,7 @@ import UserNav from "./components/UserNav";
 import { showToast } from "./utils/toastAlert";
 import useUserTokenCookie from "./hooks/useUserTokenCookie";
 import validateTokenRole from "./utils/validateTokenRole";
+import CheckOrder from "./pages/CheckOrder";
 
 const routerData: RouteObject[] = [
   {
@@ -32,6 +33,7 @@ const routerData: RouteObject[] = [
       { path: "/products", Component: Products },
       { path: "/loginOrSignup", Component: LoginOrSignup },
       { path: "/newProducts", Component: NewProducts },
+      { path: "/checkOrder", Component: CheckOrder },
       {
         Component: AuthRoutes,
         children: [
