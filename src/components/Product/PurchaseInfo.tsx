@@ -8,6 +8,9 @@ import useUserTokenCookie from "../../hooks/useUserTokenCookie";
 import { TShoppingCartBrief } from "../../types/ShoppingCart";
 import updateShoppingCart from "../../actions/updateShoppingCart";
 import useBeOrderedProductsStore from "../../store/useBeOrderedProductsStore";
+import { TBanner } from "../../types/Product";
+import login from "../../actions/login";
+import { anonymousUser } from "../../utils/anonymity";
 
 export default function PurchaseInfo() {
   const increaseProduct = useBeOrderedProductsStore(
@@ -18,7 +21,7 @@ export default function PurchaseInfo() {
   const [buttonTriggered, setButtonTriggered] = useState(false);
   const { variation } = useVariationContext();
   const { product } = useProductContext();
-  const { tokenCookie } = useUserTokenCookie();
+  const { tokenCookie, setUserTokenCookie } = useUserTokenCookie();
 
   function modifyNumber(action: "add" | "subtract") {
     if (itemNumber === 1 && action === "subtract") return;
@@ -29,18 +32,20 @@ export default function PurchaseInfo() {
     }
   }
 
-  function handleDirectPurchase() {
+  async function handleAnonymousAddToCart() {
     try {
       setButtonTriggered(true);
-      if (!isSpecial && !tokenCookie) {
-        throw new Error("身分驗證錯誤，請登入！");
+      if (!tokenCookie) {
+        const jwt = await login(anonymousUser, "匿名登入帳密錯誤");
+        setUserTokenCookie(jwt);
       }
       increaseProduct({
-        productId: product.productId!,
-        variationName: variation.variationName,
-        variationSpec: variation.variationSpec,
+        // TProduct type has all the properties of TBanner
+        product: product as TBanner,
+        variation: variation,
         quantity: itemNumber,
       });
+      showToast("success", "加入購物車成功");
     } catch (error) {
       if (error instanceof Error) {
         showToast("error", error.message);
@@ -48,7 +53,22 @@ export default function PurchaseInfo() {
     } finally {
       setButtonTriggered(false);
     }
-    showToast("success", "直接購買，導向創造訂單頁面");
+  }
+
+  function handleDirectPurchase() {
+    try {
+      setButtonTriggered(true);
+      if (!tokenCookie) {
+        throw new Error("身分驗證錯誤，請登入！");
+      }
+      showToast("success", "直接購買，導向創造訂單頁面");
+    } catch (error) {
+      if (error instanceof Error) {
+        showToast("error", error.message);
+      }
+    } finally {
+      setButtonTriggered(false);
+    }
   }
 
   async function handleAddToShoppingCart() {
@@ -94,7 +114,7 @@ export default function PurchaseInfo() {
 
       {isSpecial ? (
         <button
-          onClick={handleDirectPurchase}
+          onClick={handleAnonymousAddToCart}
           className="btn btn-lg"
           disabled={buttonTriggered}
         >

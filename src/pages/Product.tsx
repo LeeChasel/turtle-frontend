@@ -10,16 +10,20 @@ import Notfound from "./Notfound";
 import login from "../actions/login";
 import useUserTokenCookie from "../hooks/useUserTokenCookie";
 import validateTokenRole from "../utils/validateTokenRole";
-
-const anonymousUser = {
-  email: "anonymity@turtlelazy.com",
-  password: "anonymity_password",
-};
+import useAnonymousProductStore from "../store/useAnonymousProductStore";
+import { anonymousUser } from "../utils/anonymity";
 
 function Product() {
   // The productName and productId is defined in route file as dynamic placeholder
   const { productName, productId } = useParams();
   const { tokenCookie, setUserTokenCookie } = useUserTokenCookie();
+  const updateProductIdInSession = useAnonymousProductStore(
+    (state) => state.updateProductId,
+  );
+
+  if (productId) {
+    updateProductIdInSession(productId);
+  }
 
   const { data: dataById, error: dataByIdError } = useProductById(productId);
   const { data: dataByName, error: dataByNameError } =

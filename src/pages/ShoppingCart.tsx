@@ -1,10 +1,21 @@
 // import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import useShoppingCart from "../hooks/useShoppingCart";
-import ShoppingCartItem from "../components/ShoppingCart/Item";
+import CartTable from "../components/ShoppingCart/CartTable";
+import { TShoppingCartBrief, TShoppingCartDetail } from "../types/ShoppingCart";
+import { TOrderItem } from "../types/Order";
+import updateShoppingCart from "../actions/updateShoppingCart";
+import useUserTokenCookie from "../hooks/useUserTokenCookie";
+import { useQueryClient } from "@tanstack/react-query";
+
 // import { TOrderItem } from "../types/Order";
 
 function ShoppingCart() {
   // const [selectedItems, setSelectedItems] = useState<TOrderItem[]>([]);
+  const navigate = useNavigate();
+  const { tokenCookie } = useUserTokenCookie();
+  const queryClient = useQueryClient();
+
   const { data: items, error, status } = useShoppingCart();
   if (status === "pending") {
     return <p>Loading...</p>;
@@ -12,53 +23,27 @@ function ShoppingCart() {
     return <p>Error happened: {error.message}</p>;
   }
 
+  function exitCart() {
+    navigate("/");
+  }
+
+  async function removeProduct(item: TShoppingCartDetail | TOrderItem) {
+    const removedItem: TShoppingCartBrief = {
+      productId: item.product.productId!,
+      variationName: item.variation.variationName,
+      variationSpec: item.variation.variationSpec,
+      quantity: item.quantity * -1,
+      addedTime: new Date().toISOString(),
+    };
+    await updateShoppingCart([removedItem], tokenCookie!);
+    await queryClient.invalidateQueries({
+      queryKey: ["shoppingCart", tokenCookie],
+    });
+  }
+
   return (
-    <main className="mt-[110px] mx-48 overflow-x-auto bg-stone-50 border-2 border-gray-800 p-5">
-      <section>
-        <table className="table">
-          <thead>
-            <tr>
-              <th>
-                <label>
-                  <input type="checkbox" className="checkbox" />
-                </label>
-              </th>
-              <th className="w-[25%]">商品名稱</th>
-              <th className="w-[15%]">樣式</th>
-              <th className="w-[15%]">規格</th>
-              <th className="w-[12%]">單價</th>
-              <th className="w-[20%]">數量</th>
-              <th className="w-[12%]">小計</th>
-              {/* For delete button */}
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {items?.map((item) => (
-              <ShoppingCartItem
-                key={
-                  item.variation.variationName +
-                  "-" +
-                  item.variation.variationSpec
-                }
-                product={item}
-              />
-            ))}
-          </tbody>
-        </table>
-        <div className="flex justify-end mt-3">
-          <span>總金額：</span>
-          <span className="font-bold text-red-500">NT$ 200</span>
-        </div>
-      </section>
-      <div className="flex justify-end gap-3 mt-3">
-        <button type="button" className="btn" onClick={() => alert("繼續購物")}>
-          繼續購物
-        </button>
-        <button type="button" className="btn" onClick={() => alert("結帳畫面")}>
-          去結帳
-        </button>
-      </div>
+    <main className="mt-[110px] mx-48">
+      <CartTable items={items} exitFn={exitCart} removeItemFn={removeProduct} />
     </main>
   );
 }

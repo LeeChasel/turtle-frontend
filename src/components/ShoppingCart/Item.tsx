@@ -1,11 +1,16 @@
 import { BsFillTrash3Fill } from "react-icons/bs";
 import type { TShoppingCartDetail } from "../../types/ShoppingCart";
+import type { TOrderItem } from "../../types/Order";
+import { showToast } from "../../utils/toastAlert";
 
 type ShoppingCartItemProps = {
-  product: TShoppingCartDetail;
+  product: TShoppingCartDetail | TOrderItem;
+  removeItemFn: (
+    product: TShoppingCartDetail | TOrderItem,
+  ) => Promise<void> | void;
 };
 
-function ShoppingCartItem({ product }: ShoppingCartItemProps) {
+function ShoppingCartItem({ product, removeItemFn }: ShoppingCartItemProps) {
   const imageSrc =
     import.meta.env.VITE_TURTLE_BACKEND_IMAGE_URL +
     "/" +
@@ -14,6 +19,11 @@ function ShoppingCartItem({ product }: ShoppingCartItemProps) {
   const currentPrice = product.variation.currentPrice!;
   const quantity = product.quantity;
   const subtotal = currentPrice * quantity;
+
+  async function removeItem() {
+    await removeItemFn(product);
+    showToast("success", `刪除「${product.product.productName}」成功`);
+  }
 
   return (
     <tr>
@@ -45,7 +55,7 @@ function ShoppingCartItem({ product }: ShoppingCartItemProps) {
       <td>{quantity.toLocaleString()}</td>
       <td>NT$ {subtotal.toLocaleString()}</td>
       <td>
-        <button type="button">
+        <button type="button" onClick={removeItem}>
           <BsFillTrash3Fill />
         </button>
       </td>

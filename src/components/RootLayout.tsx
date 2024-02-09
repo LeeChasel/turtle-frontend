@@ -4,6 +4,7 @@ import { FaShoppingCart } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
 import useUserTokenCookie from "../hooks/useUserTokenCookie";
 import validateTokenRole from "../utils/validateTokenRole";
+import useAnonymousProductStore from "../store/useAnonymousProductStore";
 
 function RootLayout() {
   return (
@@ -41,33 +42,37 @@ function Header() {
 }
 
 function AnonymousHeader() {
+  const productId = useAnonymousProductStore((state) => state.productId);
   return (
     <header className="flex items-center justify-between w-full h-[100px] bg-gray-800 px-[260px]">
       <nav>
         <ul className="flex items-center">
           <li className="translate-y-1">
-            <img
-              src={
-                import.meta.env.VITE_TURTLE_FRONTEND_IMAGE_URL + "/Logo.webp"
-              }
-              alt="Logo image"
-              width={120}
-              height={81}
-              className="pointer-events-none"
-            />
+            <Link to={`/special/product/${productId}`}>
+              <img
+                src={
+                  import.meta.env.VITE_TURTLE_FRONTEND_IMAGE_URL + "/Logo.webp"
+                }
+                alt="Logo image"
+                width={120}
+                height={81}
+                className="pointer-events-none"
+              />
+            </Link>
           </li>
         </ul>
       </nav>
 
       <div className="flex items-center gap-7">
-        {/* <div className="flex justify-between gap-3"> */}
+        <Link to="/special/cart">
+          <FaShoppingCart className="w-10 h-10 text-sky-50" />
+        </Link>
         <Link
           to="#"
           className="text-2xl font-normal rounded-md text-sky-50 hover:bg-gray-700"
         >
           訂單查詢
         </Link>
-        {/* </div> */}
       </div>
     </header>
   );

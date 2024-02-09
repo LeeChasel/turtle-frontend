@@ -19,7 +19,7 @@ function UserNav() {
 function SideNavbar() {
   const navigate = useNavigate();
   const { tokenCookie, deleteUserTokenCookie } = useUserTokenCookie();
-  const isAdmin = validateTokenRole(tokenCookie!, "ROLE_ADMIN");
+  const isAdmin = validateTokenRole(tokenCookie, "ROLE_ADMIN");
 
   const logoutMutation = useMutation({
     mutationFn: logout,

@@ -1,7 +1,7 @@
-import { TShoppingCartBrief } from "./ShoppingCart";
+import { TShoppingCartDetail } from "./ShoppingCart";
 
 export type TOrder = {
   items: TOrderItem[];
 };
 
-export type TOrderItem = Omit<TShoppingCartBrief, "addedTime">;
+export type TOrderItem = Omit<TShoppingCartDetail, "addedTime">;

@@ -21,6 +21,12 @@ import UserNav from "./components/UserNav";
 import { showToast } from "./utils/toastAlert";
 import useUserTokenCookie from "./hooks/useUserTokenCookie";
 import validateTokenRole from "./utils/validateTokenRole";
+import OrderCart from "./pages/Anonymity/Cart";
+
+const specialRoutes: RouteObject[] = [
+  { path: "/special/product/:productId", Component: Product },
+  { path: "/special/cart", Component: OrderCart },
+];
 
 const routerData: RouteObject[] = [
   {
@@ -32,7 +38,7 @@ const routerData: RouteObject[] = [
       { path: "/products", Component: Products },
       { path: "/loginOrSignup", Component: LoginOrSignup },
       { path: "/newProducts", Component: NewProducts },
-      { path: "/special/:productId", Component: Product },
+      ...specialRoutes,
       {
         Component: AuthRoutes,
         children: [
