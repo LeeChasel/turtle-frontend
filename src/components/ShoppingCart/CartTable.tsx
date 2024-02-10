@@ -10,9 +10,15 @@ type CartTableProps = {
   removeItemFn: (
     item: TShoppingCartDetail | TOrderItem,
   ) => Promise<void> | void;
+  createOrderFn: () => void;
 };
 
-function CartTable({ items, exitFn, removeItemFn }: CartTableProps) {
+function CartTable({
+  items,
+  exitFn,
+  removeItemFn,
+  createOrderFn,
+}: CartTableProps) {
   const totalPrice = items.reduce(
     (acc, item) => acc + item.variation.currentPrice! * item.quantity,
     0,
@@ -80,7 +86,7 @@ function CartTable({ items, exitFn, removeItemFn }: CartTableProps) {
         <button type="button" className="btn" onClick={exitFn}>
           繼續購物
         </button>
-        <button type="button" className="btn" onClick={() => alert("結帳畫面")}>
+        <button type="button" className="btn" onClick={createOrderFn}>
           去結帳
         </button>
       </div>

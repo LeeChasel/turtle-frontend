@@ -41,9 +41,18 @@ function ShoppingCart() {
     });
   }
 
+  function createOrderFn() {
+    alert("create order");
+  }
+
   return (
     <main className="mt-[110px] mx-48">
-      <CartTable items={items} exitFn={exitCart} removeItemFn={removeProduct} />
+      <CartTable
+        items={items}
+        exitFn={exitCart}
+        removeItemFn={removeProduct}
+        createOrderFn={createOrderFn}
+      />
     </main>
   );
 }
