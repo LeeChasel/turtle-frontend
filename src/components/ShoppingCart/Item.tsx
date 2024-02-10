@@ -2,6 +2,7 @@ import { BsFillTrash3Fill } from "react-icons/bs";
 import type { TShoppingCartDetail } from "../../types/ShoppingCart";
 import type { TOrderItem } from "../../types/Order";
 import { showToast } from "../../utils/toastAlert";
+import useSelectedCartItemStore from "../../store/useSelectedCartItemStore";
 
 type ShoppingCartItemProps = {
   product: TShoppingCartDetail | TOrderItem;
@@ -20,8 +21,32 @@ function ShoppingCartItem({ product, removeItemFn }: ShoppingCartItemProps) {
   const quantity = product.quantity;
   const subtotal = currentPrice * quantity;
 
+  const {
+    selectedProducts,
+    increaseSelectedProducts,
+    decreaseSelectedProducts,
+  } = useSelectedCartItemStore();
+  const isChecked = !!selectedProducts.find(
+    (selectedProduct) =>
+      product.product.productId === selectedProduct.product.productId &&
+      product.variation.variationName ===
+        selectedProduct.variation.variationName &&
+      product.variation.variationSpec ===
+        selectedProduct.variation.variationSpec,
+  );
+
+  function toggleCheckbox(e: React.ChangeEvent<HTMLInputElement>) {
+    const checkboxState = e.target.checked;
+    if (checkboxState) {
+      increaseSelectedProducts(product);
+    } else {
+      decreaseSelectedProducts(product);
+    }
+  }
+
   async function removeItem() {
     await removeItemFn(product);
+    decreaseSelectedProducts(product);
     showToast("success", `刪除「${product.product.productName}」成功`);
   }
 
@@ -29,7 +54,12 @@ function ShoppingCartItem({ product, removeItemFn }: ShoppingCartItemProps) {
     <tr>
       <th>
         <label>
-          <input type="checkbox" className="checkbox" />
+          <input
+            type="checkbox"
+            className="checkbox"
+            checked={isChecked}
+            onChange={toggleCheckbox}
+          />
         </label>
       </th>
       <td>

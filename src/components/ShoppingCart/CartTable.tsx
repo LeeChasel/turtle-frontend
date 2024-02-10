@@ -1,9 +1,11 @@
 import { TOrderItem } from "../../types/Order";
 import { TShoppingCartDetail } from "../../types/ShoppingCart";
 import ShoppingCartItem from "./Item";
+import useSelectedCartItemStore from "../../store/useSelectedCartItemStore";
+import { isEqual } from "lodash";
 
 type CartTableProps = {
-  items?: TShoppingCartDetail[] | TOrderItem[];
+  items: TShoppingCartDetail[] | TOrderItem[];
   exitFn: () => void;
   removeItemFn: (
     item: TShoppingCartDetail | TOrderItem,
@@ -11,6 +13,24 @@ type CartTableProps = {
 };
 
 function CartTable({ items, exitFn, removeItemFn }: CartTableProps) {
+  const totalPrice = items.reduce(
+    (acc, item) => acc + item.variation.currentPrice! * item.quantity,
+    0,
+  );
+
+  const { selectedProducts, increaseMultipleSelectedProducts } =
+    useSelectedCartItemStore();
+  const isChecked =
+    isEqual(items, selectedProducts) && selectedProducts.length > 0;
+
+  function toggleCheckAll(e: React.ChangeEvent<HTMLInputElement>) {
+    const checkboxState = e.target.checked;
+    if (checkboxState) {
+      increaseMultipleSelectedProducts(items);
+    } else {
+      increaseMultipleSelectedProducts([]);
+    }
+  }
   return (
     <div className="p-5 overflow-x-auto border-2 border-gray-800 bg-stone-50">
       <table className="table">
@@ -18,7 +38,12 @@ function CartTable({ items, exitFn, removeItemFn }: CartTableProps) {
           <tr>
             <th>
               <label>
-                <input type="checkbox" className="checkbox" />
+                <input
+                  type="checkbox"
+                  className="checkbox"
+                  checked={isChecked}
+                  onChange={toggleCheckAll}
+                />
               </label>
             </th>
             <th className="w-[25%]">商品名稱</th>
@@ -32,7 +57,7 @@ function CartTable({ items, exitFn, removeItemFn }: CartTableProps) {
           </tr>
         </thead>
         <tbody>
-          {items?.map((item) => (
+          {items.map((item) => (
             <ShoppingCartItem
               key={
                 item.variation.variationName +
@@ -47,7 +72,9 @@ function CartTable({ items, exitFn, removeItemFn }: CartTableProps) {
       </table>
       <div className="flex justify-end mt-3">
         <span>總金額：</span>
-        <span className="font-bold text-red-500">NT$ 200</span>
+        <span className="font-bold text-red-500">
+          NT$ {totalPrice.toLocaleString()}
+        </span>
       </div>
       <div className="flex justify-end gap-3 mt-3">
         <button type="button" className="btn" onClick={exitFn}>

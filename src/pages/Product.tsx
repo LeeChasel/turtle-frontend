@@ -39,7 +39,7 @@ function Product() {
         if (error instanceof Error) console.error(error.message);
       }
     }
-    void processAnonymousLogin();
+    if (productId) void processAnonymousLogin();
     // Do not add dependency
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

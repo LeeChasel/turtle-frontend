@@ -5,7 +5,7 @@ export function ToastProvider() {
   return (
     <ToastContainer
       position="top-center"
-      autoClose={1500}
+      autoClose={1750}
       pauseOnFocusLoss={false}
     />
   );
