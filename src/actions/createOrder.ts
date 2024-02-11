@@ -1,9 +1,10 @@
 import { TOrderRequest } from "../types/Order";
 
-export async function createOrder(order: TOrderRequest) {
+export async function createOrder(order: TOrderRequest, token: string) {
   const URL = import.meta.env.VITE_TURTLE_AUTH_URL + "/order";
   const res = await fetch(URL, {
     headers: {
+      Authorization: "Bearer " + token,
       "Content-Type": "application/json",
     },
     method: "POST",
@@ -21,6 +22,7 @@ export async function createOrder(order: TOrderRequest) {
 export async function createOrderForAnonymity(
   order: TOrderRequest,
   userEmail: string,
+  token: string,
 ) {
   const URL =
     import.meta.env.VITE_TURTLE_AUTH_URL +
@@ -28,6 +30,7 @@ export async function createOrderForAnonymity(
 
   const res = await fetch(URL, {
     headers: {
+      Authorization: "Bearer " + token,
       "Content-Type": "application/json",
     },
     method: "POST",

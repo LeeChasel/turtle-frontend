@@ -3,6 +3,7 @@ import { TShoppingCartDetail } from "../../types/ShoppingCart";
 import ShoppingCartItem from "./Item";
 import useSelectedCartItemStore from "../../store/useSelectedCartItemStore";
 import { isEqual } from "lodash";
+import { useEffect } from "react";
 
 type CartTableProps = {
   items: TShoppingCartDetail[] | TOrderItem[];
@@ -11,6 +12,7 @@ type CartTableProps = {
     item: TShoppingCartDetail | TOrderItem,
   ) => Promise<void> | void;
   createOrderFn: () => void;
+  isLoading?: boolean;
 };
 
 function CartTable({
@@ -18,14 +20,23 @@ function CartTable({
   exitFn,
   removeItemFn,
   createOrderFn,
+  isLoading,
 }: CartTableProps) {
-  const totalPrice = items.reduce(
+  const {
+    selectedProducts,
+    increaseMultipleSelectedProducts,
+    decreaseMultipleSelectedProducts,
+  } = useSelectedCartItemStore();
+
+  useEffect(() => {
+    // clear selected products when leave the page
+    return () => decreaseMultipleSelectedProducts(items);
+  }, [items]);
+
+  const totalPrice = selectedProducts.reduce(
     (acc, item) => acc + item.variation.currentPrice! * item.quantity,
     0,
   );
-
-  const { selectedProducts, increaseMultipleSelectedProducts } =
-    useSelectedCartItemStore();
   const isChecked =
     isEqual(items, selectedProducts) && selectedProducts.length > 0;
 
@@ -86,7 +97,12 @@ function CartTable({
         <button type="button" className="btn" onClick={exitFn}>
           繼續購物
         </button>
-        <button type="button" className="btn" onClick={createOrderFn}>
+        <button
+          type="button"
+          className="btn"
+          onClick={createOrderFn}
+          disabled={isLoading}
+        >
           去結帳
         </button>
       </div>

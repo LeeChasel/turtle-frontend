@@ -1,20 +1,23 @@
-// import { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useShoppingCart from "../hooks/useShoppingCart";
 import CartTable from "../components/ShoppingCart/CartTable";
 import { TShoppingCartBrief, TShoppingCartDetail } from "../types/ShoppingCart";
-import { TOrderItem } from "../types/Order";
+import { TOrderItem, TOrderRequestItem } from "../types/Order";
 import updateShoppingCart from "../actions/updateShoppingCart";
 import useUserTokenCookie from "../hooks/useUserTokenCookie";
 import { useQueryClient } from "@tanstack/react-query";
-
-// import { TOrderItem } from "../types/Order";
+import useSelectedCartItemStore from "../store/useSelectedCartItemStore";
+import { showToast } from "../utils/toastAlert";
+import { createOrder } from "../actions/createOrder";
 
 function ShoppingCart() {
-  // const [selectedItems, setSelectedItems] = useState<TOrderItem[]>([]);
   const navigate = useNavigate();
   const { tokenCookie } = useUserTokenCookie();
   const queryClient = useQueryClient();
+  const { selectedProducts, decreaseMultipleSelectedProducts } =
+    useSelectedCartItemStore();
+  const [isLoading, setIsLoading] = useState(false);
 
   const { data: items, error, status } = useShoppingCart();
   if (status === "pending") {
@@ -41,8 +44,62 @@ function ShoppingCart() {
     });
   }
 
-  function createOrderFn() {
-    alert("create order");
+  async function createOrderFn() {
+    if (selectedProducts.length === 0) {
+      showToast("info", "請選擇商品");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+
+      const orderItems: TOrderRequestItem[] = [];
+      selectedProducts.forEach((product) => {
+        orderItems.push({
+          productId: product.product.productId!,
+          quantity: product.quantity,
+          variationName: product.variation.variationName,
+          variationSpec: product.variation.variationSpec,
+        });
+      });
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const orderJsonData = await createOrder(
+        { items: orderItems },
+        tokenCookie!,
+      );
+
+      // clear cart
+      const delectedShoppingCartItems: TShoppingCartBrief[] = [];
+      selectedProducts.forEach((product) => {
+        delectedShoppingCartItems.push({
+          productId: product.product.productId!,
+          variationName: product.variation.variationName,
+          variationSpec: product.variation.variationSpec,
+          quantity: product.quantity * -1,
+          addedTime: new Date().toISOString(),
+        });
+      });
+
+      await updateShoppingCart(delectedShoppingCartItems, tokenCookie!);
+      await queryClient.invalidateQueries({
+        queryKey: ["shoppingCart", tokenCookie],
+      });
+      decreaseMultipleSelectedProducts(selectedProducts);
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      showToast("success", `訂單編號：「${orderJsonData.orderId}」建立成功`, {
+        autoClose: false,
+        closeOnClick: false,
+        draggable: false,
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        showToast("error", error.message);
+      }
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -52,6 +109,7 @@ function ShoppingCart() {
         exitFn={exitCart}
         removeItemFn={removeProduct}
         createOrderFn={createOrderFn}
+        isLoading={isLoading}
       />
     </main>
   );

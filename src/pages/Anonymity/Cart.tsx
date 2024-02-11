@@ -1,20 +1,25 @@
 import { useNavigate } from "react-router-dom";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import CartTable from "../../components/ShoppingCart/CartTable";
 import useAnonymousProductStore from "../../store/useAnonymousProductStore";
 import useBeOrderedProductsStore from "../../store/useBeOrderedProductsStore";
 import { showToast } from "../../utils/toastAlert";
 import useSelectedCartItemStore from "../../store/useSelectedCartItemStore";
+import { z } from "zod";
+import { createOrderForAnonymity } from "../../actions/createOrder";
+import { TOrderRequestItem } from "../../types/Order";
+import useUserTokenCookie from "../../hooks/useUserTokenCookie";
+import login from "../../actions/login";
+import { anonymousUser } from "../../utils/anonymity";
 
 function OrderCart() {
-  const items = useBeOrderedProductsStore((state) => state.products);
-  const removeProduct = useBeOrderedProductsStore(
-    (state) => state.removeProduct,
-  );
+  const [isLoading, setIsLoading] = useState(false);
+  const { products, removeProduct, removeMultipleProducts } =
+    useBeOrderedProductsStore();
   const productId = useAnonymousProductStore((state) => state.productId);
-  const selectedProducts = useSelectedCartItemStore(
-    (state) => state.selectedProducts,
-  );
+  const { selectedProducts, decreaseMultipleSelectedProducts } =
+    useSelectedCartItemStore();
+  const { tokenCookie, setUserTokenCookie } = useUserTokenCookie();
   const navigate = useNavigate();
 
   function exitCart() {
@@ -32,33 +37,64 @@ function OrderCart() {
     modalRef.current?.showModal();
   }
 
-  function createOrder() {
-    const userEmail = userEmailRef.current?.value;
-
-    // TODO: add validate logic, maybe RHF
-    if (!userEmail) {
-      showToast("error", "請輸入電子郵件");
-      return;
+  async function createOrder() {
+    // for unexpected situation
+    if (!tokenCookie) {
+      const jwt = await login(anonymousUser);
+      setUserTokenCookie(jwt);
     }
 
-    // create a object can use as the first params of createOrderForAnonymity
+    try {
+      // validate email
+      const userEmail = z
+        .string()
+        .email()
+        .parse(userEmailRef.current?.value);
 
-    const orderItems = selectedProducts.map((product) => {
-      return {
-        productId: product.product.productId!,
-        quantity: product.quantity,
-        variationName: product.variation.variationName,
-        variationSpec: product.variation.variationSpec,
-      };
-    });
+      setIsLoading(true);
 
-    // TODO: send orderItems to backend
+      const orderItems: TOrderRequestItem[] = [];
+      selectedProducts.forEach((product) => {
+        orderItems.push({
+          productId: product.product.productId!,
+          quantity: product.quantity,
+          variationName: product.variation.variationName,
+          variationSpec: product.variation.variationSpec,
+        });
+      });
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const orderJsonData = await createOrderForAnonymity(
+        { items: orderItems },
+        userEmail,
+        tokenCookie!,
+      );
+
+      // clear cart
+      removeMultipleProducts(selectedProducts);
+      decreaseMultipleSelectedProducts(selectedProducts);
+      modalRef.current?.close();
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      showToast("success", `訂單編號：「${orderJsonData.orderId}」建立成功`, {
+        autoClose: false,
+        closeOnClick: false,
+        draggable: false,
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        showToast("error", "請輸入正確的電子郵件");
+      } else if (error instanceof Error) {
+        showToast("error", error.message);
+      }
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
     <main className="mt-[110px] mx-48">
       <CartTable
-        items={items.items}
+        items={products.items}
         exitFn={exitCart}
         removeItemFn={removeProduct}
         createOrderFn={openDialog}
@@ -73,13 +109,18 @@ function OrderCart() {
             type="email"
             placeholder="xxxx@gmail.com"
             className="w-full h-8 indent-2 rounded-l-md"
+            min={1}
             ref={userEmailRef}
           />
           <div className="modal-action">
             <form method="dialog" className="flex gap-3">
-              {/* if there is a button in form, it will close the modal */}
               <button className="btn">取消</button>
-              <button className="btn" type="button" onClick={createOrder}>
+              <button
+                className="btn"
+                type="button"
+                onClick={createOrder}
+                disabled={isLoading}
+              >
                 送出訂單
               </button>
             </form>

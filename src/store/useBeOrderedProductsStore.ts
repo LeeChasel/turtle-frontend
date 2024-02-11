@@ -7,6 +7,7 @@ type BeOrderedProducts = {
   products: TOrder;
   increaseProduct: (product: TOrderItem) => void;
   removeProduct: (product: TOrderItem) => void;
+  removeMultipleProducts: (products: TOrderItem[]) => void;
 };
 
 const useBeOrderedProductsStore = create<BeOrderedProducts>()(
@@ -74,6 +75,34 @@ const useBeOrderedProductsStore = create<BeOrderedProducts>()(
             },
           };
         }),
+      removeMultipleProducts: (products) => {
+        set((state) => {
+          products.forEach((product) => {
+            remove(
+              state.products.items,
+              (orderProduct) =>
+                isEqual(
+                  product.product.productId,
+                  orderProduct.product.productId,
+                ) &&
+                isEqual(
+                  product.variation.variationName,
+                  orderProduct.variation.variationName,
+                ) &&
+                isEqual(
+                  product.variation.variationSpec,
+                  orderProduct.variation.variationSpec,
+                ),
+            );
+          });
+
+          return {
+            products: {
+              items: state.products.items,
+            },
+          };
+        });
+      },
     }),
     {
       name: "be-ordered-products",

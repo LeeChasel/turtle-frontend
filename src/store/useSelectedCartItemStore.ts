@@ -11,6 +11,9 @@ type SelectedCartItemStore = {
   increaseMultipleSelectedProducts: (
     products: TShoppingCartDetail[] | TOrderItem[],
   ) => void;
+  decreaseMultipleSelectedProducts: (
+    products: TShoppingCartDetail[] | TOrderItem[],
+  ) => void;
 };
 
 const useSelectedCartItemStore = create<SelectedCartItemStore>()(
@@ -53,6 +56,25 @@ const useSelectedCartItemStore = create<SelectedCartItemStore>()(
         }),
       increaseMultipleSelectedProducts: (products) =>
         set({ selectedProducts: products }),
+      decreaseMultipleSelectedProducts: (products) => {
+        set((state) => {
+          products.forEach((product) => {
+            remove(
+              state.selectedProducts,
+              (selectedProduct) =>
+                product.product.productId ===
+                  selectedProduct.product.productId &&
+                product.variation.variationName ===
+                  selectedProduct.variation.variationName &&
+                product.variation.variationSpec ===
+                  selectedProduct.variation.variationSpec,
+            );
+          });
+          return {
+            selectedProducts: state.selectedProducts,
+          };
+        });
+      },
     }),
     {
       name: "selected-cart-items",

@@ -1,4 +1,4 @@
-import { TShoppingCartDetail } from "./ShoppingCart";
+import { TShoppingCartDetail, TShoppingCartBrief } from "./ShoppingCart";
 
 export type TOrder = {
   items: TOrderItem[];
@@ -6,13 +6,8 @@ export type TOrder = {
 
 export type TOrderItem = Omit<TShoppingCartDetail, "addedTime">;
 
+export type TOrderRequestItem = Omit<TShoppingCartBrief, "addedTime">;
+
 export type TOrderRequest = {
-  items: [
-    {
-      productId: string;
-      quantity: number;
-      variationName: string;
-      variationSpec: string;
-    },
-  ];
+  items: TOrderRequestItem[];
 };
