@@ -5,6 +5,8 @@ import { IoSearch } from "react-icons/io5";
 import useUserTokenCookie from "../hooks/useUserTokenCookie";
 import validateTokenRole from "../utils/validateTokenRole";
 import useAnonymousProductStore from "../store/useAnonymousProductStore";
+import login from "../actions/login";
+import { anonymousUser } from "../utils/anonymity";
 
 function RootLayout() {
   return (
@@ -17,24 +19,39 @@ function RootLayout() {
 }
 
 function Header() {
+  // TODO: implement the logic to determine if the user is a special role
   const location = useLocation();
-  const { tokenCookie, deleteUserTokenCookie } = useUserTokenCookie();
+  const { tokenCookie, deleteUserTokenCookie, setUserTokenCookie } =
+    useUserTokenCookie();
+  const isSpecialRole = validateTokenRole(
+    tokenCookie,
+    "ROLE_ANONYMITY_CUSTOMER",
+  );
   const isSpecialRoute = location.pathname.startsWith("/special");
+  const isOrderInfoRoute = location.pathname.startsWith("/checkorder");
 
+  // from special route to normal route will delete token cookie
   useEffect(() => {
-    if (
-      !isSpecialRoute &&
-      tokenCookie &&
-      validateTokenRole(tokenCookie, "ROLE_ANONYMITY_CUSTOMER")
-    ) {
+    if (!isSpecialRoute && tokenCookie && isSpecialRole && !isOrderInfoRoute) {
       deleteUserTokenCookie();
     }
-  }, [isSpecialRoute, tokenCookie]);
+  }, [isSpecialRoute, tokenCookie, isOrderInfoRoute]);
 
-  if (
-    isSpecialRoute ||
-    validateTokenRole(tokenCookie, "ROLE_ANONYMITY_CUSTOMER")
-  ) {
+  useEffect(() => {
+    async function processAnonymousLogin() {
+      try {
+        const jwt = await login(anonymousUser, "匿名登入帳密錯誤");
+        setUserTokenCookie(jwt);
+      } catch (error) {
+        if (error instanceof Error) console.error(error.message);
+      }
+    }
+    if (!isSpecialRole && (isSpecialRoute || isOrderInfoRoute))
+      void processAnonymousLogin();
+    // Do not add dependency
+  }, [isSpecialRole, isSpecialRoute, isOrderInfoRoute]);
+
+  if (isSpecialRoute || isSpecialRole) {
     return <AnonymousHeader />;
   }
 
@@ -68,7 +85,7 @@ function AnonymousHeader() {
           <FaShoppingCart className="w-10 h-10 text-sky-50" />
         </Link>
         <Link
-          to="#"
+          to="/special/orderSearch"
           className="text-2xl font-normal rounded-md text-sky-50 hover:bg-gray-700"
         >
           訂單查詢
@@ -125,7 +142,7 @@ function RegisteredHeader() {
           <div className="flex justify-between gap-3">
             <UserStatusLink />
             <Link
-              to="#"
+              to="/orderSearch"
               className="text-2xl font-normal rounded-md text-sky-50 hover:bg-gray-700"
             >
               訂單查詢
