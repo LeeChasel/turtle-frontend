@@ -1,6 +1,6 @@
 const URL = import.meta.env.VITE_TURTLE_AUTH_URL + "/order";
 
-export type ProductInfo = {
+export type orderInfo = {
   orderId: string;
   userId: string;
   userEmail: string;
@@ -108,7 +108,7 @@ export type ProductInfo = {
     CustomField3: string;
     CustomField4: string;
   };
-  discount: {};
+  discount: object;
 };
 async function getOrder(token: string, orderID: string) {
   const res = await fetch(URL + "/" + orderID, {
@@ -123,7 +123,7 @@ async function getOrder(token: string, orderID: string) {
     throw new Error("查詢訂單錯誤");
   }
 
-  return res.json() as Promise<ProductInfo>;
+  return res.json() as Promise<orderInfo>;
 }
 
 export default getOrder;
