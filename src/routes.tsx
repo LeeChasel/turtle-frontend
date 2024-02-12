@@ -22,10 +22,12 @@ import { showToast } from "./utils/toastAlert";
 import useUserTokenCookie from "./hooks/useUserTokenCookie";
 import validateTokenRole from "./utils/validateTokenRole";
 import OrderCart from "./pages/Anonymity/Cart";
+import OrderSearch from "./pages/OrderSearch";
 
 const specialRoutes: RouteObject[] = [
   { path: "/special/product/:productId", Component: Product },
   { path: "/special/cart", Component: OrderCart },
+  { path: "/special/orderSearch", Component: OrderSearch },
 ];
 
 const routerData: RouteObject[] = [
@@ -38,6 +40,7 @@ const routerData: RouteObject[] = [
       { path: "/products", Component: Products },
       { path: "/loginOrSignup", Component: LoginOrSignup },
       { path: "/newProducts", Component: NewProducts },
+      { path: "/orderSearch", Component: OrderSearch },
       ...specialRoutes,
       {
         Component: AuthRoutes,
