@@ -8,7 +8,7 @@ function OrderSearch() {
   const isSpecialRoute = useLocation().pathname.startsWith("/special");
   const orderIdRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
-  const orderIdSchema = z.string().min(1, { message: "請輸入訂單編號" });
+  const orderIdSchema = z.string().trim().min(1, { message: "請輸入訂單編號" });
   const emailSchema = z.string().email({ message: "電子郵件格式錯誤" });
 
   function handleSubmit() {
@@ -36,20 +36,26 @@ function OrderSearch() {
     <div className="flex justify-center pt-10">
       <div className="flex flex-col justify-center w-1/3 gap-5 p-10 bg-gray-200">
         <div className="flex items-center gap-3">
-          <label>訂單編號</label>
+          <label className="whitespace-nowrap" htmlFor="orderId">
+            訂單編號
+          </label>
           <input
             type="text"
-            className="w-full max-w-xs input"
+            className="w-full input"
             ref={orderIdRef}
+            id="orderId"
           />
         </div>
         {isSpecialRoute && (
           <div className="flex items-center gap-3">
-            <label>訂購人電子郵件</label>
+            <label className="whitespace-nowrap" htmlFor="email">
+              電子郵件
+            </label>
             <input
               type="email"
-              className="w-full max-w-xs input"
+              className="w-full input"
               ref={emailRef}
+              id="email"
             />
           </div>
         )}
