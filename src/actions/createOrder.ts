@@ -1,4 +1,4 @@
-import { TOrderRequest } from "../types/Order";
+import { OrderResponse, TOrderRequest } from "../types/Order";
 
 export async function createOrder(order: TOrderRequest, token: string) {
   const URL = import.meta.env.VITE_TURTLE_AUTH_URL + "/order";
@@ -15,8 +15,7 @@ export async function createOrder(order: TOrderRequest, token: string) {
     throw new Error("建立訂單失敗");
   }
 
-  // TODO: set type for response
-  return res.json();
+  return res.json() as Promise<OrderResponse>;
 }
 
 export async function createOrderForAnonymity(
@@ -41,6 +40,5 @@ export async function createOrderForAnonymity(
     throw new Error("建立匿名訂單失敗");
   }
 
-  // TODO: set type for response
-  return res.json();
+  return res.json() as Promise<OrderResponse>;
 }

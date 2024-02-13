@@ -63,8 +63,7 @@ function OrderCart() {
         });
       });
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const orderJsonData = await createOrderForAnonymity(
+      const orderResponse = await createOrderForAnonymity(
         { items: orderItems },
         userEmail,
         tokenCookie!,
@@ -74,8 +73,8 @@ function OrderCart() {
       removeMultipleProducts(selectedProducts);
       decreaseMultipleSelectedProducts(selectedProducts);
       modalRef.current?.close();
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      showToast("success", `訂單編號：「${orderJsonData.orderId}」建立成功`, {
+
+      showToast("success", `訂單編號：「${orderResponse.orderId}」建立成功`, {
         autoClose: false,
         closeOnClick: false,
         draggable: false,

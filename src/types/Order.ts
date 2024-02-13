@@ -22,6 +22,11 @@ export type OrderResponse = {
   description: string;
   item: OrderResponseItem[];
   cvsMap?: CvsMap;
+  shippingInfo: ShippingInfo;
+  logisticsOrderStatus: LogisticsOrderStatus[];
+  aioCheckOutReturn: AioCheckOutReturn;
+  aioCheckOutPaymentInfo: AioCheckOutPaymentInfo;
+  discount: object;
 };
 
 export type OrderResponseItem = {
@@ -57,11 +62,80 @@ export type ShippingInfo = {
   logisticsType: LogisticsType;
   logisticsSubType: LogisticsSubType;
   senderName: string;
-  /**
-   * pattern: ^09\d{8}$
-   */
   senderCellPhone: string;
   senderZipCode: string;
+  senderAddress: string;
+  receiverName: string;
+  receiverCellPhone: string;
+  receiverZipCode: string;
+  receiverAddress: string;
+  goodsWeight: number;
+  receiverEmail: string;
+  payOnDelivery: boolean;
+};
+
+export type LogisticsOrderStatus = {
+  merchantID: string;
+  merchantTradeNo: string;
+  rtnCode: number;
+  rtnMsg: string;
+  allPayLogisticsID: string;
+  logisticsType: string;
+  logisticsSubType: string;
+  goodsAmount: number;
+  updateStatusDate: string;
+  receiverName: string;
+  receiverPhone: string;
+  receiverCellPhone: string;
+  receiverEmail: string;
+  receiverAddress: string;
+  bookingNote: string;
+  cvspaymentNo: string;
+  cvsvalidationNo: string;
+};
+
+type AioCheckOutReturn = {
+  MerchantID: string;
+  MerchantTradeNo: string;
+  StoreID: string;
+  RtnCode: number;
+  RtnMsg: string;
+  TradeNo: string;
+  TradeAmt: number;
+  PaymentDate: string;
+  PaymentType: string;
+  PaymentTypeChargeFee: number;
+  TradeDate: string;
+  SimulatePaid: number;
+  CheckMacValue: string;
+  CustomField1: string;
+  CustomField2: string;
+  CustomField3: string;
+  CustomField4: string;
+};
+
+type AioCheckOutPaymentInfo = {
+  MerchantID: string;
+  MerchantTradeNo: string;
+  StoreID: string;
+  RtnCode: number;
+  RtnMsg: string;
+  TradeNo: string;
+  TradeAmt: number;
+  PaymentType: string;
+  TradeDate: string;
+  CheckMacValue: string;
+  BankCode: string;
+  vAccount: string;
+  ExpireDate: string;
+  PaymentNo: string;
+  Barcode1: string;
+  Barcode2: string;
+  Barcode3: string;
+  CustomField1: string;
+  CustomField2: string;
+  CustomField3: string;
+  CustomField4: string;
 };
 
 enum LogisticsType {
