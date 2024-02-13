@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { TOrder, TOrderItem } from "../types/Order";
-import { isEqual, omit, remove } from "lodash";
+import { isEqual, remove } from "lodash";
 
 type BeOrderedProducts = {
   products: TOrder;
@@ -28,25 +28,30 @@ const useBeOrderedProductsStore = create<BeOrderedProducts>()(
             };
           }
 
-          // If the product is not in the list, add it to the list
-          const resultProducts: TOrderItem[] = [];
-          state.products.items.forEach((orderProduct) => {
-            if (
-              isEqual(omit(orderProduct, "quantity"), omit(product, "quantity"))
-            ) {
-              resultProducts.push({
-                ...orderProduct,
-                quantity: orderProduct.quantity + product.quantity,
-              });
-            } else {
-              resultProducts.push(product);
-            }
-          });
-          return {
-            products: {
-              items: resultProducts,
-            },
-          };
+          // for the second and more products
+          const index = state.products.items.findIndex(
+            (item) =>
+              isEqual(item.product.productId, product.product.productId) &&
+              isEqual(
+                item.variation.variationName,
+                product.variation.variationName,
+              ) &&
+              isEqual(
+                item.variation.variationSpec,
+                product.variation.variationSpec,
+              ),
+          );
+
+          if (index === -1) {
+            return {
+              products: {
+                items: [...state.products.items, product],
+              },
+            };
+          } else {
+            state.products.items[index].quantity += product.quantity;
+            return state;
+          }
         }),
 
       removeProduct: (product) =>
