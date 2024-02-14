@@ -1,37 +1,53 @@
+import { useSearchParams } from "react-router-dom";
+import useUserTokenCookie from "../hooks/useUserTokenCookie";
+import validateTokenRole from "../utils/validateTokenRole";
+import useOrderChecking from "../hooks/useAnonymityOrderChecking";
+
 function CheckOrder() {
-  const ProductTable = ({ products }) => (
-    <table className="product-table">
-      <thead>
-        <tr>
-          <th>Product Name</th>
-          <th>Price</th>
-          <th>Quantity</th>
-          <th>Sold Quantity</th>
-        </tr>
-      </thead>
-      <tbody>
-        {products.map((product) => (
-          <tr key={product.id}>
-            <td>{product.name}</td>
-            <td>${product.price}</td>
-            <td>{product.quantity}</td>
-            <td>{product.soldQuantity}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
-  return (
-    <div>
-      訂購人資訊:
-      <div>訂購人:</div>
-      <div>電子郵件:</div>
-      <div>訂購日期:</div>
-      <div>訂單狀態:</div>
-      <div>訂購商品:</div>
-      <ProductTable products={products} />
-    </div>
-  );
+  const [searchParams] = useSearchParams();
+  const { tokenCookie } = useUserTokenCookie();
+  const orderID = searchParams.get("orderID");
+  const email = searchParams.get("email");
+  const { data: orderInfo, status, error } = useOrderChecking(orderID!, email!);
+
+  if (status === "pending") {
+    return <></>;
+  } else if (status === "error") {
+    return <div>Error happened: {error.message}</div>;
+  }
+
+  if (!validateTokenRole(tokenCookie!, "ROLE_ANONYMITY_CUSTOMER")) {
+    return <>無資料</>;
+  } else {
+    return (
+      <>
+        <div>
+          訂購人資訊:
+          <div>訂購人:{orderInfo?.userId}</div>
+          <div>電子郵件:</div>
+          <div>訂購日期:</div>
+          <div>訂單狀態:</div>
+          <div>訂購商品:</div>
+          <table>
+            <thead>
+              <tr>
+                <th>商品名稱</th>
+                <th>價格</th>
+                <th>數量</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td></td>
+                <td>$</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </>
+    );
+  }
 }
 
 export default CheckOrder;

@@ -1,11 +1,9 @@
-const URL = import.meta.env.VITE_TURTLE_AUTH_URL + "/order";
-
 export type orderInfo = {
   orderId: string;
   userId: string;
   userEmail: string;
   orderDate: string;
-  orderStatus: "SHIPPED"; //確認狀態類別
+  orderStatus: "SHIPPED" | "ORDERED" | "PAID";
   totalPrice: number;
   description: string;
   item: [
@@ -110,20 +108,3 @@ export type orderInfo = {
   };
   discount: object;
 };
-async function getOrder(token: string, orderID: string) {
-  const res = await fetch(URL + "/" + orderID, {
-    headers: {
-      Authorization: "Bearer " + token,
-      "Content-Type": "application/json",
-    },
-    method: "GET",
-  });
-
-  if (!res.ok) {
-    throw new Error("查詢訂單錯誤");
-  }
-
-  return res.json() as Promise<orderInfo>;
-}
-
-export default getOrder;
