@@ -2,6 +2,11 @@
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
+    // design breakpoints order: mobile => tablet(768) => laptop(1024)
+    screens: {
+      md: "768px", // tablet
+      lg: "1024px", // laptop
+    },
     extend: {},
   },
   daisyui: {
