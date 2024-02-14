@@ -6,10 +6,10 @@ async function getAnonymityOrder(
   orderID: string,
   email: string,
 ) {
-  const res = await fetch(URL + "/" + orderID + "?" + email, {
+  const res = await fetch(URL + "/" + orderID + "?userEmail=" + email, {
     headers: {
-      Authorization: "Bearer " + token,
       "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
     },
     method: "GET",
   });
