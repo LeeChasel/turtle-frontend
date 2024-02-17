@@ -21,6 +21,10 @@ function OrderCart() {
     useSelectedCartItemStore();
   const { tokenCookie, setUserTokenCookie } = useUserTokenCookie();
   const navigate = useNavigate();
+  const defaultUserEmail = useAnonymousProductStore((state) => state.userEmail);
+  const updateUserEmail = useAnonymousProductStore(
+    (state) => state.updateUserEmail,
+  );
 
   function exitCart() {
     navigate(`/special/product/${productId}`);
@@ -34,6 +38,7 @@ function OrderCart() {
       showToast("info", "請選擇商品");
       return;
     }
+    userEmailRef.current!.value = defaultUserEmail;
     modalRef.current?.showModal();
   }
 
@@ -52,6 +57,7 @@ function OrderCart() {
         .parse(userEmailRef.current?.value);
 
       setIsLoading(true);
+      updateUserEmail(userEmail);
 
       const orderItems: TOrderRequestItem[] = [];
       selectedProducts.forEach((product) => {
