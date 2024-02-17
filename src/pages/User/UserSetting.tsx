@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { showToast } from "../../utils/toastAlert";
 import updateUserInfo from "../../actions/updateUserInfo";
 import { useNavigate } from "react-router-dom";
-import { TUpdateInfo } from "../../types/User";
+import { Gender, TUpdateInfo } from "../../types/User";
 import useUserTokenCookie from "../../hooks/useUserTokenCookie";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -15,7 +15,7 @@ function UserSetting() {
   const { tokenCookie } = useUserTokenCookie();
   const navigate = useNavigate();
   const [isSending, setIsSending] = useState(false);
-  const [gender, setGender] = useState<"MALE" | "FEMALE" | "UNKNOW">();
+  const [gender, setGender] = useState<Gender>();
   const queryClient = useQueryClient();
 
   if (status === "pending") {
@@ -59,8 +59,8 @@ function UserSetting() {
   }
 
   function onChangeGender(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e.target.value;
-    if (value === "MALE" || value === "FEMALE" || value === "UNKNOW") {
+    const value = e.target.value as Gender;
+    if (Object.values(Gender).includes(value)) {
       setGender(value);
     }
   }
@@ -131,8 +131,8 @@ function UserSetting() {
                     name="radio-10"
                     className="radio"
                     id="MALE"
-                    value="MALE"
-                    defaultChecked={userinfo.gender === "MALE"}
+                    value={"SSS"}
+                    defaultChecked={userinfo.gender === Gender.MALE}
                     onChange={onChangeGender}
                   />
                   <label className="label-text" htmlFor="MALE">
@@ -143,8 +143,8 @@ function UserSetting() {
                     name="radio-10"
                     className="radio"
                     id="FEMALE"
-                    value="FEMALE"
-                    defaultChecked={userinfo.gender === "FEMALE"}
+                    value={Gender.FEMALE}
+                    defaultChecked={userinfo.gender === Gender.FEMALE}
                     onChange={onChangeGender}
                   />
                   <label className="label-text" htmlFor="FEMALE">
@@ -155,8 +155,8 @@ function UserSetting() {
                     name="radio-10"
                     className="radio"
                     id="UNKNOW"
-                    value="UNKNOW"
-                    defaultChecked={userinfo.gender === "UNKNOW"}
+                    value={Gender.UNKNOW}
+                    defaultChecked={userinfo.gender === Gender.UNKNOW}
                     onChange={onChangeGender}
                   />
                   <label className="label-text" htmlFor="UNKNOW">
