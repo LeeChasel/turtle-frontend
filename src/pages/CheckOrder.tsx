@@ -1,19 +1,18 @@
 import { useSearchParams } from "react-router-dom";
-//import useUserTokenCookie from "../hooks/useUserTokenCookie";
+import useUserTokenCookie from "../hooks/useUserTokenCookie";
 import validateTokenRole from "../utils/validateTokenRole";
 import useOrderChecking from "../hooks/useAnonymityOrderChecking";
 
 function CheckOrder() {
   const [searchParams] = useSearchParams();
-  const tokenCookie =
-    "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2NWIzODgyMzk5MDc3ODRmYTlmOTVjN2UiLCJyb2xlIjpbIlJPTEVfQU5PTllNSVRZX0NVU1RPTUVSIl0sImlzcyI6ImFub255bWl0eUB0dXJ0bGVsYXp5LmNvbSIsImlhdCI6MTcwNzkyOTA4NSwianRpIjoiMmNkYjM3ZWEtN2NkMy00NTc4LTgxYTQtMjc4M2MxMzQ3MmQxIiwiZXhwIjoxNzA3OTU3ODg1fQ.SG5oXPG4KeusKP9LFgavjnN6rjV_t4Jm1FhOXoD4qTE5gKwIhgp5R5paXQuI5yHdwVXBtKt3owO9hRqrX86aqg";
-  const orderID = searchParams.get("orderID");
-  const email = searchParams.get("email");
+  const { tokenCookie } = useUserTokenCookie();
+  const orderId = searchParams.get("orderId");
+  const email = searchParams.get("userEmail");
   const {
     data: orderInfo,
     status,
     error,
-  } = useOrderChecking(orderID!, email!, tokenCookie);
+  } = useOrderChecking(orderId!, email!, tokenCookie!);
 
   if (status === "pending") {
     return <></>;
@@ -21,7 +20,7 @@ function CheckOrder() {
     return <div>Error happened: {error.message}</div>;
   }
 
-  if (!validateTokenRole(tokenCookie, "ROLE_ANONYMITY_CUSTOMER")) {
+  if (!validateTokenRole(tokenCookie!, "ROLE_ANONYMITY_CUSTOMER")) {
     return <>無資料</>;
   } else {
     return (
