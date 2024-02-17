@@ -23,6 +23,7 @@ import useUserTokenCookie from "./hooks/useUserTokenCookie";
 import validateTokenRole from "./utils/validateTokenRole";
 import OrderCart from "./pages/Anonymity/Cart";
 import OrderSearch from "./pages/OrderSearch";
+import CheckOrder from "./pages/CheckOrder";
 
 const specialRoutes: RouteObject[] = [
   { path: "/special/product/:productId", Component: Product },
@@ -40,6 +41,7 @@ const routerData: RouteObject[] = [
       { path: "/products", Component: Products },
       { path: "/loginOrSignup", Component: LoginOrSignup },
       { path: "/newProducts", Component: NewProducts },
+      { path: "/checkOrder", Component: CheckOrder },
       { path: "/orderSearch", Component: OrderSearch },
       ...specialRoutes,
       {
