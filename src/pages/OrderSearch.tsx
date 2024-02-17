@@ -13,7 +13,7 @@ function OrderSearch() {
 
   function handleSubmit() {
     try {
-      const url = "/checkorder";
+      const url = "/checkOrder";
       const searchParams = new URLSearchParams();
       const orderId = orderIdSchema.parse(orderIdRef.current?.value);
       searchParams.append("orderId", orderId);
