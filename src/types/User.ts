@@ -10,7 +10,7 @@ export type TInfo = {
   username: string;
   birthday: string;
   phone: string;
-  gender: "MALE" | "FEMALE" | "UNKNOW";
+  gender: Gender;
   roles: TRole[];
   enabled: boolean;
   createdAt: string;
@@ -28,5 +28,11 @@ export type TUpdateInfo = {
   username?: string;
   birthday?: string;
   phone?: string;
-  gender?: "MALE" | "FEMALE" | "UNKNOW";
+  gender?: Gender;
 };
+
+export enum Gender {
+  MALE = "MALE",
+  FEMALE = "FEMALE",
+  UNKNOW = "UNKNOW",
+}

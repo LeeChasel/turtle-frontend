@@ -21,6 +21,10 @@ function OrderCart() {
     useSelectedCartItemStore();
   const { tokenCookie, setUserTokenCookie } = useUserTokenCookie();
   const navigate = useNavigate();
+  const defaultUserEmail = useAnonymousProductStore((state) => state.userEmail);
+  const updateUserEmail = useAnonymousProductStore(
+    (state) => state.updateUserEmail,
+  );
 
   function exitCart() {
     navigate(`/special/product/${productId}`);
@@ -34,6 +38,7 @@ function OrderCart() {
       showToast("info", "請選擇商品");
       return;
     }
+    userEmailRef.current!.value = defaultUserEmail;
     modalRef.current?.showModal();
   }
 
@@ -52,6 +57,7 @@ function OrderCart() {
         .parse(userEmailRef.current?.value);
 
       setIsLoading(true);
+      updateUserEmail(userEmail);
 
       const orderItems: TOrderRequestItem[] = [];
       selectedProducts.forEach((product) => {
@@ -63,8 +69,7 @@ function OrderCart() {
         });
       });
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const orderJsonData = await createOrderForAnonymity(
+      const orderResponse = await createOrderForAnonymity(
         { items: orderItems },
         userEmail,
         tokenCookie!,
@@ -74,8 +79,8 @@ function OrderCart() {
       removeMultipleProducts(selectedProducts);
       decreaseMultipleSelectedProducts(selectedProducts);
       modalRef.current?.close();
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      showToast("success", `訂單編號：「${orderJsonData.orderId}」建立成功`, {
+
+      showToast("success", `訂單編號：「${orderResponse.orderId}」建立成功`, {
         autoClose: false,
         closeOnClick: false,
         draggable: false,
