@@ -2,13 +2,13 @@ import { encode } from "blurhash";
 import type { TImage, TImageData } from "../types/Product";
 import updateFile from "../actions/updateFile";
 
-export async function getImageData(data: TImageData, token: string) {
+export async function getImageData(data: TImageData) {
   try {
     const imageData: TImage = {
       description: data.description ?? "",
     };
     if (data.image !== null) {
-      const imageId = await updateFile(data.image, token);
+      const imageId = await updateFile(data.image);
       const { blurhash, width, height } = await imageToBlurhash(data.image);
       imageData.imageId = imageId.field;
       imageData.blurhash = blurhash;

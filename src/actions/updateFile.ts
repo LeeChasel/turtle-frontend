@@ -2,15 +2,12 @@ type JsonType = {
   field: string;
 };
 
-const URL = import.meta.env.VITE_TURTLE_AUTH_URL + "/file";
+const URL = import.meta.env.VITE_TURTLE_PUBLIC_URL + "/file";
 
-async function updateFile(file: File, token: string): Promise<JsonType> {
+async function updateFile(file: File): Promise<JsonType> {
   const form = new FormData();
   form.append("file", file);
   const res = await fetch(URL, {
-    headers: {
-      Authorization: "Bearer " + token,
-    },
     method: "POST",
     body: form,
   });
