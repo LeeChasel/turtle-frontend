@@ -40,5 +40,6 @@ module.exports = {
     "react/display-name": "off",
     "arrow-body-style": "off",
     "prefer-arrow-callback": "off",
+    "no-console": "warn",
   },
 };

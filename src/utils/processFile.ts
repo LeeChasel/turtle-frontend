@@ -9,14 +9,12 @@ export async function getImageData(data: TImageData) {
     };
     if (data.image !== null) {
       const imageId = await updateFile(data.image);
-      console.log("imageId", imageId);
       imageData.imageId = imageId.fileId;
       const { blurhash, width, height } = await imageToBlurhash(data.image);
       imageData.blurhash = blurhash;
       imageData.width = width;
       imageData.height = height;
     }
-    console.log("imageData", imageData);
     return imageData;
   } catch (error) {
     if (error instanceof Error) {
