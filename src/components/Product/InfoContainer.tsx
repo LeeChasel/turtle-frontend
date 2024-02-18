@@ -15,17 +15,15 @@ function InfoContainer() {
   const galleryImages: ReactImageGalleryItem[] = [];
   // Banner image
   galleryImages.push({
-    original:
-      ImageURL + "/" + product.productId + "/" + product.bannerImage?.imageId,
-    thumbnail:
-      ImageURL + "/" + product.productId + "/" + product.bannerImage?.imageId,
+    original: `${ImageURL}/${product.productId}/${product.bannerImage?.imageId}`,
+    thumbnail: `${ImageURL}/${product.productId}/${product.bannerImage?.imageId}`,
   });
   // Preview image
   product.previewImage?.forEach((image) => {
     // TODO: Prevent bannerImage and the first of previewImages are the same. Not working now
     if (image.blurhash === product.bannerImage?.blurhash) return;
 
-    const url = ImageURL + image.imageId;
+    const url = `${ImageURL}/${product.productId}/${image.imageId}`;
     galleryImages.push({
       original: url,
       thumbnail: url,
@@ -33,7 +31,7 @@ function InfoContainer() {
   });
   // Variation image
   product.variation?.forEach((image) => {
-    const url = ImageURL + image.bannerImage?.imageId;
+    const url = `${ImageURL}/${product.productId}/${image.bannerImage?.imageId}`;
     galleryImages.push({
       original: url,
       thumbnail: url,

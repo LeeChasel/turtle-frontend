@@ -1,5 +1,5 @@
 type JsonType = {
-  field: string;
+  fileId: string;
 };
 
 const URL = import.meta.env.VITE_TURTLE_PUBLIC_URL + "/file";
