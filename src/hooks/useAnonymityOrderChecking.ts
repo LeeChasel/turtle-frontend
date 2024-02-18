@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import getAnonymityOrder from "../actions/getAnonymityOrder";
+import { getOrderForAnonymity } from "../actions/getOrder";
 
 function useAnonymityOrderChecking(
   orderID: string,
@@ -8,7 +8,7 @@ function useAnonymityOrderChecking(
 ) {
   return useQuery({
     queryKey: ["orderInfo", token, orderID, email],
-    queryFn: () => getAnonymityOrder(token, orderID, email),
+    queryFn: () => getOrderForAnonymity(token, orderID, email),
   });
 }
 

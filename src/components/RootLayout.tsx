@@ -28,7 +28,7 @@ function Header() {
     "ROLE_ANONYMITY_CUSTOMER",
   );
   const isSpecialRoute = location.pathname.startsWith("/special");
-  const isOrderInfoRoute = location.pathname.startsWith("/checkorder");
+  const isOrderInfoRoute = location.pathname.startsWith("/checkOrder");
 
   // from special route to normal route will delete token cookie
   useEffect(() => {

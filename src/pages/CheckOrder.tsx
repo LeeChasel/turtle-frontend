@@ -20,7 +20,7 @@ function CheckOrder() {
     return <div>Error happened: {error.message}</div>;
   }
 
-  if (!validateTokenRole(tokenCookie!, "ROLE_ANONYMITY_CUSTOMER")) {
+  if (!validateTokenRole(tokenCookie, "ROLE_ANONYMITY_CUSTOMER")) {
     return <>無資料</>;
   } else {
     return (

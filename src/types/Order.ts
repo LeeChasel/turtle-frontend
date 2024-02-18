@@ -15,7 +15,7 @@ export type TOrderRequest = {
   items: TOrderRequestItem[];
 };
 
-export type OrderResponse = {
+export type OrderDetail = {
   orderId: string;
   userId: string;
   userEmail: string;
@@ -23,7 +23,7 @@ export type OrderResponse = {
   orderStatus: OrderStatus;
   totalPrice: number;
   description: string;
-  item: OrderResponseItem[];
+  item: OrderDetailItem[];
   cvsMap?: CvsMap;
   shippingInfo: ShippingInfo;
   logisticsOrderStatus: LogisticsOrderStatus[];
@@ -32,7 +32,7 @@ export type OrderResponse = {
   discount?: object;
 };
 
-export type OrderResponseItem = {
+export type OrderDetailItem = {
   productId: string;
   productName: string;
   variationName: string;
