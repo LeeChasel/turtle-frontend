@@ -14,6 +14,18 @@ export type TProduct = {
   detailImage?: TImage[];
   specification?: string;
   keyWord?: string[];
+  customizations: CustomizationItem[];
+  relatedProduct?: string[];
+};
+
+export type CustomizationItem = {
+  name: string;
+  type: string;
+  customization: object;
+  /**
+   * default: false
+   */
+  required?: boolean;
 };
 
 export type TVariation = {
