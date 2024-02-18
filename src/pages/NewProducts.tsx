@@ -25,11 +25,7 @@ function Products() {
       ) : (
         products.map((banner) => (
           <Fragment key={banner.productId}>
-            <BannerCard
-              productName={banner.productName}
-              currentPrice={banner.currentPrice!}
-              bannerImage={banner.bannerImage}
-            />
+            <BannerCard banner={banner} />
           </Fragment>
         ))
       )}

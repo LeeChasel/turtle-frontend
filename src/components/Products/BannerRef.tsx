@@ -8,13 +8,7 @@ type ProductBannerRefProps = {
 
 const BannerRef = forwardRef<HTMLDivElement, ProductBannerRefProps>(
   ({ product }, ref) => {
-    const productItem = (
-      <BannerCard
-        productName={product.productName}
-        bannerImage={product.bannerImage}
-        currentPrice={product.currentPrice!}
-      />
-    );
+    const productItem = <BannerCard banner={product} />;
     const content = ref ? (
       <div ref={ref}>{productItem}</div>
     ) : (

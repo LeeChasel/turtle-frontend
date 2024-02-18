@@ -6,7 +6,7 @@ import PurchaseInfo from "./PurchaseInfo";
 import ImageGallery, { type ReactImageGalleryItem } from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
 
-const ImageURL = import.meta.env.VITE_TURTLE_BACKEND_IMAGE_URL + "/";
+const ImageURL = import.meta.env.VITE_TURTLE_PRODUCT_IMAGE_URL as string;
 
 function InfoContainer() {
   const { product } = useProductContext();
@@ -15,8 +15,10 @@ function InfoContainer() {
   const galleryImages: ReactImageGalleryItem[] = [];
   // Banner image
   galleryImages.push({
-    original: ImageURL + product.bannerImage?.imageId,
-    thumbnail: ImageURL + product.bannerImage?.imageId,
+    original:
+      ImageURL + "/" + product.productId + "/" + product.bannerImage?.imageId,
+    thumbnail:
+      ImageURL + "/" + product.productId + "/" + product.bannerImage?.imageId,
   });
   // Preview image
   product.previewImage?.forEach((image) => {

@@ -13,7 +13,9 @@ type ShoppingCartItemProps = {
 
 function ShoppingCartItem({ product, removeItemFn }: ShoppingCartItemProps) {
   const imageSrc =
-    import.meta.env.VITE_TURTLE_BACKEND_IMAGE_URL +
+    import.meta.env.VITE_TURTLE_PRODUCT_IMAGE_URL +
+    "/" +
+    product.product.productId +
     "/" +
     product.variation.bannerImage?.imageId;
 

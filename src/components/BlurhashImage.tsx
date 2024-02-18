@@ -3,13 +3,19 @@ import clsx from "clsx";
 import { BlurhashCanvas } from "react-blurhash";
 
 type BlurhashImageProp = {
+  productId: string;
   imageId: string;
   blurhash: string;
 };
 
-function BlurhashImage({ imageId, blurhash }: BlurhashImageProp) {
+function BlurhashImage({ productId, imageId, blurhash }: BlurhashImageProp) {
   const [imageLoaded, setImageLoaded] = useState(false);
-  const src = import.meta.env.VITE_TURTLE_BACKEND_IMAGE_URL + "/" + imageId;
+  const src =
+    import.meta.env.VITE_TURTLE_PRODUCT_IMAGE_URL +
+    "/" +
+    productId +
+    "/" +
+    imageId;
   useEffect(() => {
     const img = new Image();
     img.onload = () => setImageLoaded(true);
