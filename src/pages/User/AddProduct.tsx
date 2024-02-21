@@ -37,9 +37,9 @@ type FormInputs = {
   available?: boolean;
   productUpstreamUrl?: string;
   bannerImage?: FileList;
-  previewImage?: TImageData[];
-  detailImage: TImageData[];
-  variation: VariationData[];
+  previewImages?: TImageData[];
+  detailImages: TImageData[];
+  variations: VariationData[];
 };
 
 const variationDefaultValue = {
@@ -58,8 +58,8 @@ const formDefaultValue: FormInputs = {
   currentPrice: 0,
   stock: 0,
   available: true,
-  detailImage: [{ description: "", image: null }],
-  variation: [variationDefaultValue],
+  detailImages: [{ description: "", image: null }],
+  variations: [variationDefaultValue],
 };
 
 function AddProducts() {
@@ -80,7 +80,7 @@ function AddProducts() {
     remove: removePreview,
   } = useFieldArray({
     control,
-    name: "previewImage",
+    name: "previewImages",
   });
 
   const {
@@ -89,7 +89,7 @@ function AddProducts() {
     remove: removeDetail,
   } = useFieldArray({
     control,
-    name: "detailImage",
+    name: "detailImages",
   });
 
   const {
@@ -98,7 +98,7 @@ function AddProducts() {
     remove: removeVariation,
   } = useFieldArray({
     control,
-    name: "variation",
+    name: "variations",
   });
 
   const { tokenCookie } = useUserTokenCookie();
@@ -133,24 +133,24 @@ function AddProducts() {
 
       // process previewImage
       if (
-        formData.previewImage !== undefined &&
-        formData.previewImage.length > 0
+        formData.previewImages !== undefined &&
+        formData.previewImages.length > 0
       ) {
-        const files = formData.previewImage.filter(
+        const files = formData.previewImages.filter(
           (item) => item.image !== null,
         );
         await updateImages(files, productData, "previewImages");
       }
 
       // process detailImage
-      const detailImagesData = formData.detailImage.filter(
+      const detailImagesData = formData.detailImages.filter(
         (item) => !(item.description === "" && item.image === null),
       );
       await updateImages(detailImagesData, productData, "detailImages");
 
       // process variation
       const variationDataArray = await processVariationArraySequentially(
-        formData.variation,
+        formData.variations,
       );
       productData.variations = variationDataArray;
 
@@ -328,7 +328,7 @@ function AddProducts() {
                 第{index + 1}個預覽圖
               </div>
               <Controller
-                name={`previewImage.${index}.image` as const}
+                name={`previewImages.${index}.image` as const}
                 control={control}
                 rules={{ required: "必須上傳圖片，否則刪除" }}
                 render={({ field: { onChange }, fieldState: { error } }) => (
@@ -395,7 +395,7 @@ function AddProducts() {
                 )}
               </div>
               <Controller
-                name={`detailImage.${index}.image` as const}
+                name={`detailImages.${index}.image` as const}
                 control={control}
                 render={({ field: { onChange } }) => (
                   <input
@@ -409,7 +409,7 @@ function AddProducts() {
                 )}
               />
               <Controller
-                name={`detailImage.${index}.description` as const}
+                name={`detailImages.${index}.description` as const}
                 control={control}
                 rules={{
                   required: index === 0 ? "至少填寫一段文字敘述" : false,
@@ -472,7 +472,7 @@ function AddProducts() {
               </div>
               {/* first column */}
               <Controller
-                name={`variation.${index}.variationName` as const}
+                name={`variations.${index}.variationName` as const}
                 control={control}
                 rules={{ required: "種類名稱必填" }}
                 render={({ field, fieldState: { error } }) => (
@@ -497,7 +497,7 @@ function AddProducts() {
                 )}
               />
               <Controller
-                name={`variation.${index}.variationSpec` as const}
+                name={`variations.${index}.variationSpec` as const}
                 control={control}
                 rules={{ required: "種類規格必填" }}
                 render={({ field, fieldState: { error } }) => (
@@ -522,7 +522,7 @@ function AddProducts() {
                 )}
               />
               <Controller
-                name={`variation.${index}.originalPrice` as const}
+                name={`variations.${index}.originalPrice` as const}
                 control={control}
                 render={({ field }) => (
                   <div className="w-full">
@@ -540,7 +540,7 @@ function AddProducts() {
                 )}
               />
               <Controller
-                name={`variation.${index}.currentPrice` as const}
+                name={`variations.${index}.currentPrice` as const}
                 control={control}
                 render={({ field }) => (
                   <div className="w-full">
@@ -560,7 +560,7 @@ function AddProducts() {
 
               {/* second column */}
               <Controller
-                name={`variation.${index}.stock` as const}
+                name={`variations.${index}.stock` as const}
                 control={control}
                 render={({ field }) => (
                   <div className="w-full">
@@ -578,7 +578,7 @@ function AddProducts() {
                 )}
               />
               <Controller
-                name={`variation.${index}.bannerImage` as const}
+                name={`variations.${index}.bannerImage` as const}
                 control={control}
                 rules={{ required: "必須上傳圖片" }}
                 render={({ field: { onChange }, fieldState: { error } }) => (
@@ -610,7 +610,7 @@ function AddProducts() {
                   <span className="text-lg label-text">目前可購買</span>
                   <input
                     type="checkbox"
-                    {...register(`variation.${index}.available`)}
+                    {...register(`variations.${index}.available`)}
                     className="checkbox checkbox-lg"
                   />
                 </label>
