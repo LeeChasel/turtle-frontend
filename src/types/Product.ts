@@ -7,15 +7,15 @@ export type TProduct = {
   stock?: number;
   available?: boolean;
   sold?: number;
-  variation?: TVariation[];
+  variations?: TVariation[];
   productUpstreamUrl?: string;
   bannerImage?: TImage;
-  previewImage?: TImage[];
-  detailImage?: TImage[];
+  previewImages?: TImage[];
+  detailImages?: TImage[];
   specification?: string;
-  keyWord?: string[];
+  keyWords?: string[];
   customizations: CustomizationItem[];
-  relatedProduct?: string[];
+  relatedProducts?: string[];
 };
 
 export type CustomizationItem = {

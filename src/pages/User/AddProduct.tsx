@@ -120,6 +120,9 @@ function AddProducts() {
         stock: formData.stock,
         available: formData.available,
         productUpstreamUrl: formData.productUpstreamUrl,
+
+        // TODO: hotfix, nned to add form
+        customizations: [],
       };
 
       // process bannerImage
@@ -136,20 +139,20 @@ function AddProducts() {
         const files = formData.previewImage.filter(
           (item) => item.image !== null,
         );
-        await updateImages(files, productData, "previewImage");
+        await updateImages(files, productData, "previewImages");
       }
 
       // process detailImage
       const detailImagesData = formData.detailImage.filter(
         (item) => !(item.description === "" && item.image === null),
       );
-      await updateImages(detailImagesData, productData, "detailImage");
+      await updateImages(detailImagesData, productData, "detailImages");
 
       // process variation
       const variationDataArray = await processVariationArraySequentially(
         formData.variation,
       );
-      productData.variation = variationDataArray;
+      productData.variations = variationDataArray;
 
       const addProductResult = await sendRequest(productData, tokenCookie);
       showToast("success", `商品「${addProductResult.productName}」新增成功!`);
@@ -654,10 +657,10 @@ async function updateImages(
 
   const imagesData = await processArraySequentially(data);
   switch (key) {
-    case "previewImage":
+    case "previewImages":
       productData[key] = imagesData;
       break;
-    case "detailImage":
+    case "detailImages":
       productData[key] = imagesData;
       break;
   }
