@@ -16,6 +16,7 @@ function DetailImagesContainer() {
               <BlurhashImage
                 blurhash={detailData.blurhash}
                 imageId={detailData.imageId!}
+                productId={product.productId!}
               />
             )}
           </div>

@@ -123,10 +123,9 @@ function AddProducts() {
       };
 
       // process bannerImage
-      const updateBannerImage = await getImageData(
-        { image: formData.bannerImage![0] },
-        tokenCookie!,
-      );
+      const updateBannerImage = await getImageData({
+        image: formData.bannerImage![0],
+      });
       productData.bannerImage = updateBannerImage;
 
       // process previewImage
@@ -137,24 +136,18 @@ function AddProducts() {
         const files = formData.previewImage.filter(
           (item) => item.image !== null,
         );
-        await updateImages(files, productData, "previewImage", tokenCookie!);
+        await updateImages(files, productData, "previewImage");
       }
 
       // process detailImage
       const detailImagesData = formData.detailImage.filter(
         (item) => !(item.description === "" && item.image === null),
       );
-      await updateImages(
-        detailImagesData,
-        productData,
-        "detailImage",
-        tokenCookie!,
-      );
+      await updateImages(detailImagesData, productData, "detailImage");
 
       // process variation
       const variationDataArray = await processVariationArraySequentially(
         formData.variation,
-        tokenCookie!,
       );
       productData.variation = variationDataArray;
 
@@ -648,13 +641,12 @@ async function updateImages(
   data: TImageData[],
   productData: TProduct,
   key: keyof TProduct,
-  token: string,
 ) {
   // update file sequentially
   const processArraySequentially = async (arrayData: TImageData[]) => {
     const images: TImage[] = [];
     for (const file of arrayData) {
-      const imageResult = await getImageData(file, token);
+      const imageResult = await getImageData(file);
       if (imageResult) images.push(imageResult);
     }
     return images;
@@ -673,14 +665,10 @@ async function updateImages(
 
 async function processVariationArraySequentially(
   variationDataArray: VariationData[],
-  token: string,
 ) {
   const variationData: TVariation[] = [];
   for (const variation of variationDataArray) {
-    const bannerImage = await getImageData(
-      { image: variation.bannerImage },
-      token,
-    );
+    const bannerImage = await getImageData({ image: variation.bannerImage });
     const result: TVariation = {
       variationName: variation.variationName,
       variationSpec: variation.variationSpec,
