@@ -14,6 +14,22 @@ function CheckOrder() {
     error,
   } = useOrderChecking(orderId!, email!, tokenCookie!);
 
+  /*function orderStatus(status: string) {
+    if (status === "SHIPPED") {
+      return "運送中";
+    } else if (status === "PAIED") {
+      return "已付款";
+    } else if (status === "PAYMENT_REQUIRED") {
+      return "待付款";
+    } else if (status === "COMPLETE_REQUIRED") {
+      return "待填寫訂單資訊";
+    } else {
+      return "取消訂單";
+    }
+  }*/
+
+  //const orderstatus = orderStatus(orderInfo!.orderStatus);
+
   if (status === "pending") {
     return <></>;
   } else if (status === "error") {
@@ -25,29 +41,41 @@ function CheckOrder() {
   } else {
     return (
       <>
-        <div>
-          訂購人資訊:
-          <div>訂購人:{orderInfo?.userId}</div>
-          <div>電子郵件:{orderInfo?.userEmail}</div>
-          <div>訂購日期:{orderInfo?.orderDate}</div>
-          <div>訂單狀態:{orderInfo?.orderStatus}</div>
-          <div>訂購商品:</div>
-          <table>
-            <thead>
-              <tr>
-                <th>商品名稱</th>
-                <th>價格</th>
-                <th>數量</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td></td>
-                <td>$</td>
-                <td></td>
-              </tr>
-            </tbody>
-          </table>
+        <div className="justify-center items-center px-[260px]  pt-10">
+          <div className="bg-gray-50 bg-center">
+            訂單資訊
+            <div className="border-2 border-black"></div>
+            <div>訂單編號:{orderInfo.orderId}</div>
+            <div>訂購日期:{orderInfo.orderDate}</div>
+            <div>收件人姓名:{orderInfo.shippingInfo.receiverName}</div>
+            <div>收件人電話:{orderInfo.shippingInfo.receiverCellPhone}</div>
+            <div>訂單狀態:{}</div>
+            <div>貨態查詢:{}</div>
+            購買明細
+            <div className="border-2 border-black"></div>
+            <table>
+              <thead>
+                <tr>
+                  <th>商品名稱</th>
+                  <th>樣式</th>
+                  <th>規格</th>
+                  <th>單價</th>
+                  <th>數量</th>
+                  <th>小計</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </>
     );
