@@ -41,40 +41,47 @@ function CheckOrder() {
   } else {
     return (
       <>
-        <div className="justify-center items-center px-[260px]  pt-10">
-          <div className="bg-gray-50 bg-center">
-            訂單資訊
-            <div className="border-2 border-black"></div>
-            <div>訂單編號:{orderInfo.orderId}</div>
-            <div>訂購日期:{orderInfo.orderDate}</div>
-            <div>收件人姓名:{orderInfo.shippingInfo.receiverName}</div>
-            <div>收件人電話:{orderInfo.shippingInfo.receiverCellPhone}</div>
-            <div>訂單狀態:{}</div>
-            <div>貨態查詢:{}</div>
-            購買明細
-            <div className="border-2 border-black"></div>
-            <table>
-              <thead>
-                <tr>
-                  <th>商品名稱</th>
-                  <th>樣式</th>
-                  <th>規格</th>
-                  <th>單價</th>
-                  <th>數量</th>
-                  <th>小計</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-              </tbody>
-            </table>
+        <div className="items-center px-[260px]  pt-10">
+          <div className="bg-gray-50 bg-center ">
+            <div className="mx-10">訂單資訊</div>
+            <div className="border mx-9 border-black w-[90%]"></div>
+            <div> </div>
+            <div className="grid grid-rows-6 grid-flow-col my-2">
+              <div className="text-center">訂單編號:</div>
+              <div className="text-center">訂購日期:</div>
+              <div className="text-center">收件人姓名:</div>
+              <div className="text-center">收件人電話:</div>
+              <div className="text-center">訂單狀態:</div>
+              <div className="text-center">貨態查詢:</div>
+              <div className="font-bold text-red-500">{orderInfo.orderId}</div>
+              <div>{orderInfo.orderDate}</div>
+              <div>{orderInfo.shippingInfo.receiverName}</div>
+              <div>{orderInfo.shippingInfo.receiverCellPhone}</div>
+              <div>{orderInfo.orderId}</div>
+              <div>{orderInfo.orderId}</div>
+            </div>
+
+            <div className="mx-10">購買明細</div>
+            <div className="border mx-9 border-black w-[90%]"></div>
+            <div className="p-5 overflow-x-auto">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th className="w-[25%]">商品名稱</th>
+                    <th className="w-[15%]">樣式</th>
+                    <th className="w-[15%]">規格</th>
+                    <th className="w-[12%]">單價</th>
+                    <th className="w-[20%]">數量</th>
+                    <th className="w-[12%]">小計</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+              <div className="flex justify-end mt-3">
+                <span>總金額：</span>
+                <span className="font-bold text-red-500">100</span>
+              </div>
+            </div>
           </div>
         </div>
       </>
