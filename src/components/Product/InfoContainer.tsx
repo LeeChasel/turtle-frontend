@@ -19,7 +19,7 @@ function InfoContainer() {
     thumbnail: `${ImageURL}/${product.productId}/${product.bannerImage?.imageId}`,
   });
   // Preview image
-  product.previewImage?.forEach((image) => {
+  product.previewImages?.forEach((image) => {
     // TODO: Prevent bannerImage and the first of previewImages are the same. Not working now
     if (image.blurhash === product.bannerImage?.blurhash) return;
 
@@ -30,7 +30,7 @@ function InfoContainer() {
     });
   });
   // Variation image
-  product.variation?.forEach((image) => {
+  product.variations?.forEach((image) => {
     const url = `${ImageURL}/${product.productId}/${image.bannerImage?.imageId}`;
     galleryImages.push({
       original: url,
@@ -46,7 +46,7 @@ function InfoContainer() {
     const variationName = values[0];
     const variationSpec = values[1];
     const variationIndex = Number(values[2]);
-    const newVariation = product.variation?.find(
+    const newVariation = product.variations?.find(
       (item) =>
         item.variationName === variationName &&
         item.variationSpec === variationSpec,
@@ -85,7 +85,7 @@ function InfoContainer() {
             }
             onChange={changeImage}
           >
-            {product.variation?.map((item, index) => {
+            {product.variations?.map((item, index) => {
               const optionName =
                 item.variationName + " - " + item.variationSpec;
               const optionValue =

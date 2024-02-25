@@ -68,7 +68,7 @@ function Product() {
   }
 
   // process no variation can buy now
-  const defaultVariation = productData.variation?.find(
+  const defaultVariation = productData.variations?.find(
     (item) => item.available,
   );
   if (!defaultVariation) {

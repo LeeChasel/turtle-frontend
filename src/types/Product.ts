@@ -7,13 +7,25 @@ export type TProduct = {
   stock?: number;
   available?: boolean;
   sold?: number;
-  variation?: TVariation[];
+  variations?: TVariation[];
   productUpstreamUrl?: string;
   bannerImage?: TImage;
-  previewImage?: TImage[];
-  detailImage?: TImage[];
+  previewImages?: TImage[];
+  detailImages?: TImage[];
   specification?: string;
-  keyWord?: string[];
+  keyWords?: string[];
+  customizations: CustomizationItem[];
+  relatedProducts?: string[];
+};
+
+export type CustomizationItem = {
+  name: string;
+  type: string;
+  customization: object;
+  /**
+   * default: false
+   */
+  required?: boolean;
 };
 
 export type TVariation = {

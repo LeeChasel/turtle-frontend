@@ -23,7 +23,7 @@ export type OrderDetail = {
   orderStatus: OrderStatus;
   totalPrice: number;
   description: string;
-  item: OrderDetailItem[];
+  items: OrderDetailItem[];
   cvsMap?: CvsMap;
   shippingInfo: ShippingInfo;
   logisticsOrderStatus: LogisticsOrderStatus[];
