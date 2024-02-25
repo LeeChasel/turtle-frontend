@@ -95,11 +95,11 @@ function CheckOrder() {
                 <thead>
                   <tr>
                     <th className="w-[25%]">商品名稱</th>
-                    <th className="w-[15%]">樣式</th>
-                    <th className="w-[15%]">規格</th>
-                    <th className="w-[12%]">單價</th>
+                    <th className="w-[20%]">樣式</th>
+                    <th className="w-[20%]">規格</th>
+                    <th className="w-[20%]">單價</th>
                     <th className="w-[20%]">數量</th>
-                    <th className="w-[12%]">小計</th>
+                    <th className="w-[20%]">小計</th>
                   </tr>
                 </thead>
                 <tbody>
