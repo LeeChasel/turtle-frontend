@@ -14,7 +14,7 @@ function CheckOrder() {
     error,
   } = useOrderChecking(orderId!, email!, tokenCookie!);
 
-  /*function orderStatus(status: string) {
+  function orderStatus(status: string) {
     if (status === "SHIPPED") {
       return "運送中";
     } else if (status === "PAIED") {
@@ -26,9 +26,9 @@ function CheckOrder() {
     } else {
       return "取消訂單";
     }
-  }*/
+  }
 
-  //const orderstatus = orderStatus(orderInfo!.orderStatus);
+  const orderstatus = orderStatus(orderInfo!.orderStatus);
 
   if (status === "pending") {
     return <></>;
@@ -57,14 +57,14 @@ function CheckOrder() {
               <div>{orderInfo.orderDate}</div>
               <div>{orderInfo.shippingInfo.receiverName}</div>
               <div>{orderInfo.shippingInfo.receiverCellPhone}</div>
-              <div>{orderInfo.orderId}</div>
-              <div>{orderInfo.orderId}</div>
+              <div>{orderstatus}</div>
+              <div>{}</div>
             </div>
 
             <div className="mx-10">購買明細</div>
             <div className="border mx-9 border-black w-[90%]"></div>
             <div className="p-5 overflow-x-auto">
-              <table className="table">
+              <table className="table text-center">
                 <thead>
                   <tr>
                     <th className="w-[25%]">商品名稱</th>
