@@ -2,6 +2,7 @@ import { useSearchParams } from "react-router-dom";
 import useUserTokenCookie from "../hooks/useUserTokenCookie";
 import validateTokenRole from "../utils/validateTokenRole";
 import useOrderChecking from "../hooks/useAnonymityOrderChecking";
+import { useNavigate } from "react-router-dom";
 
 function CheckOrder() {
   const [searchParams] = useSearchParams();
@@ -13,6 +14,7 @@ function CheckOrder() {
     status,
     error,
   } = useOrderChecking(orderId!, email!, tokenCookie!);
+  const navigate = useNavigate();
 
   /*function orderStatus(status: string) {
     if (status === "SHIPPED") {
@@ -30,11 +32,30 @@ function CheckOrder() {
 
   const orderstatus = orderStatus(orderInfo!.orderStatus);*/
 
-  /*function trace(){
-    if(orderInfo?.logisticsOrderStatus){
-
+  function trace() {
+    const last = orderInfo?.logisticsOrderStatus.length;
+    if (last == 0) {
+      return "-";
+    } else if (
+      orderInfo?.logisticsOrderStatus[last! - 1].bookingNote.length != 0
+    ) {
+      return orderInfo?.logisticsOrderStatus[last! - 1].bookingNote;
+    } else {
+      return (
+        "CVSPaymentNo:" +
+        orderInfo?.logisticsOrderStatus[last! - 1].cvspaymentNo +
+        ",CVSValidationNo:" +
+        orderInfo?.logisticsOrderStatus[last! - 1].cvsvalidationNo
+      );
     }
-  }*/
+  }
+
+  function cancel(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    navigate("/");
+  }
+
+  const orderTrace = trace();
 
   if (status === "pending") {
     return <></>;
@@ -47,24 +68,24 @@ function CheckOrder() {
   } else {
     return (
       <>
-        <div className="items-center px-[260px]  pt-10">
-          <div className="bg-gray-50 bg-center ">
+        <div className="w-fit items-center px-[16.25rem] pt-10 text-base">
+          <div className="bg-gray-50 bg-center  bg-contain text-[#263238]  ">
             <div className="mx-10">訂單資訊</div>
             <div className="border mx-9 border-black w-[90%]"></div>
             <div> </div>
-            <div className="grid grid-rows-6 grid-flow-col my-2">
-              <div className="text-center">訂單編號:</div>
-              <div className="text-center">訂購日期:</div>
-              <div className="text-center">收件人姓名:</div>
-              <div className="text-center">收件人電話:</div>
-              <div className="text-center">訂單狀態:</div>
-              <div className="text-center">貨態查詢:</div>
+            <div className="grid grid-rows-6 grid-flow-col my-2 text-center">
+              <div>訂單編號:</div>
+              <div>訂購日期:</div>
+              <div>收件人姓名:</div>
+              <div>收件人電話:</div>
+              <div>訂單狀態:</div>
+              <div>貨態查詢:</div>
               <div className="font-bold text-red-500">{orderInfo.orderId}</div>
               <div>{orderInfo.orderDate}</div>
               <div>{orderInfo.shippingInfo.receiverName}</div>
               <div>{orderInfo.shippingInfo.receiverCellPhone}</div>
               <div>{orderInfo.orderStatus}</div>
-              <div>{}</div>
+              <div>{orderTrace}</div>
             </div>
 
             <div className="mx-10">購買明細</div>
@@ -82,7 +103,7 @@ function CheckOrder() {
                   </tr>
                 </thead>
                 <tbody>
-                  {orderInfo.item?.map((object) => (
+                  {orderInfo.items?.map((object) => (
                     <tr key={object.productId}>
                       <td className="break-all text-ellipsis">
                         <span>{object.productName}</span>
@@ -113,6 +134,12 @@ function CheckOrder() {
               </div>
             </div>
           </div>
+
+          <p className="text-right">
+            <button className="btn" onClick={cancel}>
+              上一頁
+            </button>
+          </p>
         </div>
       </>
     );
