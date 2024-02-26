@@ -1,16 +1,20 @@
 import { useNavigate } from "react-router-dom";
+import useAnonymousProductStore from "../store/useAnonymousProductStore";
+
 function PaymentCompleted() {
   const navigate = useNavigate();
+  const homepage = useAnonymousProductStore((state) => state.productId);
   function cancel(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
-    navigate("/");
+    navigate("/special/product/" + homepage);
   }
   return (
-    <div className="text-center pt-10 text-[#263238]">
+    <div className="text-center pt-10 text-[#263238] [text-shadow:_0_1.5px_0_rgb(0_0_0_/_40%)]">
       <img
         src="https://storage.googleapis.com/turtle_static/frontend/payment-completed.png"
         className="w-1/4 m-auto"
       />
+
       <div className="text-3xl ">感謝您的購買！</div>
       <div className="text-base ">
         <br />
@@ -34,6 +38,7 @@ function PaymentCompleted() {
         <br />
         祝您購物愉快！
       </div>
+
       <button className="btn shadow-md btn-outline" onClick={cancel}>
         回首頁
       </button>
