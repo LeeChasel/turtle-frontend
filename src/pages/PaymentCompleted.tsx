@@ -4,7 +4,7 @@ import useAnonymousProductStore from "../store/useAnonymousProductStore";
 function PaymentCompleted() {
   const navigate = useNavigate();
   const homepage = useAnonymousProductStore((state) => state.productId);
-  function cancel(e: React.MouseEvent<HTMLButtonElement>) {
+  function back(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     navigate("/special/product/" + homepage);
   }
@@ -39,7 +39,7 @@ function PaymentCompleted() {
         祝您購物愉快！
       </div>
 
-      <button className="btn shadow-md btn-outline" onClick={cancel}>
+      <button className="btn shadow-md btn-outline" onClick={back}>
         回首頁
       </button>
     </div>
