@@ -3,16 +3,12 @@ export type ShippingInfo = {
   logisticsType?: LogisticsType;
   logisticsSubType?: LogisticsSubType;
   senderName?: string;
-  /**
-   * pattern: ^09\d{8}$
-   */
+  /** pattern: ^09\d{8}$ */
   senderCellPhone?: string;
   senderZipCode?: string;
   senderAddress?: string;
   receiverName?: string;
-  /**
-   * pattern: ^09\d{8}$
-   */
+  /** pattern: ^09\d{8}$ */
   receiverCellPhone?: string;
   receiverZipCode?: string;
   receiverAddress?: string;
@@ -21,12 +17,12 @@ export type ShippingInfo = {
   payOnDelivery?: boolean;
 };
 
-enum LogisticsType {
+export enum LogisticsType {
   CVS = "CVS",
   HOME = "HOME",
 }
 
-enum LogisticsSubType {
+export enum LogisticsSubType {
   TCAT = "TCAT",
   POST = "POST",
   FAMIC2C = "FAMIC2C",

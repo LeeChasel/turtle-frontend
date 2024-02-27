@@ -1,11 +1,24 @@
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import zipCodeJson from "@/data/district-zip-code.json";
 import { useState } from "react";
+import { getParamToChangeCvsForAnonymity } from "@/actions/getParamToChangeCvs";
+import useUserTokenCookie from "@/hooks/useUserTokenCookie";
+import { showToast } from "@/utils/toastAlert";
+import { getCallbackToChangeCvsForAnonymity } from "@/actions/getCallbackToChangeCvs";
+import { LogisticsSubType, LogisticsType } from "@/types/Shipping";
+import { forEach } from "lodash";
 
 function FillInOrder() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const orderId = searchParams.get("orderId");
   const userEmail = searchParams.get("userEmail");
+  if (!orderId || !userEmail) {
+    showToast("error", "缺少訂單編號或電子信箱");
+    navigate(-1);
+    // make orderId and userEmail not undefined
+    return;
+  }
 
   // TODO: adjuct height of the grid chilld elements
   return (
@@ -31,7 +44,7 @@ function FillInOrder() {
               className="w-3/4 h-10 bg-white shadow-md input input-bordered"
             />
           </div>
-          <PickupOptions />
+          <PickupOptions orderId={orderId} userEmail={userEmail} />
           <div className="flex justify-end">
             <button className="bg-white shadow-md btn btn-lg hover:bg-gray-100">
               送出
@@ -43,15 +56,65 @@ function FillInOrder() {
   );
 }
 
-function PickupOptions() {
+function PickupOptions({
+  orderId,
+  userEmail,
+}: {
+  orderId: string;
+  userEmail: string;
+}) {
+  const { tokenCookie } = useUserTokenCookie();
   const [countryCity, setCountryCity] = useState<string>(zipCodeJson[0].name);
   const districts = zipCodeJson.find(
     (item) => item.name === countryCity,
   )!.districts;
+
   function handleChangeCountryCity(
     event: React.ChangeEvent<HTMLSelectElement>,
   ) {
     setCountryCity(event.target.value);
+  }
+
+  const url = import.meta.env.DEV
+    ? (import.meta.env.VITE_ECPAY_DEV_URL as string)
+    : (import.meta.env.VITE_ECPAY_PROD_URL as string);
+
+  async function handleSelectStore() {
+    try {
+      const params = await getParamToChangeCvsForAnonymity(
+        tokenCookie!,
+        orderId,
+        userEmail,
+      );
+      params.LogisticsType = LogisticsType.CVS;
+      params.LogisticsSubType = LogisticsSubType.UNIMARTC2C;
+
+      const form = document.createElement("form");
+      form.setAttribute("method", "post");
+      form.setAttribute("action", url);
+      form.setAttribute("target", "_blank");
+      forEach(params, (value, key) => {
+        const input = document.createElement("input");
+        input.setAttribute("type", "hidden");
+        input.setAttribute("name", key);
+        input.setAttribute("value", value ?? "");
+        form.appendChild(input);
+      });
+      document.body.appendChild(form);
+      form.submit();
+      document.body.removeChild(form);
+
+      const callbackResult = await getCallbackToChangeCvsForAnonymity(
+        tokenCookie!,
+        orderId,
+        userEmail,
+      );
+      console.log(callbackResult);
+    } catch (error) {
+      if (error instanceof Error) {
+        showToast("error", error.message);
+      }
+    }
   }
 
   return (
@@ -80,7 +143,7 @@ function PickupOptions() {
             />
           </div>
           <div className="space-x-5">
-            <label>收件地址：</label>
+            <label htmlFor="address">收件地址：</label>
             <select
               className="w-1/4 bg-white shadow-md select select-bordered"
               defaultValue={countryCity}
@@ -101,8 +164,9 @@ function PickupOptions() {
             </select>
           </div>
           <div className="space-x-5">
-            <label className="invisible">收件地址：</label>
+            <span className="invisible">收件地址：</span>
             <input
+              id="address"
               type="text"
               className="w-2/3 h-10 bg-white shadow-md input input-bordered"
             />
@@ -123,12 +187,15 @@ function PickupOptions() {
         >
           <div className="space-x-5">
             <label>取貨門市：</label>
-            <button className="font-normal bg-white shadow-md btn hover:bg-gray-100">
+            <button
+              className="font-normal bg-white shadow-md btn hover:bg-gray-100"
+              onClick={handleSelectStore}
+            >
               選擇門市
             </button>
           </div>
           <div className="space-x-5">
-            <label htmlFor="">付款方式：</label>
+            <label>付款方式：</label>
             <select className="w-1/4 bg-white shadow-md select select-bordered">
               <option value="1">貨到付款</option>
               <option value="2">線上付款</option>
