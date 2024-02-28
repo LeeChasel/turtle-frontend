@@ -68,7 +68,7 @@ function CheckOrder() {
   } else {
     return (
       <>
-        <div className="w-fit items-center px-[16.25rem] pt-10 text-base">
+        <div className="w-screen items-center px-[16.25rem] pt-10 text-base">
           <div className="bg-gray-50 bg-center  bg-contain text-[#263238]  ">
             <div className="mx-10">訂單資訊</div>
             <div className="border mx-9 border-black w-[90%]"></div>

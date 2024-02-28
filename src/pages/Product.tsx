@@ -77,7 +77,7 @@ function Product() {
 
   return (
     <ProductProvider defaultProduct={productData}>
-      <div className="px-[60px] pt-20">
+      <div className="m-auto w-screen pt-20">
         <VariationProvider defaultVariation={defaultVariation}>
           <InfoContainer />
         </VariationProvider>

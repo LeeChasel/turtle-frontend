@@ -29,13 +29,21 @@ function Header() {
   );
   const isSpecialRoute = location.pathname.startsWith("/special");
   const isOrderInfoRoute = location.pathname.startsWith("/checkOrder");
+  const isPaymentCompletedRoute =
+    location.pathname.startsWith("/PaymentCompleted");
 
   // from special route to normal route will delete token cookie
   useEffect(() => {
-    if (!isSpecialRoute && tokenCookie && isSpecialRole && !isOrderInfoRoute) {
+    if (
+      !isSpecialRoute &&
+      tokenCookie &&
+      isSpecialRole &&
+      !isOrderInfoRoute &&
+      !isPaymentCompletedRoute
+    ) {
       deleteUserTokenCookie();
     }
-  }, [isSpecialRoute, tokenCookie, isOrderInfoRoute]);
+  }, [isSpecialRoute, tokenCookie, isOrderInfoRoute, isPaymentCompletedRoute]);
 
   useEffect(() => {
     async function processAnonymousLogin() {
@@ -51,7 +59,7 @@ function Header() {
     // Do not add dependency
   }, [isSpecialRole, isSpecialRoute, isOrderInfoRoute]);
 
-  if (isSpecialRoute || isSpecialRole) {
+  if (isSpecialRoute || isSpecialRole || isPaymentCompletedRoute) {
     return <AnonymousHeader />;
   }
 
@@ -61,7 +69,7 @@ function Header() {
 function AnonymousHeader() {
   const productId = useAnonymousProductStore((state) => state.productId);
   return (
-    <header className="flex items-center justify-between w-full h-[100px] bg-gray-800 px-[260px]">
+    <header className="flex items-center justify-between w-screen h-[100px] bg-gray-800 px-[16.25rem]">
       <nav>
         <ul className="flex items-center">
           <li className="translate-y-1">

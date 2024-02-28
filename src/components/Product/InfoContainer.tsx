@@ -60,8 +60,8 @@ function InfoContainer() {
   };
 
   return (
-    <div className="flex mb-[108px]">
-      <div className="px-10 basis-1/2">
+    <div className="w-screen  flex mb-[6.75rem]">
+      <div className="px-10 basis-1/2 w-3/4">
         <ImageGallery
           items={galleryImages}
           showPlayButton={false}
@@ -69,11 +69,11 @@ function InfoContainer() {
           ref={galleryRef}
         />
       </div>
-      <div className="flex flex-col basis-1/2 pl-[105px]">
-        <div className="pl-2 text-6xl">{product.productName}</div>
-        <div className="pl-4 mb-3 text-3xl">{product.productDescription}</div>
-        <div className="mb-3 border-4 border-black" />
-        <section className="inline-block px-4 py-2 mb-3 text-4xl text-white bg-blue-500 rounded-full w-fit">
+      <div className="text-base flex flex-col basis-1/2 pl-[105px]">
+        <div className="pl-2 text-2xl font-bold">{product.productName}</div>
+        <div className="pl-4 mb-3 text-2xl">{product.productDescription}</div>
+        <div className="mb-3 border-2 border-black" />
+        <section className="inline-block px-4 py-2 mb-3 text-2xl text-white bg-blue-500 rounded-full w-fit">
           ${variation.currentPrice}
         </section>
         <div className="flex flex-col gap-3 mb-[34px] p-3 border border-black rounded-lg shadow border-opacity-20">

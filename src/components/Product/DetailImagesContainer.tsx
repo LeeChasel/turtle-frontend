@@ -5,7 +5,7 @@ function DetailImagesContainer() {
   const { product } = useProductContext();
 
   return (
-    <div className="flex flex-col px-48 xl:px-80">
+    <div className="flex flex-col w-1/2 m-auto xl:px-80">
       <div className="p-1 border border-black rounded-lg shadow border-opacity-20">
         {product.detailImages?.map((detailData, index) => (
           <div key={index} className="flex flex-col">
