@@ -76,7 +76,7 @@ function Header() {
 function AnonymousHeader() {
   const productId = useAnonymousProductStore((state) => state.productId);
   return (
-    <header className="flex items-center justify-between w-screen h-[100px] bg-gray-800 px-[16.25rem]">
+    <header className="flex items-center justify-between w-full h-[100px] bg-gray-800 md:px-[16.25rem] lg:px-[16.25rem]">
       <nav>
         <ul className="flex items-center">
           <li className="translate-y-1">
