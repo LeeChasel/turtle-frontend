@@ -1,4 +1,5 @@
 import { AioCheckOutPaymentInfo, AioCheckOutReturn } from "./AllInOne";
+import { OrderCustomization } from "./Customization";
 import { CvsMap } from "./Cvs";
 import { LogisticsOrderStatus, ShippingInfo } from "./Shipping";
 import { TShoppingCartDetail, TShoppingCartBrief } from "./ShoppingCart";
@@ -39,6 +40,7 @@ export type OrderDetailItem = {
   variationSpec: string;
   currentPrice: number;
   quantity: number;
+  customizations: OrderCustomization[];
 };
 
 enum OrderStatus {

@@ -22,9 +22,7 @@ export type CustomizationItem = {
   name: string;
   type: string;
   customization: object;
-  /**
-   * default: false
-   */
+  /** default: false */
   required?: boolean;
 };
 

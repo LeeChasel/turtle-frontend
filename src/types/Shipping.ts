@@ -3,16 +3,12 @@ export type ShippingInfo = {
   logisticsType?: LogisticsType;
   logisticsSubType?: LogisticsSubType;
   senderName?: string;
-  /**
-   * pattern: ^09\d{8}$
-   */
+  /** pattern: ^09\d{8}$ */
   senderCellPhone?: string;
   senderZipCode?: string;
   senderAddress?: string;
   receiverName?: string;
-  /**
-   * pattern: ^09\d{8}$
-   */
+  /** pattern: ^09\d{8}$ */
   receiverCellPhone?: string;
   receiverZipCode?: string;
   receiverAddress?: string;
@@ -21,15 +17,19 @@ export type ShippingInfo = {
   payOnDelivery?: boolean;
 };
 
-enum LogisticsType {
+export enum LogisticsType {
   CVS = "CVS",
   HOME = "HOME",
 }
 
-enum LogisticsSubType {
+export enum LogisticsSubType {
+  /** 黑貓宅配 */
   TCAT = "TCAT",
+  /** 郵局宅配 */
   POST = "POST",
+  /** 全家店到店 */
   FAMIC2C = "FAMIC2C",
+  /** 7-11店到店 */
   UNIMARTC2C = "UNIMARTC2C",
 }
 

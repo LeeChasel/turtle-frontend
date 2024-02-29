@@ -82,9 +82,13 @@ function OrderCart() {
 
       showToast("success", `訂單編號：「${orderResponse.orderId}」建立成功`, {
         autoClose: false,
-        closeOnClick: false,
         draggable: false,
       });
+
+      const searchParams = new URLSearchParams();
+      searchParams.append("orderId", orderResponse.orderId);
+      searchParams.append("userEmail", userEmail);
+      navigate(`/special/fillInOrder?${searchParams.toString()}`);
     } catch (error) {
       if (error instanceof z.ZodError) {
         showToast("error", "請輸入正確的電子郵件");
@@ -112,7 +116,7 @@ function OrderCart() {
           <p className="py-4">請輸入您的電子郵件，以便建立訂單與後續聯絡</p>
           <input
             type="email"
-            placeholder="xxxx@gmail.com"
+            placeholder="name@example.com"
             className="w-full h-8 indent-2 rounded-l-md"
             min={1}
             ref={userEmailRef}
