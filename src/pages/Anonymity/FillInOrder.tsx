@@ -1,18 +1,67 @@
 import { useSearchParams, useNavigate } from "react-router-dom";
 import zipCodeJson from "@/data/district-zip-code.json";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { getParamToChangeCvsForAnonymity } from "@/actions/getParamToChangeCvs";
 import useUserTokenCookie from "@/hooks/useUserTokenCookie";
 import { showToast } from "@/utils/toastAlert";
 import { getCallbackToChangeCvsForAnonymity } from "@/actions/getCallbackToChangeCvs";
 import { LogisticsSubType, LogisticsType } from "@/types/Shipping";
 import { forEach } from "lodash";
+import { z } from "zod";
+import { CvsMapCallback } from "@/types/Cvs";
+import { setShippingInfoForAnonymity } from "@/actions/setShippingInfo";
+
+const baseInfoSchema = z.object({
+  orderId: z.string().min(1, { message: "訂單編號不可為空" }),
+  receiverEmail: z.string().email({ message: "電子信箱格式錯誤" }),
+  receiverName: z.string().min(1, { message: "姓名不可為空" }),
+  receiverCellPhone: z.string().regex(/^09\d{8}$/, {
+    message: "手機號碼格式錯誤",
+  }),
+});
+
+const homeBaseSchema = z.object({
+  logisticsType: z.literal(LogisticsType.HOME),
+  logisticsSubType: z.enum([LogisticsSubType.TCAT, LogisticsSubType.POST]),
+  receiverZipCode: z
+    .string()
+    .regex(/^\d{3}(?:\d{2})?$/, { message: "郵遞區號格式錯誤" }),
+  receiverAddress: z.string().min(1, { message: "收件地址不可為空" }),
+  payOnDelivery: z.literal(false),
+});
+
+const cvsBaseSchema = z.object({
+  logisticsType: z.literal(LogisticsType.CVS),
+  logisticsSubType: z.enum([
+    LogisticsSubType.UNIMARTC2C,
+    LogisticsSubType.FAMIC2C,
+  ]),
+  payOnDelivery: z.boolean(),
+});
 
 function FillInOrder() {
+  const { tokenCookie } = useUserTokenCookie();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const [shippingType, setShippingType] = useState<LogisticsType>(
+    LogisticsType.HOME,
+  );
+  // base
   const orderId = searchParams.get("orderId");
   const userEmail = searchParams.get("userEmail");
+  const receiverNameRef = useRef<HTMLInputElement>(null);
+  const receiverCellPhoneRef = useRef<HTMLInputElement>(null);
+
+  // home
+  const receiverZipCodeRef = useRef<HTMLInputElement>(null);
+  const [countryCity, setCountryCity] = useState<string>(zipCodeJson[0].name);
+  const [districts, setDistricts] = useState(zipCodeJson[0].districts[0].name);
+  const receiverAddressRef = useRef<HTMLInputElement>(null);
+
+  // Cvs
+  const [cvs, setCvs] = useState<CvsMapCallback>();
+  const [payOnDelivery, setPayOnDelivery] = useState(true);
+
   if (!orderId || !userEmail) {
     showToast("error", "缺少訂單編號或電子信箱");
     navigate(-1);
@@ -20,10 +69,62 @@ function FillInOrder() {
     return;
   }
 
+  async function onSubmitForm() {
+    try {
+      const baseInfo = baseInfoSchema.parse({
+        orderId: orderId!,
+        receiverEmail: userEmail!,
+        receiverName: receiverNameRef.current?.value,
+        receiverCellPhone: receiverCellPhoneRef.current?.value,
+      });
+
+      let shippingData: z.infer<typeof homeBaseSchema | typeof cvsBaseSchema>;
+      if (shippingType === LogisticsType.HOME) {
+        const detailedAddress = z
+          .string()
+          .min(1, { message: "地址不可為空" })
+          .parse(receiverAddressRef.current?.value);
+        shippingData = homeBaseSchema.parse({
+          logisticsType: shippingType,
+          logisticsSubType: LogisticsSubType.TCAT, // 目前指定黑貓宅配
+          receiverZipCode: receiverZipCodeRef.current?.value,
+          receiverAddress: `${countryCity}${districts}${detailedAddress}`,
+          payOnDelivery: false,
+        });
+      } else {
+        if (!cvs) {
+          throw new Error("請選擇超商取貨門市");
+        }
+        shippingData = cvsBaseSchema.parse({
+          logisticsType: shippingType,
+          logisticsSubType: cvs.LogisticsSubType,
+          payOnDelivery: payOnDelivery,
+        });
+      }
+
+      const orderResult = await setShippingInfoForAnonymity(
+        tokenCookie!,
+        userEmail!,
+        {
+          ...baseInfo,
+          ...shippingData,
+        },
+      );
+
+      showToast("success", `已成立訂單並發送通知至 ${orderResult.userEmail}`);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        showToast("error", error.errors[0].message);
+      } else if (error instanceof Error) {
+        showToast("error", error.message);
+      }
+    }
+  }
+
   // TODO: adjuct height of the grid chilld elements
   return (
-    <main className="mt-[40px] lg:mt-[120px] mx-[35px] lg:mx-28 lg:text-xl text-gray-800">
-      <div className="overflow-x-auto border-2 border-gray-800 lg:px-20 lg:py-10 bg-stone-50">
+    <main className="mt-[2.5rem] lg:mt-[7.5rem] mx-[2.12rem] lg:mx-28 text-gray-800 md:mx-[3.69rem] md:mt-[5.56rem] text-[0.375rem] md:text-[1rem] lg:text-[1.25rem]">
+      <div className="px-5 py-3 overflow-x-auto border-2 border-gray-800 lg:px-20 md:py-8 lg:py-10 md:px-14 bg-stone-50">
         <div className="space-y-5">
           <h1 className="border-b border-b-gray-800">訂單資訊</h1>
           <div className="grid items-center grid-cols-2 pt-3 gap-y-2 justify-items-center">
@@ -35,18 +136,35 @@ function FillInOrder() {
             <input
               type="text"
               id="name"
-              className="w-3/4 h-10 bg-white shadow-md input input-bordered"
+              className="w-3/4 bg-white shadow-md input input-xs md:input-sm lg:input-md input-bordered"
+              ref={receiverNameRef}
             />
             <label htmlFor="cellPhone">手機號碼：</label>
             <input
               type="tel"
               id="cellPhone"
-              className="w-3/4 h-10 bg-white shadow-md input input-bordered"
+              className="w-3/4 bg-white shadow-md input input-xs md:input-sm lg:input-md input-bordered"
+              ref={receiverCellPhoneRef}
             />
           </div>
-          <PickupOptions orderId={orderId} userEmail={userEmail} />
+          <PickupOptions
+            tokenCookie={tokenCookie}
+            orderId={orderId}
+            userEmail={userEmail}
+            setShippingType={setShippingType}
+            receiverZipCodeRef={receiverZipCodeRef}
+            countryCity={countryCity}
+            setCountryCity={setCountryCity}
+            setDistricts={setDistricts}
+            receiverAddressRef={receiverAddressRef}
+            setCvs={setCvs}
+            setPayOnDelivery={setPayOnDelivery}
+          />
           <div className="flex justify-end">
-            <button className="bg-white shadow-md btn btn-lg hover:bg-gray-100">
+            <button
+              className="bg-white shadow-md btn btn-sm md:btn-md lg:btn-lg hover:bg-gray-100"
+              onClick={onSubmitForm}
+            >
               送出
             </button>
           </div>
@@ -57,14 +175,31 @@ function FillInOrder() {
 }
 
 function PickupOptions({
+  tokenCookie,
   orderId,
   userEmail,
+  setShippingType,
+  receiverZipCodeRef,
+  countryCity,
+  setCountryCity,
+  setDistricts,
+  receiverAddressRef,
+  setCvs,
+  setPayOnDelivery,
 }: {
+  tokenCookie: string | undefined;
   orderId: string;
   userEmail: string;
+  setShippingType: React.Dispatch<React.SetStateAction<LogisticsType>>;
+  receiverZipCodeRef: React.RefObject<HTMLInputElement>;
+  countryCity: string;
+  setCountryCity: React.Dispatch<React.SetStateAction<string>>;
+  setDistricts: React.Dispatch<React.SetStateAction<string>>;
+  receiverAddressRef: React.RefObject<HTMLInputElement>;
+  setCvs: React.Dispatch<React.SetStateAction<CvsMapCallback | undefined>>;
+  setPayOnDelivery: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const { tokenCookie } = useUserTokenCookie();
-  const [countryCity, setCountryCity] = useState<string>(zipCodeJson[0].name);
+  const [storeName, setStoreName] = useState<string>();
   const districts = zipCodeJson.find(
     (item) => item.name === countryCity,
   )!.districts;
@@ -73,6 +208,14 @@ function PickupOptions({
     event: React.ChangeEvent<HTMLSelectElement>,
   ) {
     setCountryCity(event.target.value);
+  }
+
+  function handleChangeDistricts(event: React.ChangeEvent<HTMLSelectElement>) {
+    setDistricts(event.target.value);
+  }
+
+  function handlePayOnDelivery(event: React.ChangeEvent<HTMLSelectElement>) {
+    setPayOnDelivery(event.target.value === "true");
   }
 
   const url = import.meta.env.DEV
@@ -109,7 +252,11 @@ function PickupOptions({
         orderId,
         userEmail,
       );
-      console.log(callbackResult);
+      if (!callbackResult) {
+        return;
+      }
+      setCvs(callbackResult);
+      setStoreName(`7-ELEVEN ${callbackResult.CVSStoreName}`);
     } catch (error) {
       if (error instanceof Error) {
         showToast("error", error.message);
@@ -118,16 +265,17 @@ function PickupOptions({
   }
 
   return (
-    <div>
+    <div className="text-gray-800 text-[0.375rem] md:text-[1rem] lg:text-[1.25rem]">
       <h1 className="my-2 border-b border-b-gray-800">取貨方式</h1>
-      <div role="tablist" className="tabs tabs-lifted">
+      <div role="tablist" className="tabs tabs-sm md:tabs-md tabs-lifted">
         {/* 宅配 */}
         <input
           type="radio"
           name="my_tabs_1"
           role="tab"
-          className="tab [--tab-bg:white]"
+          className="tab [--tab-bg:white] text-[0.6rem] lg:text-lg"
           aria-label="宅配"
+          onChange={() => setShippingType(LogisticsType.HOME)}
           defaultChecked
         />
         <div
@@ -139,13 +287,14 @@ function PickupOptions({
             <input
               type="number"
               id="zipCode"
-              className="w-1/4 h-10 bg-white shadow-md input input-bordered"
+              className="w-1/4 bg-white shadow-md input input-xs md:input-sm lg:input-md input-bordered"
+              ref={receiverZipCodeRef}
             />
           </div>
           <div className="space-x-5">
             <label htmlFor="address">收件地址：</label>
             <select
-              className="w-1/4 bg-white shadow-md select select-bordered"
+              className="w-1/4 bg-white shadow-md select select-xs md:select-sm lg:select-md select-bordered"
               defaultValue={countryCity}
               onChange={handleChangeCountryCity}
             >
@@ -155,7 +304,10 @@ function PickupOptions({
                 </option>
               ))}
             </select>
-            <select className="w-1/4 bg-white shadow-md select select-bordered">
+            <select
+              className="w-1/4 bg-white shadow-md select select-xs md:select-sm lg:select-md select-bordered"
+              onChange={handleChangeDistricts}
+            >
               {districts.map((district) => (
                 <option key={district.name} value={district.name}>
                   {district.name}
@@ -168,7 +320,8 @@ function PickupOptions({
             <input
               id="address"
               type="text"
-              className="w-2/3 h-10 bg-white shadow-md input input-bordered"
+              className="w-2/3 bg-white shadow-md input input-xs md:input-sm lg:input-md input-bordered"
+              ref={receiverAddressRef}
             />
           </div>
         </div>
@@ -178,8 +331,9 @@ function PickupOptions({
           type="radio"
           name="my_tabs_1"
           role="tab"
-          className="tab [--tab-bg:white]"
+          className="tab [--tab-bg:white] text-[0.5rem] lg:text-lg"
           aria-label="超商取貨"
+          onChange={() => setShippingType(LogisticsType.CVS)}
         />
         <div
           role="tabpanel"
@@ -188,17 +342,20 @@ function PickupOptions({
           <div className="space-x-5">
             <label>取貨門市：</label>
             <button
-              className="font-normal bg-white shadow-md btn hover:bg-gray-100"
+              className="font-normal bg-white shadow-md btn btn-xs md:btn-md hover:bg-gray-100"
               onClick={handleSelectStore}
             >
-              選擇門市
+              {storeName ? storeName : "選擇門市"}
             </button>
           </div>
           <div className="space-x-5">
             <label>付款方式：</label>
-            <select className="w-1/4 bg-white shadow-md select select-bordered">
-              <option value="1">貨到付款</option>
-              <option value="2">線上付款</option>
+            <select
+              className="w-1/4 bg-white shadow-md select select-xs md:select-sm lg:select-md select-bordered"
+              onChange={handlePayOnDelivery}
+            >
+              <option value="true">貨到付款</option>
+              <option value="false">線上付款</option>
             </select>
           </div>
         </div>

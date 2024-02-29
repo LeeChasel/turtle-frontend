@@ -4,12 +4,12 @@ import { LogisticsSubType, LogisticsType } from "@/types/Shipping";
 type setShippingInfoDTO = {
   orderId: string;
   logisticsType: LogisticsType;
-  logisticsSubType: LogisticsSubType;
+  logisticsSubType?: LogisticsSubType;
   receiverName: string;
   /** pattern: ^09\d{8}$ */
   receiverCellPhone: string;
-  receiverZipCode: string;
-  receiverAddress: string;
+  receiverZipCode?: string;
+  receiverAddress?: string;
   receiverEmail: string;
   payOnDelivery: boolean;
 };

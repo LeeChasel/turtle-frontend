@@ -23,9 +23,13 @@ export enum LogisticsType {
 }
 
 export enum LogisticsSubType {
+  /** 黑貓宅配 */
   TCAT = "TCAT",
+  /** 郵局宅配 */
   POST = "POST",
+  /** 全家店到店 */
   FAMIC2C = "FAMIC2C",
+  /** 7-11店到店 */
   UNIMARTC2C = "UNIMARTC2C",
 }
 

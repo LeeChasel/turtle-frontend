@@ -40,28 +40,25 @@ export async function getCallbackToChangeCvsForAnonymity(
     },
   };
 
-  let cvsCallbackResult: CvsMapCallback | undefined;
-
-  const processStream = async () => {
+  const processStream = async (): Promise<CvsMapCallback | undefined> => {
     const stream = await fetchFn(url, init);
     const reader = stream.getReader();
     try {
-      const readChunk = async () => {
+      const readChunk = async (): Promise<CvsMapCallback | undefined> => {
         const readData = await reader.read();
         const { value } = readData;
         const chunkMsg = new TextDecoder("utf-8").decode(value);
         const { data } = parseStreamData(chunkMsg);
         if (isCvsMapCallback(data)) {
-          cvsCallbackResult = data;
-          await reader.cancel();
+          return data;
         } else if (data.heartbeat >= 110) {
           // handle api timeout 600s, resend request on 110 * 5 = 550s
-          await processStream();
+          return await processStream();
         } else {
-          await readChunk();
+          return await readChunk();
         }
       };
-      await readChunk();
+      return await readChunk();
     } catch (error) {
       if (error instanceof Error) {
         throw new Error(error.message);
@@ -69,8 +66,7 @@ export async function getCallbackToChangeCvsForAnonymity(
     }
   };
 
-  await processStream();
-  return cvsCallbackResult;
+  return await processStream();
 }
 
 function parseStreamData(streamData: string): StreamResponse {
@@ -82,8 +78,10 @@ function parseStreamData(streamData: string): StreamResponse {
     dataResult = {
       heartbeat: ReArray ? parseInt(ReArray[0]) : -1,
     };
-  } else {
+  } else if (dataStr.includes("MerchantID")) {
     dataResult = JSON.parse(JSON.parse(dataStr) as string) as CvsMapCallback;
+  } else {
+    throw new Error("無法解析串流資料");
   }
   return {
     event: event.replace("event:", ""),
