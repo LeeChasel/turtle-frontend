@@ -52,7 +52,7 @@ function CheckOrder() {
 
   function cancel(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
-    navigate("/");
+    navigate("/checkout?orderId=" + orderId + "&userEmail=" + email);
   }
 
   const orderTrace = trace();
@@ -114,10 +114,9 @@ function CheckOrder() {
                       <td className="break-all text-ellipsis">
                         {object.variationSpec}
                       </td>
-                      <td>NT$ {object.currentPrice.toLocaleString()}</td>
+                      <td>{object.currentPrice.toLocaleString()}</td>
                       <td>{object.quantity.toLocaleString()}</td>
                       <td>
-                        NT${" "}
                         {(
                           object.currentPrice * object.quantity
                         ).toLocaleString()}
@@ -129,7 +128,7 @@ function CheckOrder() {
               <div className="flex justify-end mt-3">
                 <span>總金額：</span>
                 <span className="font-bold text-red-500">
-                  {orderInfo.totalPrice}
+                  NT${orderInfo.totalPrice}
                 </span>
               </div>
             </div>

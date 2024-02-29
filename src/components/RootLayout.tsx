@@ -31,7 +31,7 @@ function Header() {
   const isOrderInfoRoute = location.pathname.startsWith("/checkOrder");
   const isPaymentCompletedRoute =
     location.pathname.startsWith("/PaymentCompleted");
-
+  const isCheckoutRoute = location.pathname.startsWith("/checkout");
   // from special route to normal route will delete token cookie
   useEffect(() => {
     if (
@@ -39,11 +39,18 @@ function Header() {
       tokenCookie &&
       isSpecialRole &&
       !isOrderInfoRoute &&
-      !isPaymentCompletedRoute
+      !isPaymentCompletedRoute &&
+      !isCheckoutRoute
     ) {
       deleteUserTokenCookie();
     }
-  }, [isSpecialRoute, tokenCookie, isOrderInfoRoute, isPaymentCompletedRoute]);
+  }, [
+    isSpecialRoute,
+    tokenCookie,
+    isOrderInfoRoute,
+    isPaymentCompletedRoute,
+    isCheckoutRoute,
+  ]);
 
   useEffect(() => {
     async function processAnonymousLogin() {
@@ -57,7 +64,7 @@ function Header() {
     if (!isSpecialRole && (isSpecialRoute || isOrderInfoRoute))
       void processAnonymousLogin();
     // Do not add dependency
-  }, [isSpecialRole, isSpecialRoute, isOrderInfoRoute]);
+  }, [isSpecialRole, isSpecialRoute, isOrderInfoRoute, isCheckoutRoute]);
 
   if (isSpecialRoute || isSpecialRole || isPaymentCompletedRoute) {
     return <AnonymousHeader />;

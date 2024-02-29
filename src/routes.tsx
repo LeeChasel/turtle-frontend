@@ -25,6 +25,7 @@ import OrderCart from "./pages/Anonymity/Cart";
 import OrderSearch from "./pages/OrderSearch";
 import CheckOrder from "./pages/CheckOrder";
 import PaymentCompleted from "./pages/PaymentCompleted";
+import Checkout from "./pages/Checkout";
 
 const specialRoutes: RouteObject[] = [
   { path: "/special/product/:productId", Component: Product },
@@ -45,6 +46,7 @@ const routerData: RouteObject[] = [
       { path: "/checkOrder", Component: CheckOrder },
       { path: "/orderSearch", Component: OrderSearch },
       { path: "/PaymentCompleted", Component: PaymentCompleted },
+      { path: "/checkout", Component: Checkout },
       ...specialRoutes,
       {
         Component: AuthRoutes,
