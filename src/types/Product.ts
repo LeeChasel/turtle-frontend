@@ -21,7 +21,9 @@ export type TProduct = {
 export type CustomizationItem = {
   name: string;
   type: string;
-  customization: object;
+  customization: {
+    description: string;
+  };
   /** default: false */
   required?: boolean;
 };

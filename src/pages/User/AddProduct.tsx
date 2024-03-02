@@ -15,8 +15,10 @@ import type {
   TImage,
   TVariation,
   TImageData,
+  CustomizationItem,
 } from "../../types/Product";
 import { getImageData } from "../../utils/processFile";
+import { isEmpty, uniq } from "lodash";
 
 type VariationData = {
   variationName: string;
@@ -40,6 +42,10 @@ type FormInputs = {
   previewImages?: TImageData[];
   detailImages: TImageData[];
   variations: VariationData[];
+  customizations?: CustomizationItem[];
+  relatedProducts?: {
+    productName: string;
+  }[];
 };
 
 const variationDefaultValue = {
@@ -101,16 +107,46 @@ function AddProducts() {
     name: "variations",
   });
 
+  const {
+    fields: relativeProductField,
+    append: appendRelativeProduct,
+    remove: removeRelativeProduct,
+  } = useFieldArray({
+    control,
+    name: "relatedProducts",
+  });
+
+  const {
+    fields: customizationField,
+    append: appendCustomization,
+    remove: removeCustomization,
+  } = useFieldArray({
+    control,
+    name: "customizations",
+  });
+
   const { tokenCookie } = useUserTokenCookie();
 
   const onSubmit: SubmitHandler<FormInputs> = async (formData) => {
     try {
+      // check productName is exited or not
       const validateName = await getProductByName(formData.productName);
       if (validateName.length !== 0) {
         throw new Error(
           `商品「${formData.productName}」已經登記，無法重新登記`,
         );
       }
+
+      // check productNames in relatedProducts are exited or not
+      const relatedProductIds = await Promise.all(
+        uniq(formData.relatedProducts).map(async (item) => {
+          const productsData = await getProductByName(item.productName);
+          if (productsData.length === 0) {
+            throw new Error(`相關商品「${item.productName}」不存在`);
+          }
+          return productsData[0].productId!;
+        }),
+      );
 
       const productData: TProduct = {
         productName: formData.productName,
@@ -120,8 +156,9 @@ function AddProducts() {
         stock: formData.stock,
         available: formData.available,
         productUpstreamUrl: formData.productUpstreamUrl,
-
-        // TODO: hotfix, nned to add form
+        relatedProducts: relatedProductIds,
+        // TODO: waiting for enum of type property
+        // customizations: formData.customizations ?? [],
         customizations: [],
       };
 
@@ -155,6 +192,7 @@ function AddProducts() {
       productData.variations = variationDataArray;
 
       const addProductResult = await sendRequest(productData, tokenCookie);
+      console.log(addProductResult);
       showToast("success", `商品「${addProductResult.productName}」新增成功!`);
 
       // Success will rest the form, if fail will throw error and don't trigger reset
@@ -180,7 +218,9 @@ function AddProducts() {
         </label>
         <input
           type="text"
-          {...register("productName", { required: "商品名稱必填!" })}
+          {...register("productName", {
+            validate: (value) => !isEmpty(value.trim()) || "商品名稱必填！",
+          })}
           className="input input-bordered"
         />
         {errors.productName && (
@@ -412,7 +452,11 @@ function AddProducts() {
                 name={`detailImages.${index}.description` as const}
                 control={control}
                 rules={{
-                  required: index === 0 ? "至少填寫一段文字敘述" : false,
+                  validate: (value) => {
+                    if (index === 0) {
+                      return !isEmpty(value!.trim()) || "第一個敘述為必填";
+                    }
+                  },
                 }}
                 render={({
                   field: { value, onChange },
@@ -474,7 +518,9 @@ function AddProducts() {
               <Controller
                 name={`variations.${index}.variationName` as const}
                 control={control}
-                rules={{ required: "種類名稱必填" }}
+                rules={{
+                  validate: (value) => !isEmpty(value.trim()) || "種類名稱必填",
+                }}
                 render={({ field, fieldState: { error } }) => (
                   <div className="w-full">
                     <label className="label label-text">
@@ -499,7 +545,9 @@ function AddProducts() {
               <Controller
                 name={`variations.${index}.variationSpec` as const}
                 control={control}
-                rules={{ required: "種類規格必填" }}
+                rules={{
+                  validate: (value) => !isEmpty(value.trim()) || "種類規格必填",
+                }}
                 render={({ field, fieldState: { error } }) => (
                   <div className="w-full">
                     <label className="label label-text">
@@ -620,6 +668,197 @@ function AddProducts() {
           ))}
         </ul>
       </div>
+
+      {/* 相關商品 */}
+      <div className="col-span-2 form-control">
+        <div className="label">
+          <div>相關商品（名稱）</div>
+          <button
+            type="button"
+            onClick={() =>
+              appendRelativeProduct(
+                {
+                  productName: "",
+                },
+                {
+                  shouldFocus: false,
+                },
+              )
+            }
+            className="btn btn-ghost btn-sm"
+          >
+            新增欄位
+          </button>
+        </div>
+        {relativeProductField.map((relativeProduct, index) => (
+          <div key={relativeProduct.id} className="flex flex-col gap-1 mt-2">
+            <div className="badge badge-primary badge-outline badge-lg">
+              第{index + 1}個
+            </div>
+            <Controller
+              name={`relatedProducts.${index}.productName` as const}
+              control={control}
+              rules={{
+                validate: (value) => !isEmpty(value.trim()) || "不可空白",
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <>
+                  <div className="flex items-center">
+                    <input
+                      {...field}
+                      type="text"
+                      className="input input-bordered grow"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeRelativeProduct(index)}
+                      className="btn btn-square btn-ghost"
+                    >
+                      <GiCancel className="w-7 h-7" />
+                    </button>
+                  </div>
+                  {error && (
+                    <label className="justify-end label label-text-alt text-error">
+                      {error.message}
+                    </label>
+                  )}
+                </>
+              )}
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* 客製化 */}
+      <div className="col-span-2 form-control">
+        <div className="label">
+          <div>客製化</div>
+          <button
+            type="button"
+            onClick={() =>
+              appendCustomization(
+                {
+                  name: "",
+                  type: "",
+                  customization: { description: "" },
+                },
+                {
+                  shouldFocus: false,
+                },
+              )
+            }
+            className="btn btn-ghost btn-sm"
+          >
+            新增欄位
+          </button>
+        </div>
+        {customizationField.map((customization, index) => (
+          <div key={customization.id} className="grid grid-cols-2 gap-3 mt-2">
+            <div className="flex items-center justify-between col-span-full">
+              <span className="badge badge-primary badge-outline badge-lg">
+                第{index + 1}個客製化
+              </span>
+              <button
+                onClick={() => removeCustomization(index)}
+                className="btn btn-square btn-ghost"
+              >
+                <GiCancel className="w-7 h-7" />
+              </button>
+            </div>
+            <Controller
+              name={`customizations.${index}.name` as const}
+              control={control}
+              rules={{
+                validate: (value) => !isEmpty(value.trim()) || "不可空白",
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <div className="w-full">
+                  <label className="label label-text">
+                    <span>
+                      <span>名稱</span>
+                      <span className="text-red-700">*</span>
+                    </span>
+                  </label>
+                  <input
+                    {...field}
+                    type="text"
+                    className="w-full input input-bordered"
+                  />
+                  {error && (
+                    <label className="justify-end label label-text-alt text-error">
+                      {error.message}
+                    </label>
+                  )}
+                </div>
+              )}
+            />
+            <Controller
+              name={`customizations.${index}.type` as const}
+              control={control}
+              // waiting for enum type
+              // rules={{
+              //   validate: (value) => !isEmpty(value.trim()) || "必須選擇類型",
+              // }}
+              render={({ field, fieldState: { error } }) => (
+                <div className="w-full">
+                  <label className="label label-text">
+                    <span>
+                      <span>類型</span>
+                      <span className="text-red-700">*</span>
+                    </span>
+                  </label>
+                  <select {...field} className="w-full select select-bordered">
+                    <option
+                      value=""
+                      defaultChecked
+                      disabled
+                      className="bg-gray-300"
+                    >
+                      選擇類型...
+                    </option>
+                    {/* TODO: use enum type as option value and text */}
+                  </select>
+                  {error && (
+                    <label className="justify-end label label-text-alt text-error">
+                      {error.message}
+                    </label>
+                  )}
+                </div>
+              )}
+            />
+            <Controller
+              name={
+                `customizations.${index}.customization.description` as const
+              }
+              control={control}
+              rules={{
+                validate: (value) => !isEmpty(value.trim()) || "不可空白",
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <div className="col-span-full">
+                  <label className="label label-text">
+                    <span>
+                      <span>描述</span>
+                      <span className="text-red-700">*</span>
+                    </span>
+                  </label>
+                  <textarea
+                    {...field}
+                    className="w-full h-24 resize-none textarea textarea-bordered"
+                  />
+                  {error && (
+                    <label className="justify-end label label-text-alt text-error">
+                      {error.message}
+                    </label>
+                  )}
+                </div>
+              )}
+            />
+          </div>
+        ))}
+      </div>
+
+      <div className="divider col-span-full" />
 
       <button
         className={clsx(
