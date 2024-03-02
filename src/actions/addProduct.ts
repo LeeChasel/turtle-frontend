@@ -14,8 +14,6 @@ async function addProduct(token: string, productData: TProduct) {
     }),
   });
 
-  console.log(await res.json());
-
   if (!res.ok) {
     throw new Error("新增商品錯誤");
   }

@@ -192,7 +192,6 @@ function AddProducts() {
       productData.variations = variationDataArray;
 
       const addProductResult = await sendRequest(productData, tokenCookie);
-      console.log(addProductResult);
       showToast("success", `商品「${addProductResult.productName}」新增成功!`);
 
       // Success will rest the form, if fail will throw error and don't trigger reset
