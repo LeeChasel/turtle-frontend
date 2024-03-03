@@ -80,10 +80,7 @@ function OrderCart() {
       decreaseMultipleSelectedProducts(selectedProducts);
       modalRef.current?.close();
 
-      showToast("success", `訂單編號：「${orderResponse.orderId}」建立成功`, {
-        autoClose: false,
-        draggable: false,
-      });
+      showToast("success", `訂單編號：「${orderResponse.orderId}」建立成功`);
 
       const searchParams = new URLSearchParams();
       searchParams.append("orderId", orderResponse.orderId);
