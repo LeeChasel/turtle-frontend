@@ -2,7 +2,7 @@ import { useSearchParams } from "react-router-dom";
 import useUserTokenCookie from "../hooks/useUserTokenCookie";
 import validateTokenRole from "../utils/validateTokenRole";
 import useOrderChecking from "../hooks/useAnonymityOrderChecking";
-import { useNavigate } from "react-router-dom";
+import { getPaymentDetail } from "../actions/getPaymentDetail";
 
 function Checkout() {
   const [searchParams] = useSearchParams();
@@ -14,11 +14,55 @@ function Checkout() {
     status,
     error,
   } = useOrderChecking(orderId!, email!, tokenCookie!);
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
 
-  function cancel(e: React.MouseEvent<HTMLButtonElement>) {
+  async function payment(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
-    navigate("/");
+    const form = document.createElement("form");
+    const paymentDetails = await getPaymentDetail(orderId!);
+    const key = [
+      "MerchantID",
+      "MerchantTradeNo",
+      "MerchantTradeDate",
+      "PaymentType",
+      "TotalAmount",
+      "TradeDesc",
+      "ItemName",
+      "ReturnURL",
+      "ChoosePayment",
+      "CheckMacValue",
+      "EncryptType",
+      "PaymentInfoURL",
+    ];
+    const value = [
+      paymentDetails.MerchantID,
+      paymentDetails.MerchantTradeNo,
+      paymentDetails.MerchantTradeDate,
+      paymentDetails.PaymentType,
+      paymentDetails.TotalAmount,
+      paymentDetails.TradeDesc,
+      paymentDetails.ItemName,
+      paymentDetails.ReturnURL,
+      paymentDetails.ChoosePayment,
+      paymentDetails.CheckMacValue,
+      paymentDetails.EncryptType,
+      paymentDetails.PaymentInfoURL,
+    ];
+    form.setAttribute("method", "post");
+    form.setAttribute(
+      "action",
+      "https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5",
+    );
+    const input = document.createElement("input");
+    for (let i = 0; i < key.length; i++) {
+      input.setAttribute("name", key[i]);
+      input.setAttribute("value", value[i] + "");
+      form.appendChild(input);
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
   }
 
   if (status === "pending") {
@@ -75,7 +119,7 @@ function Checkout() {
           </span>
         </div>
         <p className="text-right">
-          <button className="btn  btn-outline shadow-lg" onClick={cancel}>
+          <button className="btn  btn-outline shadow-lg" onClick={payment}>
             立即付款
           </button>
         </p>

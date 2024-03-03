@@ -52,7 +52,7 @@ function CheckOrder() {
 
   function cancel(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
-    navigate("/checkout?orderId=" + orderId + "&userEmail=" + email);
+    navigate("/");
   }
 
   const orderTrace = trace();
