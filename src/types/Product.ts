@@ -18,6 +18,18 @@ export type TProduct = {
   relatedProducts?: string[];
 };
 
+export type ProductResponse = Omit<
+  TProduct,
+  "relatedProducts" | "customizations"
+> & {
+  relatedProducts: TBanner[];
+  customizations: Omit<CustomizationItem, "customization"> & {
+    customization: {
+      price: number;
+    };
+  };
+};
+
 export type CustomizationItem = {
   name: string;
   type: string;

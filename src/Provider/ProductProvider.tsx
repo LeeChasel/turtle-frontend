@@ -1,11 +1,11 @@
+import { ProductResponse } from "@/types/Product";
 import React, { createContext, useContext, useMemo, useState } from "react";
-import type { TProduct } from "../types/Product";
 
 /**
  * 建立 Context, 定義 Context 中 value 的型別
  */
 type TProductContextData = {
-  product: TProduct;
+  product: ProductResponse;
 };
 const ProductContext = createContext<TProductContextData | undefined>(
   undefined,
@@ -15,7 +15,7 @@ const ProductContext = createContext<TProductContextData | undefined>(
  * 建立 Provider 元件, 定義 Provider 元件 Props 的型別
  */
 type TProductProviderProps = {
-  defaultProduct: TProduct;
+  defaultProduct: ProductResponse;
   children: React.ReactNode;
 };
 

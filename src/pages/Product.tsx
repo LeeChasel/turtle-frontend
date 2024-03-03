@@ -12,6 +12,8 @@ import useUserTokenCookie from "../hooks/useUserTokenCookie";
 import validateTokenRole from "../utils/validateTokenRole";
 import useAnonymousProductStore from "../store/useAnonymousProductStore";
 import { anonymousUser } from "../utils/anonymity";
+import RelatedProductsContainer from "@/components/Product/RelatedProductsContainer";
+import { reject } from "lodash";
 
 function Product() {
   // The productName and productId is defined in route file as dynamic placeholder
@@ -75,12 +77,28 @@ function Product() {
     return <div>Have no variation can buy now</div>;
   }
 
+  // only show the available related products
+  const availableRelatedProducts = reject(productData.relatedProducts, {
+    available: false,
+  });
+
   return (
-    <ProductProvider defaultProduct={productData}>
-      <div className="m-auto w-screen pt-20">
+    <ProductProvider
+      defaultProduct={{
+        ...productData,
+        relatedProducts: availableRelatedProducts,
+      }}
+    >
+      <div className="w-screen pt-20 m-auto">
         <VariationProvider defaultVariation={defaultVariation}>
           <InfoContainer />
         </VariationProvider>
+        {availableRelatedProducts.length > 0 && (
+          <>
+            <div className="border-2 border-black" />
+            <RelatedProductsContainer />
+          </>
+        )}
         <div className="mb-6 border-2 border-black" />
         <DetailImagesContainer />
       </div>

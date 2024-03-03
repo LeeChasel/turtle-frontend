@@ -1,4 +1,4 @@
-import type { TProduct } from "../types/Product";
+import { ProductResponse } from "@/types/Product";
 
 async function getProductById(id: string) {
   const URL = import.meta.env.VITE_TURTLE_PUBLIC_URL + "/product/id/" + id;
@@ -7,7 +7,7 @@ async function getProductById(id: string) {
     throw new Error("由商品ID得該商品資料失敗");
   }
 
-  return res.json() as Promise<TProduct>;
+  return res.json() as Promise<ProductResponse>;
 }
 
 export default getProductById;

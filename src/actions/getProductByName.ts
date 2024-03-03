@@ -1,4 +1,4 @@
-import type { TProduct } from "../types/Product";
+import { ProductResponse } from "@/types/Product";
 
 /**
  * Get product by name, if not found, return empty array
@@ -12,7 +12,7 @@ async function getProductByName(name: string) {
     throw new Error("由商品名稱取得該商品資料失敗");
   }
 
-  return res.json() as Promise<TProduct[]>;
+  return res.json() as Promise<ProductResponse[]>;
 }
 
 export default getProductByName;
