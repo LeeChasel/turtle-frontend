@@ -218,9 +218,8 @@ function PickupOptions({
     setPayOnDelivery(event.target.value === "true");
   }
 
-  const url = import.meta.env.DEV
-    ? (import.meta.env.VITE_ECPAY_DEV_URL as string)
-    : (import.meta.env.VITE_ECPAY_PROD_URL as string);
+  // TODO: waiting for ECPay online, need to seperate env file like .env.development and .env.production
+  const url = import.meta.env.VITE_ECPAY_CVS_URL as string;
 
   async function handleSelectStore() {
     try {
