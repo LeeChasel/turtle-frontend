@@ -77,7 +77,7 @@ function Checkout() {
       <>
         <div className="w-fit px-[11.5rem] lg:px-[16.25rem] items-center pt-10 text-base text-[#263238]">
           <div className="md:p-5 lg:p-5 overflow-x-auto">
-            <table className="w-fit table text-center border-2 border-[#263238]">
+            <table className="w-fit table text-center border-2 border-[#263238] bg-[#F9F9F9]">
               <thead>
                 <tr>
                   <th className="w-[25%]">商品名稱</th>
