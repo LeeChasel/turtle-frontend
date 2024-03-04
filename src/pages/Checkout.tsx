@@ -14,7 +14,6 @@ function Checkout() {
     status,
     error,
   } = useOrderChecking(orderId!, email!, tokenCookie!);
-  //const navigate = useNavigate();
 
   async function payment(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
@@ -53,13 +52,13 @@ function Checkout() {
       "action",
       "https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5",
     );
-    const input = document.createElement("input");
+
     for (let i = 0; i < key.length; i++) {
+      const input = document.createElement("input");
       input.setAttribute("name", key[i]);
       input.setAttribute("value", value[i] + "");
       form.appendChild(input);
     }
-
     document.body.appendChild(form);
     form.submit();
     document.body.removeChild(form);
