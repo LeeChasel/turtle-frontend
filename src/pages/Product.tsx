@@ -89,7 +89,7 @@ function Product() {
         relatedProducts: availableRelatedProducts,
       }}
     >
-      <div className="w-screen pt-20 m-auto">
+      <div className="w-fit pt-20">
         <VariationProvider defaultVariation={defaultVariation}>
           <InfoContainer />
         </VariationProvider>
