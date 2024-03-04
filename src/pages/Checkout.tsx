@@ -76,7 +76,7 @@ function Checkout() {
   } else {
     return (
       <>
-        <div className="w-screen md:px-[11.5rem] lg:px-[16.25rem] items-center pt-10 text-base text-[#263238]">
+        <div className="w-fit px-[11.5rem] lg:px-[16.25rem] items-center pt-10 text-base text-[#263238]">
           <div className="md:p-5 lg:p-5 overflow-x-auto">
             <table className="w-fit table text-center border-2 border-[#263238]">
               <thead>
@@ -111,18 +111,18 @@ function Checkout() {
               </tbody>
             </table>
           </div>
+          <div className="flex justify-end mt-3 text-right">
+            <span>總金額：</span>
+            <span className="font-bold text-red-500">
+              NT${orderInfo.totalPrice}
+            </span>
+          </div>
+          <p className="text-right">
+            <button className="btn  btn-outline shadow-lg" onClick={payment}>
+              立即付款
+            </button>
+          </p>
         </div>
-        <div className="flex justify-end mt-3 text-right">
-          <span>總金額：</span>
-          <span className="font-bold text-red-500">
-            NT${orderInfo.totalPrice}
-          </span>
-        </div>
-        <p className="text-right">
-          <button className="btn  btn-outline shadow-lg" onClick={payment}>
-            立即付款
-          </button>
-        </p>
       </>
     );
   }
