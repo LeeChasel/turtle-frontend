@@ -3,6 +3,7 @@ import { LogisticsSubType, LogisticsType } from "@/types/Shipping";
 
 type setShippingInfoDTO = {
   orderId: string;
+  merchantId: string;
   logisticsType: LogisticsType;
   logisticsSubType?: LogisticsSubType;
   receiverName: string;

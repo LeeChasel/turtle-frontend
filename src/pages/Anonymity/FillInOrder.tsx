@@ -108,6 +108,7 @@ function FillInOrder() {
         {
           ...baseInfo,
           ...shippingData,
+          merchantId: cvs!.MerchantID,
         },
       );
 

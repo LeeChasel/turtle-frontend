@@ -19,6 +19,7 @@ import type {
 } from "../../types/Product";
 import { getImageData } from "../../utils/processFile";
 import { isEmpty, uniq } from "lodash";
+import getUserByEmail from "@/actions/getUserByEmail";
 
 type VariationData = {
   variationName: string;
@@ -46,6 +47,7 @@ type FormInputs = {
   relatedProducts?: {
     productName: string;
   }[];
+  merchantEmail: string;
 };
 
 const variationDefaultValue = {
@@ -66,6 +68,7 @@ const formDefaultValue: FormInputs = {
   available: true,
   detailImages: [{ description: "", image: null }],
   variations: [variationDefaultValue],
+  merchantEmail: "",
 };
 
 function AddProducts() {
@@ -148,6 +151,15 @@ function AddProducts() {
         }),
       );
 
+      let merchantId = "";
+      if (formData.merchantEmail.trim() !== "") {
+        const userData = await getUserByEmail(
+          tokenCookie!,
+          formData.merchantEmail,
+        );
+        merchantId = userData.id;
+      }
+
       const productData: TProduct = {
         productName: formData.productName,
         productDescription: formData.productDescription,
@@ -156,6 +168,7 @@ function AddProducts() {
         stock: formData.stock,
         available: formData.available,
         productUpstreamUrl: formData.productUpstreamUrl,
+        merchantId: merchantId,
         relatedProducts: relatedProductIds,
         // TODO: waiting for enum of type property
         // customizations: formData.customizations ?? [],
@@ -311,6 +324,19 @@ function AddProducts() {
             {errors.stock.message}
           </label>
         )}
+      </div>
+
+      {/* 賣家 */}
+      <div className="form-control">
+        <div className="label">
+          <span>賣家 （Email）</span>
+          <span>Admin留空</span>
+        </div>
+        <input
+          type="email"
+          {...register("merchantEmail")}
+          className="input input-bordered"
+        />
       </div>
 
       {/* bannerImage */}

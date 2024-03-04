@@ -18,6 +18,7 @@ export type TOrderRequest = {
 
 export type OrderDetail = {
   orderId: string;
+  merchantId: string;
   userId: string;
   userEmail: string;
   orderDate: string;
