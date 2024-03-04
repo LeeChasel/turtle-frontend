@@ -25,12 +25,14 @@ import OrderCart from "./pages/Anonymity/Cart";
 import OrderSearch from "./pages/OrderSearch";
 import CheckOrder from "./pages/CheckOrder";
 import FillInOrder from "./pages/Anonymity/FillInOrder";
+import CvsMapSuccess from "./pages/Anonymity/CvsMapSuccess";
 
 const specialRoutes: RouteObject[] = [
   { path: "/special/product/:productId", Component: Product },
   { path: "/special/cart", Component: OrderCart },
   { path: "/special/orderSearch", Component: OrderSearch },
   { path: "/special/fillInOrder", Component: FillInOrder },
+  { path: "/special/cvsMapSuccess", Component: CvsMapSuccess },
 ];
 
 const routerData: RouteObject[] = [
