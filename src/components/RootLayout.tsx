@@ -208,7 +208,7 @@ function SearchBar() {
 
 function Footer() {
   return (
-    <footer className="mt-60">
+    <footer className="mt-60 lg:w-screen md:w-screen w-[768.7px]">
       <div className="border-4 border-gray-800 shadow" />
       <div className="border-4 border-gray-100 shadow" />
       <div className="h-60">footer</div>
