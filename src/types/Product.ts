@@ -1,6 +1,7 @@
 export type TProduct = {
   productId?: string;
   productName: string;
+  merchantId: string;
   productDescription?: string;
   originalPrice?: number;
   currentPrice?: number;
@@ -53,6 +54,7 @@ export type TVariation = {
 
 export type TBanner = {
   productId?: string;
+  merchantId: string;
   productName: string;
   productDescription?: string;
   originalPrice?: number;
