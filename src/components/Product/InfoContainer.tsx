@@ -60,8 +60,8 @@ function InfoContainer() {
   };
 
   return (
-    <div className="w-screen  flex mb-[6.75rem]">
-      <div className="px-10 basis-1/2 w-3/4">
+    <div className="lg:w-screen md:w-screen w-[768.8px] flex mb-[6.75rem] ">
+      <div className="px-10 basis-1/2 w-1/2">
         <ImageGallery
           items={galleryImages}
           showPlayButton={false}
@@ -69,7 +69,7 @@ function InfoContainer() {
           ref={galleryRef}
         />
       </div>
-      <div className="text-base flex flex-col basis-1/2 pl-[105px]">
+      <div className="text-base flex flex-col basis-1/2 ">
         <div className="pl-2 text-2xl font-bold">{product.productName}</div>
         <div className="pl-4 mb-3 text-2xl">{product.productDescription}</div>
         <div className="mb-3 border-2 border-black" />

@@ -31,7 +31,7 @@ function Header() {
   const isOrderInfoRoute = location.pathname.startsWith("/checkOrder");
   const isPaymentCompletedRoute =
     location.pathname.startsWith("/PaymentCompleted");
-
+  const isCheckoutRoute = location.pathname.startsWith("/checkout");
   // from special route to normal route will delete token cookie
   useEffect(() => {
     if (
@@ -39,11 +39,18 @@ function Header() {
       tokenCookie &&
       isSpecialRole &&
       !isOrderInfoRoute &&
-      !isPaymentCompletedRoute
+      !isPaymentCompletedRoute &&
+      !isCheckoutRoute
     ) {
       deleteUserTokenCookie();
     }
-  }, [isSpecialRoute, tokenCookie, isOrderInfoRoute, isPaymentCompletedRoute]);
+  }, [
+    isSpecialRoute,
+    tokenCookie,
+    isOrderInfoRoute,
+    isPaymentCompletedRoute,
+    isCheckoutRoute,
+  ]);
 
   useEffect(() => {
     async function processAnonymousLogin() {
@@ -57,7 +64,7 @@ function Header() {
     if (!isSpecialRole && (isSpecialRoute || isOrderInfoRoute))
       void processAnonymousLogin();
     // Do not add dependency
-  }, [isSpecialRole, isSpecialRoute, isOrderInfoRoute]);
+  }, [isSpecialRole, isSpecialRoute, isOrderInfoRoute, isCheckoutRoute]);
 
   if (isSpecialRoute || isSpecialRole || isPaymentCompletedRoute) {
     return <AnonymousHeader />;
@@ -70,7 +77,7 @@ function AnonymousHeader() {
   const productId = useAnonymousProductStore((state) => state.productId);
   const linkPath = productId === "" ? "#" : `/special/product/${productId}`;
   return (
-    <header className="flex items-center justify-between w-screen h-[100px] bg-gray-800 px-[16.25rem]">
+    <header className="flex items-center justify-between w-[768.7px] h-[100px] bg-gray-800 px-[16.25rem] md:w-full lg:px-[16.25rem] lg:w-full">
       <nav>
         <ul className="flex items-center">
           <li className="translate-y-1">
@@ -202,7 +209,7 @@ function SearchBar() {
 
 function Footer() {
   return (
-    <footer className="mt-60">
+    <footer className="mt-60 lg:w-screen md:w-screen w-[768.7px]">
       <div className="border-4 border-gray-800 shadow" />
       <div className="border-4 border-gray-100 shadow" />
       <div className="h-60">footer</div>

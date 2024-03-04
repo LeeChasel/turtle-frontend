@@ -27,6 +27,7 @@ import CheckOrder from "./pages/CheckOrder";
 import PaymentCompleted from "./pages/PaymentCompleted";
 import FillInOrder from "./pages/Anonymity/FillInOrder";
 import CvsMapSuccess from "./pages/Anonymity/CvsMapSuccess";
+import Checkout from "./pages/Checkout";
 
 const specialRoutes: RouteObject[] = [
   { path: "/special/product/:productId", Component: Product },
@@ -49,6 +50,7 @@ const routerData: RouteObject[] = [
       { path: "/checkOrder", Component: CheckOrder },
       { path: "/orderSearch", Component: OrderSearch },
       { path: "/PaymentCompleted", Component: PaymentCompleted },
+      { path: "/checkout", Component: Checkout },
       ...specialRoutes,
       {
         Component: AuthRoutes,

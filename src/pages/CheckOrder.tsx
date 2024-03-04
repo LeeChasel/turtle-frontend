@@ -68,10 +68,10 @@ function CheckOrder() {
   } else {
     return (
       <>
-        <div className="w-screen items-center px-[16.25rem] pt-10 text-base">
-          <div className="bg-gray-50 bg-center  bg-contain text-[#263238]  ">
-            <div className="mx-10">訂單資訊</div>
-            <div className="border mx-9 border-black w-[90%]"></div>
+        <div className="w-fit px-[11.5rem] lg:px-[16.25rem] items-center pt-10 text-base">
+          <div className="bg-[#F9F9F9] bg-center  bg-contain text-[#263238]  ">
+            <div className="mx-8">訂單資訊</div>
+            <div className="border mx-8 border-black w-[90%]"></div>
             <div> </div>
             <div className="grid grid-rows-6 grid-flow-col my-2 text-center">
               <div>訂單編號:</div>
@@ -88,8 +88,8 @@ function CheckOrder() {
               <div>{orderTrace}</div>
             </div>
 
-            <div className="mx-10">購買明細</div>
-            <div className="border mx-9 border-black w-[90%]"></div>
+            <div className="mx-8">購買明細</div>
+            <div className="border mx-6 border-black w-[90%]"></div>
             <div className="p-5 overflow-x-auto">
               <table className="table text-center">
                 <thead>
@@ -114,10 +114,9 @@ function CheckOrder() {
                       <td className="break-all text-ellipsis">
                         {object.variationSpec}
                       </td>
-                      <td>NT$ {object.currentPrice.toLocaleString()}</td>
+                      <td>{object.currentPrice.toLocaleString()}</td>
                       <td>{object.quantity.toLocaleString()}</td>
                       <td>
-                        NT${" "}
                         {(
                           object.currentPrice * object.quantity
                         ).toLocaleString()}
@@ -129,14 +128,14 @@ function CheckOrder() {
               <div className="flex justify-end mt-3">
                 <span>總金額：</span>
                 <span className="font-bold text-red-500">
-                  {orderInfo.totalPrice}
+                  NT${orderInfo.totalPrice}
                 </span>
               </div>
             </div>
           </div>
 
           <p className="text-right">
-            <button className="btn" onClick={cancel}>
+            <button className="btn btn-outline" onClick={cancel}>
               上一頁
             </button>
           </p>
