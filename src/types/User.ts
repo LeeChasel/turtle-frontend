@@ -22,7 +22,8 @@ export type TRole =
   | "ROLE_CHANGE_PASSWORD"
   | "ROLE_ANONYMITY_CUSTOMER"
   | "ROLE_USER"
-  | "ROLE_VERIFY_EMAIL";
+  | "ROLE_VERIFY_EMAIL"
+  | "ROLE_MERCHANT";
 
 export type TUpdateInfo = {
   username?: string;
