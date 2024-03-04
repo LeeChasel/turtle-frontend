@@ -68,12 +68,13 @@ function Header() {
 
 function AnonymousHeader() {
   const productId = useAnonymousProductStore((state) => state.productId);
+  const linkPath = productId === "" ? "#" : `/special/product/${productId}`;
   return (
     <header className="flex items-center justify-between w-screen h-[100px] bg-gray-800 px-[16.25rem]">
       <nav>
         <ul className="flex items-center">
           <li className="translate-y-1">
-            <Link to={`/special/product/${productId}`}>
+            <Link to={linkPath}>
               <img
                 src={
                   import.meta.env.VITE_TURTLE_FRONTEND_IMAGE_URL + "/Logo.webp"
