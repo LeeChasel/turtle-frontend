@@ -3,6 +3,7 @@ import type { TShoppingCartDetail } from "../../types/ShoppingCart";
 import type { TOrderItem } from "../../types/Order";
 import { showToast } from "../../utils/toastAlert";
 import useSelectedCartItemStore from "../../store/useSelectedCartItemStore";
+import { isEmpty } from "lodash";
 
 type ShoppingCartItemProps = {
   product: TShoppingCartDetail | TOrderItem;
@@ -12,6 +13,13 @@ type ShoppingCartItemProps = {
 };
 
 function ShoppingCartItem({ product, removeItemFn }: ShoppingCartItemProps) {
+  const {
+    selectedProducts,
+    increaseSelectedProducts,
+    decreaseSelectedProducts,
+    merchantId,
+    setMerchantId,
+  } = useSelectedCartItemStore();
   const imageSrc =
     import.meta.env.VITE_TURTLE_PRODUCT_IMAGE_URL +
     "/" +
@@ -22,12 +30,9 @@ function ShoppingCartItem({ product, removeItemFn }: ShoppingCartItemProps) {
   const currentPrice = product.variation.currentPrice!;
   const quantity = product.quantity;
   const subtotal = currentPrice * quantity;
+  const shouldDisabled =
+    !isEmpty(merchantId) && merchantId !== product.product.merchantId;
 
-  const {
-    selectedProducts,
-    increaseSelectedProducts,
-    decreaseSelectedProducts,
-  } = useSelectedCartItemStore();
   const isChecked = !!selectedProducts.find(
     (selectedProduct) =>
       product.product.productId === selectedProduct.product.productId &&
@@ -40,9 +45,13 @@ function ShoppingCartItem({ product, removeItemFn }: ShoppingCartItemProps) {
   function toggleCheckbox(e: React.ChangeEvent<HTMLInputElement>) {
     const checkboxState = e.target.checked;
     if (checkboxState) {
+      setMerchantId(product.product.merchantId);
       increaseSelectedProducts(product);
     } else {
       decreaseSelectedProducts(product);
+      if (selectedProducts.length === 0) {
+        setMerchantId("");
+      }
     }
   }
 
@@ -61,6 +70,7 @@ function ShoppingCartItem({ product, removeItemFn }: ShoppingCartItemProps) {
             className="checkbox"
             checked={isChecked}
             onChange={toggleCheckbox}
+            disabled={shouldDisabled}
           />
         </label>
       </th>

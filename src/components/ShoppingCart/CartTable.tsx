@@ -2,7 +2,6 @@ import { TOrderItem } from "../../types/Order";
 import { TShoppingCartDetail } from "../../types/ShoppingCart";
 import ShoppingCartItem from "./Item";
 import useSelectedCartItemStore from "../../store/useSelectedCartItemStore";
-import { isEqual } from "lodash";
 import { useEffect } from "react";
 
 type CartTableProps = {
@@ -24,44 +23,49 @@ function CartTable({
 }: CartTableProps) {
   const {
     selectedProducts,
-    increaseMultipleSelectedProducts,
+    // increaseMultipleSelectedProducts,
     decreaseMultipleSelectedProducts,
+    setMerchantId,
   } = useSelectedCartItemStore();
 
   useEffect(() => {
     // clear selected products when leave the page
-    return () => decreaseMultipleSelectedProducts(items);
+    return () => {
+      decreaseMultipleSelectedProducts(items);
+      setMerchantId("");
+    };
   }, [items]);
 
   const totalPrice = selectedProducts.reduce(
     (acc, item) => acc + item.variation.currentPrice! * item.quantity,
     0,
   );
-  const isChecked =
-    isEqual(items, selectedProducts) && selectedProducts.length > 0;
+  // const isChecked =
+  //   isEqual(items, selectedProducts) && selectedProducts.length > 0;
 
-  function toggleCheckAll(e: React.ChangeEvent<HTMLInputElement>) {
-    const checkboxState = e.target.checked;
-    if (checkboxState) {
-      increaseMultipleSelectedProducts(items);
-    } else {
-      increaseMultipleSelectedProducts([]);
-    }
-  }
+  // Deprecated because of an order can only contain a single merchant
+  // function toggleCheckAll(e: React.ChangeEvent<HTMLInputElement>) {
+  //   const checkboxState = e.target.checked;
+  //   if (checkboxState) {
+  //     increaseMultipleSelectedProducts(items);
+  //   } else {
+  //     increaseMultipleSelectedProducts([]);
+  //   }
+  // }
   return (
     <div className="p-5 overflow-x-auto border-2 border-gray-800 bg-stone-50">
       <table className="table">
         <thead>
           <tr>
             <th>
-              <label>
+              {/* <label>
                 <input
                   type="checkbox"
                   className="checkbox"
                   checked={isChecked}
                   onChange={toggleCheckAll}
                 />
-              </label>
+              </label> */}
             </th>
             <th className="w-[25%]">商品名稱</th>
             <th className="w-[15%]">樣式</th>

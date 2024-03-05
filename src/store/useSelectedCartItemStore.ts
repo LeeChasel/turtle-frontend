@@ -6,6 +6,7 @@ import { remove } from "lodash";
 
 type SelectedCartItemStore = {
   selectedProducts: TShoppingCartDetail[] | TOrderItem[];
+  merchantId: string;
   increaseSelectedProducts: (product: TShoppingCartDetail | TOrderItem) => void;
   decreaseSelectedProducts: (product: TShoppingCartDetail | TOrderItem) => void;
   increaseMultipleSelectedProducts: (
@@ -14,12 +15,14 @@ type SelectedCartItemStore = {
   decreaseMultipleSelectedProducts: (
     products: TShoppingCartDetail[] | TOrderItem[],
   ) => void;
+  setMerchantId: (merchantId: string) => void;
 };
 
 const useSelectedCartItemStore = create<SelectedCartItemStore>()(
   persist(
     (set) => ({
       selectedProducts: [],
+      merchantId: "",
       increaseSelectedProducts: (product) =>
         set((state) => {
           if (
@@ -75,6 +78,7 @@ const useSelectedCartItemStore = create<SelectedCartItemStore>()(
           };
         });
       },
+      setMerchantId: (merchantId) => set({ merchantId }),
     }),
     {
       name: "selected-cart-items",
