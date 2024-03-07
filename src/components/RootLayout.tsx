@@ -32,6 +32,7 @@ function Header() {
   const isPaymentCompletedRoute =
     location.pathname.startsWith("/PaymentCompleted");
   const isCheckoutRoute = location.pathname.startsWith("/checkout");
+  const isOrderProcessing = location.pathname.startsWith("/orderProcessing");
   // from special route to normal route will delete token cookie
   useEffect(() => {
     if (
@@ -66,7 +67,13 @@ function Header() {
     // Do not add dependency
   }, [isSpecialRole, isSpecialRoute, isOrderInfoRoute, isCheckoutRoute]);
 
-  if (isSpecialRoute || isSpecialRole || isPaymentCompletedRoute) {
+  if (
+    isSpecialRoute ||
+    isSpecialRole ||
+    isPaymentCompletedRoute ||
+    isCheckoutRoute ||
+    isOrderProcessing
+  ) {
     return <AnonymousHeader />;
   }
 

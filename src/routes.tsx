@@ -28,6 +28,8 @@ import PaymentCompleted from "./pages/PaymentCompleted";
 import FillInOrder from "./pages/Anonymity/FillInOrder";
 import CvsMapSuccess from "./pages/Anonymity/CvsMapSuccess";
 import Checkout from "./pages/Checkout";
+import AdminNavbar from "./components/AdminNavbar";
+import OrderProcessing from "./pages/Admin/OrderProcessing";
 
 const specialRoutes: RouteObject[] = [
   { path: "/special/product/:productId", Component: Product },
@@ -35,6 +37,11 @@ const specialRoutes: RouteObject[] = [
   { path: "/special/orderSearch", Component: OrderSearch },
   { path: "/special/fillInOrder", Component: FillInOrder },
   { path: "/special/cvsMapSuccess", Component: CvsMapSuccess },
+  {
+    path: "/special/admin/*",
+    Component: AdminNavbar,
+    children: [{ path: "orderProcessing", Component: OrderProcessing }],
+  },
 ];
 
 const routerData: RouteObject[] = [
