@@ -28,8 +28,8 @@ import PaymentCompleted from "./pages/PaymentCompleted";
 import FillInOrder from "./pages/Anonymity/FillInOrder";
 import CvsMapSuccess from "./pages/Anonymity/CvsMapSuccess";
 import Checkout from "./pages/Checkout";
-import AdminNavbar from "./components/AdminNavbar";
-import OrderProcessing from "./pages/Admin/OrderProcessing";
+import MerchantNavbar from "./components/MerchantNavbar";
+import OrderProcessing from "./pages/Merchant/OrderProcessing";
 
 const specialRoutes: RouteObject[] = [
   { path: "/special/product/:productId", Component: Product },
@@ -37,11 +37,6 @@ const specialRoutes: RouteObject[] = [
   { path: "/special/orderSearch", Component: OrderSearch },
   { path: "/special/fillInOrder", Component: FillInOrder },
   { path: "/special/cvsMapSuccess", Component: CvsMapSuccess },
-  {
-    path: "/special/admin/*",
-    Component: AdminNavbar,
-    children: [{ path: "orderProcessing", Component: OrderProcessing }],
-  },
 ];
 
 const routerData: RouteObject[] = [
@@ -58,6 +53,11 @@ const routerData: RouteObject[] = [
       { path: "/orderSearch", Component: OrderSearch },
       { path: "/PaymentCompleted", Component: PaymentCompleted },
       { path: "/checkout", Component: Checkout },
+      {
+        path: "/merchant/*",
+        Component: MerchantNavbar,
+        children: [{ path: "orderProcessing", Component: OrderProcessing }],
+      },
       ...specialRoutes,
       {
         Component: AuthRoutes,

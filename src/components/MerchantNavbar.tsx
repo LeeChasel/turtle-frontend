@@ -1,5 +1,5 @@
 import { Link, Outlet } from "react-router-dom";
-function AdminNavbar() {
+function MerchantNavbar() {
   return (
     <div className="flex gap-2 p-5">
       <nav>
@@ -15,4 +15,4 @@ function AdminNavbar() {
     </div>
   );
 }
-export default AdminNavbar;
+export default MerchantNavbar;

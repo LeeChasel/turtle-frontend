@@ -51,3 +51,14 @@ enum OrderStatus {
   COMPLETE_REQUIRED = "COMPLETE_REQUIRED",
   CANCEL = "CANCEL",
 }
+
+export type OrderInfoForMerchant = {
+  orderId: string;
+  orderDate: string;
+  orderStatus: OrderStatus;
+  lastOperationTimestamp: number;
+  orderFinishTimestamp: number;
+  merchantCheckoutTimestamp: number;
+  totalPrice: number;
+  merchantCheckoutTotalPrice: number;
+};
