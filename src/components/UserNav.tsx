@@ -20,6 +20,7 @@ function SideNavbar() {
   const navigate = useNavigate();
   const { tokenCookie, deleteUserTokenCookie } = useUserTokenCookie();
   const isAdmin = validateTokenRole(tokenCookie, "ROLE_ADMIN");
+  const isMerchant = validateTokenRole(tokenCookie, "ROLE_MERCHANT");
 
   const logoutMutation = useMutation({
     mutationFn: logout,
@@ -42,13 +43,18 @@ function SideNavbar() {
 
   return (
     <nav>
-      <ul className="w-40 gap-2 menu bg-base-200 rounded-box h-52">
+      <ul className="w-40 gap-2 menu bg-base-200 rounded-box ">
         <li>
           <Link to="/user/setting">基本設定</Link>
         </li>
         <li>
           <Link to="/user/updatePassword">修改密碼</Link>
         </li>
+        {isMerchant && (
+          <li>
+            <Link to="/user/orders">訂單列表</Link>
+          </li>
+        )}
         {isAdmin && (
           <li>
             <Link to="/user/addProduct">新增商品</Link>

@@ -6,7 +6,6 @@ function NewProducts() {
   return (
     <div className="flex flex-col items-center mt-[185px] gap-[153px]">
       {/* Too ugly need to design */}
-      <h1 className="text-4xl">新上市產品！ (醜到要設計)</h1>
       <div className="grid grid-cols-3 gap-[100px] w-full px-[260px]">
         <Products />
       </div>

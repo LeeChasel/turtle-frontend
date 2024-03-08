@@ -39,6 +39,10 @@ const specialRoutes: RouteObject[] = [
   { path: "/special/cvsMapSuccess", Component: CvsMapSuccess },
 ];
 
+const merchantRoutes: RouteObject[] = [
+  { path: "orders", Component: OrderProcessing },
+];
+
 const routerData: RouteObject[] = [
   {
     Component: RootLayout,
@@ -70,6 +74,10 @@ const routerData: RouteObject[] = [
               { path: "setting", Component: UserSetting },
               { path: "updatePassword", Component: UpdatePassword },
               {
+                Component: MerchantRoutes,
+                children: merchantRoutes,
+              },
+              {
                 Component: AdminRoutes,
                 children: [{ path: "addProduct", Component: AddProduct }],
               },
@@ -91,6 +99,12 @@ function AdminRoutes() {
   const { tokenCookie } = useUserTokenCookie();
   const isAdmin = validateTokenRole(tokenCookie, "ROLE_ADMIN");
   return isAdmin ? <Outlet /> : <Navigate to="/loginOrSignup" />;
+}
+
+function MerchantRoutes() {
+  const { tokenCookie } = useUserTokenCookie();
+  const isMerchant = validateTokenRole(tokenCookie, "ROLE_MERCHANT");
+  return isMerchant ? <Outlet /> : <Navigate to="/loginOrSignup" />;
 }
 
 const router = createBrowserRouter(routerData);

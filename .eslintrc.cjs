@@ -41,5 +41,6 @@ module.exports = {
     "arrow-body-style": "off",
     "prefer-arrow-callback": "off",
     "no-console": "warn",
+    "@typescript-eslint/no-unused-vars": "warn",
   },
 };
