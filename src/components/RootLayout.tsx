@@ -61,7 +61,10 @@ function Header() {
         if (error instanceof Error) console.error(error.message);
       }
     }
-    if (!isSpecialRole && (isSpecialRoute || isOrderInfoRoute))
+    if (
+      !isSpecialRole &&
+      (isSpecialRoute || isOrderInfoRoute || isCheckoutRoute)
+    )
       void processAnonymousLogin();
     // Do not add dependency
   }, [isSpecialRole, isSpecialRoute, isOrderInfoRoute, isCheckoutRoute]);
@@ -119,7 +122,7 @@ function AnonymousHeader() {
 // 可登入的記名使用者
 function RegisteredHeader() {
   return (
-    <header className="flex items-center justify-between w-full h-[100px] bg-gray-800 px-[260px]">
+    <header className="w-screen flex items-center justify-between h-[100px] bg-gray-800 px-[260px]">
       <nav>
         <ul className="flex items-center gap-6 ">
           <li className="translate-y-1">
