@@ -44,7 +44,7 @@ export type OrderDetailItem = {
   customizations: OrderCustomization[];
 };
 
-enum OrderStatus {
+export enum OrderStatus {
   SHIPPED = "SHIPPED",
   PAIED = "PAIED",
   PAYMENT_REQUIRED = "PAYMENT_REQUIRED",
