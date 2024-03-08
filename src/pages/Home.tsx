@@ -9,8 +9,8 @@ function Home() {
   );
 }
 
-function ProductsContainer() {
-  return <div>The 10 best-selling products every week</div>;
-}
+// function ProductsContainer() {
+//   return <div>The 10 best-selling products every week</div>;
+// }
 
 export default Home;
