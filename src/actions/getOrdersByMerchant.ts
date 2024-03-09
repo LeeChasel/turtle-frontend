@@ -4,6 +4,7 @@ export async function getOrdersByMerchant(
   token: string,
   orderStatus: string,
   page: number,
+  startTime: number,
 ) {
   const URL =
     import.meta.env.VITE_TURTLE_AUTH_URL +
@@ -11,7 +12,8 @@ export async function getOrdersByMerchant(
     orderStatus +
     "&page=" +
     page +
-    "&perPageSize=10";
+    "&startTime=" +
+    startTime;
   const res = await fetch(URL, {
     headers: {
       "Content-Type": "application/json",
@@ -24,5 +26,5 @@ export async function getOrdersByMerchant(
     throw new Error("訂單查詢失敗");
   }
 
-  return res.json() as Promise<OrderInfoForMerchant>;
+  return res.json() as Promise<OrderInfoForMerchant[]>;
 }

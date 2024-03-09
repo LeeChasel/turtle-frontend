@@ -50,6 +50,9 @@ export enum OrderStatus {
   PAYMENT_REQUIRED = "PAYMENT_REQUIRED",
   COMPLETE_REQUIRED = "COMPLETE_REQUIRED",
   CANCEL = "CANCEL",
+  WITHDRAWN = "WITHDRAWN",
+  CLOSED = "CLOSED",
+  RECEIVED = "RECEIVED",
 }
 
 export type OrderInfoForMerchant = {
