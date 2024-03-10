@@ -142,7 +142,7 @@ function FillInOrder() {
   // TODO: adjuct height of the grid chilld elements
   return (
     <main className="mt-[2.5rem] lg:mt-[7.5rem] mx-[2.12rem] lg:mx-28 text-gray-800 md:mx-[3.69rem] md:mt-[5.56rem] text-[0.375rem] md:text-[1rem] lg:text-[1.25rem]">
-      <div className="px-5 py-3 overflow-x-auto border-2 border-gray-800 lg:px-20 md:py-8 lg:py-10 md:px-14 bg-stone-50">
+      <div className="px-2 py-3 overflow-x-auto border-2 border-gray-800 lg:px-20 md:py-8 lg:py-10 md:px-14 bg-stone-50">
         <div className="space-y-5">
           <h1 className="border-b border-b-gray-800">訂單資訊</h1>
           <div className="grid items-center grid-cols-2 pt-3 gap-y-2 justify-items-center">
@@ -282,7 +282,7 @@ function PickupOptions({
   }
 
   return (
-    <div className="text-gray-800 text-[0.375rem] md:text-[1rem] lg:text-[1.25rem]">
+    <div className="text-[0.375rem] md:text-[1rem] lg:text-[1.25rem]">
       <h1 className="my-2 border-b border-b-gray-800">取貨方式</h1>
       <div role="tablist" className="tabs tabs-sm md:tabs-md tabs-lifted">
         {/* 宅配 */}
@@ -297,21 +297,23 @@ function PickupOptions({
         />
         <div
           role="tabpanel"
-          className="p-6 space-y-5 bg-white border-base-300 tab-content rounded-box"
+          className="p-2 space-y-2 bg-white md:space-y-5 md:p-6 border-base-300 tab-content rounded-box"
         >
-          <div className="space-x-5">
+          <div className="flex items-center space-x-2 md:space-x-5">
             <label htmlFor="zipCode">郵遞區號：</label>
             <input
               type="number"
               id="zipCode"
-              className="w-1/4 bg-white shadow-md input input-xs md:input-sm lg:input-md input-bordered"
+              className="w-1/2 bg-white shadow-md md:w-1/4 input input-xs md:input-sm lg:input-md input-bordered"
               ref={receiverZipCodeRef}
             />
           </div>
-          <div className="space-x-5">
-            <label htmlFor="address">收件地址：</label>
+          <div className="flex items-center space-x-2 md:space-x-5">
+            <label htmlFor="address" className="shrink-0">
+              收件地址：
+            </label>
             <select
-              className="w-1/4 bg-white shadow-md select select-xs md:select-sm lg:select-md select-bordered"
+              className="w-full bg-white shadow-md md:w-1/4 select select-xs md:select-sm lg:select-md select-bordered"
               defaultValue={countryCity}
               onChange={handleChangeCountryCity}
             >
@@ -322,7 +324,7 @@ function PickupOptions({
               ))}
             </select>
             <select
-              className="w-1/4 bg-white shadow-md select select-xs md:select-sm lg:select-md select-bordered"
+              className="w-full bg-white shadow-md md:w-1/4 select select-xs md:select-sm lg:select-md select-bordered"
               onChange={handleChangeDistricts}
             >
               {districts.map((district) => (
@@ -332,12 +334,12 @@ function PickupOptions({
               ))}
             </select>
           </div>
-          <div className="space-x-5">
+          <div className="flex space-x-2 md:space-x-5">
             <span className="invisible">收件地址：</span>
             <input
               id="address"
               type="text"
-              className="w-2/3 bg-white shadow-md input input-xs md:input-sm lg:input-md input-bordered"
+              className="w-5/6 bg-white shadow-md md:w-2/3 input input-xs md:input-sm lg:input-md input-bordered"
               ref={receiverAddressRef}
             />
           </div>
@@ -356,7 +358,7 @@ function PickupOptions({
           role="tabpanel"
           className="p-6 space-y-5 bg-white tab-content border-base-300 rounded-box"
         >
-          <div className="space-x-5">
+          <div className="flex items-center space-x-5">
             <label>取貨門市：</label>
             <button
               className="font-normal bg-white shadow-md btn btn-xs md:btn-md hover:bg-gray-100"
@@ -365,10 +367,10 @@ function PickupOptions({
               {storeName ? storeName : "選擇門市"}
             </button>
           </div>
-          <div className="space-x-5">
-            <label>付款方式：</label>
+          <div className="flex items-center space-x-5">
+            <label className="shrink-0">付款方式：</label>
             <select
-              className="w-1/4 bg-white shadow-md select select-xs md:select-sm lg:select-md select-bordered"
+              className="w-3/4 bg-white shadow-md md:w-1/4 select select-xs md:select-sm lg:select-md select-bordered"
               onChange={handlePayOnDelivery}
             >
               <option value="false">線上付款</option>
