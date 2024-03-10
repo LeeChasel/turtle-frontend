@@ -11,6 +11,7 @@ export type TInfo = {
   birthday: string;
   phone: string;
   gender: Gender;
+  merchant: Merchant;
   roles: TRole[];
   enabled: boolean;
   createdAt: string;
@@ -37,3 +38,8 @@ export enum Gender {
   FEMALE = "FEMALE",
   UNKNOW = "UNKNOW",
 }
+
+export type Merchant = {
+  returnAddress: string;
+  platformFeeRate: number;
+};
