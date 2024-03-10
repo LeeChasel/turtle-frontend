@@ -86,7 +86,7 @@ function FillInOrder() {
           .parse(receiverAddressRef.current?.value);
         shippingData = homeBaseSchema.parse({
           logisticsType: shippingType,
-          logisticsSubType: LogisticsSubType.TCAT, // 目前指定黑貓宅配
+          logisticsSubType: LogisticsSubType.POST, // 目前指定郵局
           receiverZipCode: receiverZipCodeRef.current?.value,
           receiverAddress: `${countryCity}${districts}${detailedAddress}`,
           payOnDelivery: false,
