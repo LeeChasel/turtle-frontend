@@ -113,6 +113,10 @@ function FillInOrder() {
       );
 
       showToast("success", `已成立訂單並發送通知至 ${orderResult.userEmail}`);
+      const params = new URLSearchParams();
+      params.append("orderId", orderId!);
+      params.append("userEmail", userEmail!);
+      navigate(`/checkout?${params.toString()}`);
     } catch (error) {
       if (error instanceof z.ZodError) {
         showToast("error", error.errors[0].message);
