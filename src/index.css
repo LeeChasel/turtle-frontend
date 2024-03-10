@@ -13,3 +13,7 @@
     overflow-x: auto;
   }
 }
+
+body {
+  color: rgba(38, 50, 56, 1);
+}
