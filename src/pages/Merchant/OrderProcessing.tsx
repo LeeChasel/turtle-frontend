@@ -3,7 +3,7 @@ import useUserTokenCookie from "@/hooks/useUserTokenCookie";
 import { OrderInfoForMerchant, OrderStatus } from "@/types/Order";
 import { showToast } from "@/utils/toastAlert";
 import { useState } from "react";
-import { YearPicker, MonthPicker, DayPicker } from "react-dropdown-date";
+import { YearPicker, MonthPicker, DayPicker } from "react-dropdown-date-3";
 
 function OrderProcessing() {
   const { tokenCookie } = useUserTokenCookie();
@@ -130,7 +130,7 @@ function OrderProcessing() {
             </thead>
             <tbody>
               <tr>
-                <td className="break-all text-ellipsis text-red-500">
+                <td className="text-red-500 break-all text-ellipsis">
                   <span>{object.orderId}</span>
                 </td>
                 <td className="break-all text-ellipsis">
