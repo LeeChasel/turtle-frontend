@@ -17,3 +17,7 @@
 body {
   color: rgba(38, 50, 56, 1);
 }
+
+img {
+  pointer-events: none;
+}

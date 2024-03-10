@@ -53,8 +53,8 @@ function CartTable({
   //   }
   // }
   return (
-    <div className="p-5 overflow-x-auto border-2 border-gray-800 bg-stone-50">
-      <table className="table">
+    <div className="p-1 overflow-x-auto border-2 border-gray-800 md:p-5 bg-stone-50">
+      <table className="table-xs md:table lg:table-lg">
         <thead>
           <tr>
             <th>
@@ -98,12 +98,12 @@ function CartTable({
         </span>
       </div>
       <div className="flex justify-end gap-3 mt-3">
-        <button type="button" className="btn" onClick={exitFn}>
+        <button type="button" className="btn btn-xs md:btn-md" onClick={exitFn}>
           繼續購物
         </button>
         <button
           type="button"
-          className="btn"
+          className="btn btn-xs md:btn-md"
           onClick={createOrderFn}
           disabled={isLoading}
         >

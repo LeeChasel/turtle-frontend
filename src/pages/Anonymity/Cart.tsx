@@ -98,7 +98,7 @@ function OrderCart() {
   }
 
   return (
-    <main className="mt-[110px] mx-48">
+    <main className="mt-[110px] w-[90%] lg:w-4/5 mx-auto">
       <CartTable
         items={products.items}
         exitFn={exitCart}
@@ -120,9 +120,9 @@ function OrderCart() {
           />
           <div className="modal-action">
             <form method="dialog" className="flex gap-3">
-              <button className="btn">取消</button>
+              <button className="btn btn-xs md:btn-md">取消</button>
               <button
-                className="btn"
+                className="btn btn-xs md:btn-md"
                 type="button"
                 onClick={createOrder}
                 disabled={isLoading}

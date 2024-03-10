@@ -84,14 +84,23 @@ function ShoppingCartItem({ product, removeItemFn }: ShoppingCartItemProps) {
               />
             </div>
           </div>
-          <div className="font-bold">{product.product.productName}</div>
+          <div
+            className="font-bold line-clamp-2"
+            title={product.product.productName}
+          >
+            {product.product.productName}
+          </div>
         </div>
       </td>
-      <td className="break-all text-ellipsis">
-        <span>{product.variation.variationName}</span>
+      <td>
+        <span className="line-clamp-2" title={product.variation.variationName}>
+          {product.variation.variationName}
+        </span>
       </td>
-      <td className="break-all text-ellipsis">
-        {product.variation.variationSpec}
+      <td>
+        <span className="line-clamp-2" title={product.variation.variationSpec}>
+          {product.variation.variationSpec}
+        </span>
       </td>
       <td>NT$ {currentPrice.toLocaleString()}</td>
       <td>{quantity.toLocaleString()}</td>
