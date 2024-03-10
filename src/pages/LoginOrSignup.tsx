@@ -6,12 +6,18 @@ import login from "../actions/login";
 import { showToast } from "../utils/toastAlert";
 import useUserTokenCookie from "../hooks/useUserTokenCookie";
 import type { TLogin } from "../types/User";
+import { z } from "zod";
+
+const loginSchema = z.object({
+  email: z.string().email("請輸入正確的信箱格式"),
+  password: z.string().min(1, { message: "請輸入密碼" }),
+});
 
 function LoginOrSignup() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { isSubmitting },
   } = useForm<TLogin>();
   const { tokenCookie, setUserTokenCookie } = useUserTokenCookie();
   const navigate = useNavigate();
@@ -24,12 +30,15 @@ function LoginOrSignup() {
 
   const onSubmit: SubmitHandler<TLogin> = async (formData) => {
     try {
-      const jwt = await loginMutation.mutateAsync(formData);
+      const validatedData = loginSchema.parse(formData);
+      const jwt = await loginMutation.mutateAsync(validatedData);
       showToast("success", "登入成功！");
       setUserTokenCookie(jwt);
       navigate("/");
     } catch (error) {
-      if (error instanceof Error) {
+      if (error instanceof z.ZodError) {
+        showToast("error", error.errors[0].message);
+      } else if (error instanceof Error) {
         showToast("error", error.message);
       }
     }
@@ -39,28 +48,30 @@ function LoginOrSignup() {
     <div className="flex justify-center pt-10">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col justify-center w-1/3 gap-5 p-10 bg-gray-200"
+        className="flex flex-col items-center justify-center max-w-xs gap-2 p-4 border border-black rounded-md shadow-md bg-gray-50"
       >
-        <div className="flex items-center gap-3">
-          <label>帳號</label>
+        <label className="w-full form-control">
+          <span className="label label-text">電子信箱</span>
           <input
+            {...register("email")}
             type="text"
-            {...register("email", { required: true })}
-            className="w-full max-w-xs input"
+            placeholder="name@example.com"
+            className="bg-white shadow input input-bordered"
           />
-          {errors.email && <span className="text-error">請輸入帳號</span>}
-        </div>
-        <div className="flex items-center gap-3">
-          <label>密碼</label>
+        </label>
+        <label className="w-full form-control">
+          <span className="label label-text">密碼</span>
           <input
+            {...register("password")}
             type="password"
-            {...register("password", { required: true })}
-            className="w-full max-w-xs input"
+            className="bg-white shadow input input-bordered"
           />
-          {errors.password && <span className="text-error">請輸入密碼</span>}
-        </div>
+        </label>
         <button
-          className={cx("btn btn-primary", isSubmitting && "btn-disabled")}
+          className={cx(
+            "btn btn-outline w-2/3 mt-2",
+            isSubmitting && "btn-disabled",
+          )}
         >
           {isSubmitting ? <span className="loading loading-spinner" /> : "登入"}
         </button>
