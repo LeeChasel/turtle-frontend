@@ -14,7 +14,13 @@ import { setShippingInfoForAnonymity } from "@/actions/setShippingInfo";
 const baseInfoSchema = z.object({
   orderId: z.string().min(1, { message: "訂單編號不可為空" }),
   receiverEmail: z.string().email({ message: "電子信箱格式錯誤" }),
-  receiverName: z.string().min(1, { message: "姓名不可為空" }),
+  receiverName: z
+    .string()
+    .regex(/^[^\d\s!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]+$/u, {
+      message: "不可包含特殊符號或數字",
+    })
+    .min(2, { message: "姓名長度最少2為2" })
+    .max(4, { message: "姓名長度最多為4" }),
   receiverCellPhone: z.string().regex(/^09\d{8}$/, {
     message: "手機號碼格式錯誤",
   }),
@@ -108,15 +114,22 @@ function FillInOrder() {
         {
           ...baseInfo,
           ...shippingData,
-          merchantId: cvs!.MerchantID,
+          merchantId: cvs?.MerchantID,
         },
       );
 
       showToast("success", `已成立訂單並發送通知至 ${orderResult.userEmail}`);
       const params = new URLSearchParams();
-      params.append("orderId", orderId!);
-      params.append("userEmail", userEmail!);
-      navigate(`/checkout?${params.toString()}`);
+      if (shippingType === LogisticsType.CVS && shippingData.payOnDelivery) {
+        // 若為超商取貨且貨到付款，則導向貨到訂單查詢結果頁面
+        params.append("orderId", orderId!);
+        params.append("userEmail", userEmail!);
+        navigate(`/checkOrder?${params.toString()}`);
+      } else {
+        params.append("orderId", orderId!);
+        params.append("userEmail", userEmail!);
+        navigate(`/checkout?${params.toString()}`);
+      }
     } catch (error) {
       if (error instanceof z.ZodError) {
         showToast("error", error.errors[0].message);
@@ -358,8 +371,8 @@ function PickupOptions({
               className="w-1/4 bg-white shadow-md select select-xs md:select-sm lg:select-md select-bordered"
               onChange={handlePayOnDelivery}
             >
-              <option value="true">貨到付款</option>
               <option value="false">線上付款</option>
+              <option value="true">貨到付款</option>
             </select>
           </div>
         </div>

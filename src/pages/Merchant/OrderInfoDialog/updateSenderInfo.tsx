@@ -47,8 +47,11 @@ const SenderInfoDialog = forwardRef<HTMLDialogElement>((_, ref) => {
   const senderSchema = z.object({
     senderName: z
       .string()
-      .min(2, { message: "姓名長度錯誤" })
-      .max(4, { message: "姓名長度錯誤" }),
+      .regex(/^[^\d\s!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]+$/u, {
+        message: "不可包含特殊符號或數字",
+      })
+      .min(2, { message: "姓名長度最少2為2" })
+      .max(4, { message: "姓名長度最多為4" }),
     senderCellPhone: z.string().regex(/^09\d{8}$/, {
       message: "手機號碼格式錯誤",
     }),
