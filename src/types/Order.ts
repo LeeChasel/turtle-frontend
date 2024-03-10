@@ -23,6 +23,7 @@ export type OrderDetail = {
   userEmail: string;
   orderDate: string;
   orderStatus: OrderStatus;
+  lastOperationTimestamp: number;
   totalPrice: number;
   description: string;
   items: OrderDetailItem[];
@@ -31,6 +32,8 @@ export type OrderDetail = {
   logisticsOrderStatus: LogisticsOrderStatus[];
   aioCheckOutReturn?: AioCheckOutReturn;
   aioCheckOutPaymentInfo?: AioCheckOutPaymentInfo;
+  orderFinishTimestamp?: number;
+  merchantCheckoutTotalPrice?: number;
   discount?: object;
 };
 
@@ -49,9 +52,17 @@ export enum OrderStatus {
   PAIED = "PAIED",
   PAYMENT_REQUIRED = "PAYMENT_REQUIRED",
   COMPLETE_REQUIRED = "COMPLETE_REQUIRED",
+
+  /** 流程結束已關閉訂單 */
   CANCEL = "CANCEL",
+
+  /** 賣家已收款 */
   WITHDRAWN = "WITHDRAWN",
+
+  /** 賣家可收款 */
   CLOSED = "CLOSED",
+
+  /** 買家已收貨 */
   RECEIVED = "RECEIVED",
 }
 

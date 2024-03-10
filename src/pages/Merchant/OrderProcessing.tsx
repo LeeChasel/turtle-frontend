@@ -1,11 +1,14 @@
 import { getOrdersByMerchant } from "@/actions/getOrdersByMerchant";
 import useUserTokenCookie from "@/hooks/useUserTokenCookie";
+import useSelectedOrder from "@/store/useSelectedOrder";
 import { OrderInfoForMerchant, OrderStatus } from "@/types/Order";
 import { showToast } from "@/utils/toastAlert";
 import { useState } from "react";
 import { YearPicker, MonthPicker, DayPicker } from "react-dropdown-date-3";
+import OrderInfoDialog from "./OrderInfoDialog/Index";
 
 function OrderProcessing() {
+  const setSelectedOrderId = useSelectedOrder.use.setOrderId();
   const { tokenCookie } = useUserTokenCookie();
   const defaultDate = new Date();
   const [year, setYear] = useState(defaultDate.getFullYear());
@@ -113,47 +116,55 @@ function OrderProcessing() {
         <div>無資料</div>
       ) : (
         orders?.map((object) => (
-          <table
-            className="w-fit table text-center border border-[#263238] bg-[#F9F9F9] my-2"
+          <button
+            onClick={() => setSelectedOrderId(object.orderId)}
             key={object.orderId}
+            className="w-full"
           >
-            <thead>
-              <tr>
-                <th className="w-[25%]">訂單編號</th>
-                <th className="w-[20%]">下單日期</th>
-                <th className="w-[20%]">訂單狀態</th>
-                <th className="w-[20%]">訂單完成日期</th>
-                <th className="w-[20%]">結帳日期</th>
-                <th className="w-[20%]">訂單總金額</th>
-                <th className="w-[20%]">可領取金額</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="text-red-500 break-all text-ellipsis">
-                  <span>{object.orderId}</span>
-                </td>
-                <td className="break-all text-ellipsis">
-                  <span>{object.orderDate}</span>
-                </td>
-                <td className="break-all text-ellipsis">
-                  {object.orderStatus}
-                </td>
-                <td>{object.orderFinishTimestamp}</td>
-                <td>{object.merchantCheckoutTimestamp}</td>
-                <td>NT${object.totalPrice.toLocaleString()}</td>
-                <td>
-                  {object.merchantCheckoutTotalPrice !== null && (
-                    <p>
-                      NT$ {object.merchantCheckoutTotalPrice.toLocaleString()}
-                    </p>
-                  )}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+            <table
+              className="w-fit table text-center border border-[#263238] bg-[#F9F9F9] my-2"
+              key={object.orderId}
+            >
+              <thead>
+                <tr>
+                  <th className="w-[25%]">訂單編號</th>
+                  <th className="w-[20%]">下單日期</th>
+                  <th className="w-[20%]">訂單狀態</th>
+                  <th className="w-[20%]">訂單完成日期</th>
+                  <th className="w-[20%]">結帳日期</th>
+                  <th className="w-[20%]">訂單總金額</th>
+                  <th className="w-[20%]">可領取金額</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="text-red-500 break-all text-ellipsis">
+                    <span>{object.orderId}</span>
+                  </td>
+                  <td className="break-all text-ellipsis">
+                    <span>{object.orderDate}</span>
+                  </td>
+                  <td className="break-all text-ellipsis">
+                    {object.orderStatus}
+                  </td>
+                  <td>{object.orderFinishTimestamp}</td>
+                  <td>{object.merchantCheckoutTimestamp}</td>
+                  <td>NT${object.totalPrice.toLocaleString()}</td>
+                  <td>
+                    {object.merchantCheckoutTotalPrice !== null && (
+                      <p>
+                        NT$ {object.merchantCheckoutTotalPrice.toLocaleString()}
+                      </p>
+                    )}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </button>
         ))
       )}
+
+      <OrderInfoDialog />
     </>
   );
 }

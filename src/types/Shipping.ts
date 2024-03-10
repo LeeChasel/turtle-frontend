@@ -35,7 +35,10 @@ export enum LogisticsSubType {
 
 export type LogisticsOrderStatus = {
   merchantID: string;
+
+  /** 物流訂單編號 */
   merchantTradeNo: string;
+
   rtnCode: number;
   rtnMsg: string;
   allPayLogisticsID: string;

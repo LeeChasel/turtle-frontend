@@ -1,5 +1,6 @@
 export type AioCheckOutReturn = {
   MerchantID: string;
+  /** 金流訂單編號 */
   MerchantTradeNo: string;
   StoreID: string;
   RtnCode: number;
