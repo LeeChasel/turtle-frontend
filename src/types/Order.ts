@@ -64,6 +64,7 @@ export enum OrderStatus {
 
   /** 買家已收貨 */
   RECEIVED = "RECEIVED",
+  ALL = "SHIPPED,PAIED,PAYMENT_REQUIRED,COMPLETE_REQUIRED,CANCEL,WITHDRAWN,CLOSED,RECEIVED",
 }
 
 export type OrderInfoForMerchant = {

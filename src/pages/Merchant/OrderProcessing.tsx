@@ -14,9 +14,8 @@ function OrderProcessing() {
   const [year, setYear] = useState(defaultDate.getFullYear());
   const [month, setMonth] = useState(defaultDate.getMonth());
   const [day, setDay] = useState(defaultDate.getDate());
-  const [orderStatus, setOrderStatus] = useState<OrderStatus>(
-    OrderStatus.CLOSED,
-  );
+  const [orderStatus, setOrderStatus] = useState<OrderStatus>(OrderStatus.ALL);
+
   const [orders, setOrders] = useState<OrderInfoForMerchant[]>();
 
   function onChangeYear(value: number) {
@@ -38,7 +37,7 @@ function OrderProcessing() {
       setOrders(
         await getOrdersByMerchant(
           tokenCookie!,
-          orderStatus.toString(),
+          orderStatus,
           1,
           date.getTime() / 1000,
         ),
@@ -63,6 +62,7 @@ function OrderProcessing() {
             value={orderStatus}
             onChange={(e) => setOrderStatus(e.target.value as OrderStatus)}
           >
+            <option value="ALL">全部</option>
             <option value="WITHDRAWN">已收款</option>
             <option value="CLOSED">可收款</option>
             <option value="RECEIVED">買家已收到貨</option>
