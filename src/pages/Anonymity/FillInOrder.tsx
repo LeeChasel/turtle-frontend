@@ -32,7 +32,10 @@ const homeBaseSchema = z.object({
   receiverZipCode: z
     .string()
     .regex(/^\d{3}(?:\d{2})?$/, { message: "郵遞區號格式錯誤" }),
-  receiverAddress: z.string().min(1, { message: "收件地址不可為空" }),
+  receiverAddress: z
+    .string()
+    .min(6, { message: "地址長度需大於6個字元" })
+    .max(60, { message: "地址長度不可超過60個字元" }),
   payOnDelivery: z.literal(false),
 });
 

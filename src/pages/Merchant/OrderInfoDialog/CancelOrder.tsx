@@ -31,6 +31,7 @@ export default function CancelOrder() {
       }
 
       await cancelOrderById(tokenCookie!, orderId);
+      showToast("success", `取消訂單${orderId}成功`);
       setOrderId("");
     } catch (error) {
       if (error instanceof Error) {
