@@ -69,7 +69,7 @@ function FillInOrder() {
 
   // Cvs
   const [cvs, setCvs] = useState<CvsMapCallback>();
-  const [payOnDelivery, setPayOnDelivery] = useState(true);
+  const [payOnDelivery, setPayOnDelivery] = useState(false); //  預設為線上付款
 
   if (!orderId || !userEmail) {
     showToast("error", "缺少訂單編號或電子信箱");
@@ -98,7 +98,7 @@ function FillInOrder() {
           logisticsSubType: LogisticsSubType.POST, // 目前指定郵局
           receiverZipCode: receiverZipCodeRef.current?.value,
           receiverAddress: `${countryCity}${districts}${detailedAddress}`,
-          payOnDelivery: false,
+          payOnDelivery: false, // 宅配只能線上付款
         });
       } else {
         if (!cvs) {
@@ -120,8 +120,10 @@ function FillInOrder() {
           merchantId: cvs?.MerchantID,
         },
       );
-
       showToast("success", `已成立訂單並發送通知至 ${orderResult.userEmail}`);
+
+      // 1. 宅配只能線上付款
+      // 2. 超取為線上付款或貨到付款
       const params = new URLSearchParams();
       if (shippingType === LogisticsType.CVS && shippingData.payOnDelivery) {
         // 若為超商取貨且貨到付款，則導向貨到訂單查詢結果頁面
@@ -142,7 +144,6 @@ function FillInOrder() {
     }
   }
 
-  // TODO: adjuct height of the grid chilld elements
   return (
     <main className="mt-[2.5rem] lg:mt-[7.5rem] mx-[2.12rem] lg:mx-28 text-gray-800 md:mx-[3.69rem] md:mt-[5.56rem] text-[0.375rem] md:text-[1rem] lg:text-[1.25rem]">
       <div className="px-2 py-3 overflow-x-auto border-2 border-gray-800 lg:px-20 md:py-8 lg:py-10 md:px-14 bg-stone-50">
@@ -375,6 +376,7 @@ function PickupOptions({
             <select
               className="w-3/4 bg-white shadow-md md:w-1/4 select select-xs md:select-sm lg:select-md select-bordered"
               onChange={handlePayOnDelivery}
+              defaultValue="false"
             >
               <option value="false">線上付款</option>
               <option value="true">貨到付款</option>

@@ -24,20 +24,16 @@ function SideNavbar() {
 
   const logoutMutation = useMutation({
     mutationFn: logout,
-    onSuccess: () => {
-      deleteUserTokenCookie();
-      showToast("success", "登出成功");
-      navigate("/");
-    },
   });
 
   const handleLogout = () => {
     try {
+      deleteUserTokenCookie();
+      showToast("success", "登出成功");
+      navigate("/");
       logoutMutation.mutate(tokenCookie!);
     } catch (error) {
-      if (error instanceof Error) {
-        showToast("error", error.message);
-      }
+      // pass logout error handling because user is already logged out and this error should only occur when CICD
     }
   };
 
