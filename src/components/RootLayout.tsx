@@ -101,7 +101,6 @@ function AnonymousHeader() {
                 alt="Logo image"
                 width={120}
                 height={81}
-                className="pointer-events-none"
               />
             </Link>
           </li>

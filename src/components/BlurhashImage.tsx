@@ -34,7 +34,7 @@ function BlurhashImage({ productId, imageId, blurhash }: BlurhashImageProp) {
         src={src}
         alt={imageId}
         className={clsx(
-          "w-full h-full pointer-events-none aspect-square",
+          "w-full h-full aspect-square",
           !imageLoaded && "hidden",
         )}
       />

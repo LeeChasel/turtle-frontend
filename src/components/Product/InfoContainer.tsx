@@ -5,6 +5,7 @@ import { showToast } from "../../utils/toastAlert";
 import PurchaseInfo from "./PurchaseInfo";
 import ImageGallery, { type ReactImageGalleryItem } from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
+import clsx from "clsx";
 
 const ImageURL = import.meta.env.VITE_TURTLE_PRODUCT_IMAGE_URL as string;
 
@@ -60,8 +61,8 @@ function InfoContainer() {
   };
 
   return (
-    <div className="lg:w-screen md:w-screen w-[768.8px] flex mb-[6.75rem] ">
-      <div className="px-10 basis-1/2 w-1/2">
+    <div className="flex gap-2 px-1 lg:px-5">
+      <div className="w-1/2 md:px-5 lg:px-10">
         <ImageGallery
           items={galleryImages}
           showPlayButton={false}
@@ -69,42 +70,65 @@ function InfoContainer() {
           ref={galleryRef}
         />
       </div>
-      <div className="text-base flex flex-col basis-1/2 ">
-        <div className="pl-2 text-2xl font-bold">{product.productName}</div>
-        <div className="pl-4 mb-3 text-2xl">{product.productDescription}</div>
-        <div className="mb-3 border-2 border-black" />
-        <section className="inline-block px-4 py-2 mb-3 text-2xl text-white bg-blue-500 rounded-full w-fit">
-          ${variation.currentPrice}
-        </section>
-        <div className="flex flex-col gap-3 mb-[34px] p-3 border border-black rounded-lg shadow border-opacity-20">
-          <label className="text-lg">選擇種類</label>
-          <select
-            className="w-full select select-bordered"
-            defaultValue={
-              variation.variationName + "-" + variation.variationSpec
-            }
-            onChange={changeImage}
+      <div className="flex flex-col w-1/2">
+        <div className="flex-1 space-y-1">
+          <div
+            className="pl-2 text-sm font-bold md:text-md lg:text-xl line-clamp-3"
+            title={product.productName}
           >
-            {product.variations?.map((item, index) => {
-              const optionName =
-                item.variationName + " - " + item.variationSpec;
-              const optionValue =
-                item.variationName + "-" + item.variationSpec + "-" + index;
-              const available = item.available;
-              return (
-                <option
-                  key={index}
-                  value={optionValue}
-                  disabled={available ? false : true}
-                  className={available ? "" : "bg-gray-300"}
-                >
-                  {optionName}
-                </option>
-              );
-            })}
-          </select>
+            {product.productName}
+          </div>
+          {product.productDescription && (
+            <div
+              className="pl-4 text-sm md:text-md lg:text-xl line-clamp-2"
+              title={product.productDescription}
+            >
+              {product.productDescription}
+            </div>
+          )}
+          <div className="border-2 border-black" />
+          <section className="inline-block p-2 text-lg text-white bg-blue-500 rounded-full md:text-center lg:text-2xl w-fit">
+            ${variation.currentPrice}
+          </section>
         </div>
-        <PurchaseInfo />
+
+        <div className="flex-1 space-y-2">
+          <div className="flex flex-col p-1 border border-black rounded-lg shadow md:p-2 border-opacity-20">
+            <label className="text-sm md:text-md lg:text-xl" htmlFor="select">
+              種類
+            </label>
+            <select
+              id="select"
+              className="w-full select select-bordered select-sm md:select-md"
+              defaultValue={
+                variation.variationName + "-" + variation.variationSpec
+              }
+              onChange={changeImage}
+            >
+              {product.variations?.map((item, index) => {
+                const optionName =
+                  item.variationName + " - " + item.variationSpec;
+                const optionValue =
+                  item.variationName + "-" + item.variationSpec + "-" + index;
+                const available = item.available;
+                return (
+                  <option
+                    key={index}
+                    value={optionValue}
+                    disabled={available ? false : true}
+                    className={clsx(
+                      "text-sm md:text-base lg:text-lg",
+                      available ? "" : "bg-gray-300",
+                    )}
+                  >
+                    {optionName}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+          <PurchaseInfo />
+        </div>
       </div>
     </div>
   );
