@@ -101,7 +101,7 @@ function ShoppingCart() {
   }
 
   return (
-    <main className="mt-[110px] mx-48">
+    <div className="mt-[110px] mx-48">
       <CartTable
         items={items}
         exitFn={exitCart}
@@ -109,7 +109,7 @@ function ShoppingCart() {
         createOrderFn={createOrderFn}
         isLoading={isLoading}
       />
-    </main>
+    </div>
   );
 }
 

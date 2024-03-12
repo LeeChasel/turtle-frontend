@@ -7,12 +7,16 @@ import validateTokenRole from "../utils/validateTokenRole";
 import useAnonymousProductStore from "../store/useAnonymousProductStore";
 import login from "../actions/login";
 import { anonymousUser } from "../utils/anonymity";
+import { CiMail } from "react-icons/ci";
+import { SiShopee } from "react-icons/si";
 
 function RootLayout() {
   return (
     <>
       <Header />
-      <Outlet />
+      <main>
+        <Outlet />
+      </main>
       <Footer />
     </>
   );
@@ -217,10 +221,21 @@ function SearchBar() {
 
 function Footer() {
   return (
-    <footer className="mt-60 lg:w-screen md:w-screen w-[768.7px]">
-      <div className="border-4 border-gray-800 shadow" />
-      <div className="border-4 border-gray-100 shadow" />
-      <div className="h-60">footer</div>
+    <footer className="items-center p-4 bg-gray-800 footer text-neutral-content">
+      <aside className="items-center grid-flow-col">
+        <a
+          href="mailto:lazyturtleshopping@gmail.com"
+          className="flex items-center gap-2"
+        >
+          聯絡我們
+          <CiMail className="w-5 h-5" />
+        </a>
+      </aside>
+      <nav className="grid-flow-col gap-4 md:place-self-center md:justify-self-end">
+        <a href="https://shopee.tw/turtlelazy" target="_blank" rel="noreferrer">
+          <SiShopee className="w-5 h-5" />
+        </a>
+      </nav>
     </footer>
   );
 }

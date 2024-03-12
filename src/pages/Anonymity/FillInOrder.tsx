@@ -145,7 +145,7 @@ function FillInOrder() {
   }
 
   return (
-    <main className="mt-[2.5rem] lg:mt-[7.5rem] mx-[2.12rem] lg:mx-28 text-gray-800 md:mx-[3.69rem] md:mt-[5.56rem] text-[0.375rem] md:text-[1rem] lg:text-[1.25rem]">
+    <div className="mt-[2.5rem] lg:mt-[7.5rem] mx-[2.12rem] lg:mx-28 text-gray-800 md:mx-[3.69rem] md:mt-[5.56rem] text-[0.375rem] md:text-[1rem] lg:text-[1.25rem]">
       <div className="px-2 py-3 overflow-x-auto border-2 border-gray-800 lg:px-20 md:py-8 lg:py-10 md:px-14 bg-stone-50">
         <div className="space-y-5">
           <h1 className="border-b border-b-gray-800">訂單資訊</h1>
@@ -192,7 +192,7 @@ function FillInOrder() {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }
 
