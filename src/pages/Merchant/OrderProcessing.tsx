@@ -1,22 +1,71 @@
 import { getOrdersByMerchant } from "@/actions/getOrdersByMerchant";
 import useUserTokenCookie from "@/hooks/useUserTokenCookie";
-import useSelectedOrder from "@/store/useSelectedOrder";
-import { OrderInfoForMerchant, OrderStatus } from "@/types/Order";
-import { showToast } from "@/utils/toastAlert";
-import { useState } from "react";
+import { OrderStatus } from "@/types/Order";
+import { useCallback, useRef, useState } from "react";
 import { YearPicker, MonthPicker, DayPicker } from "react-dropdown-date-3";
 import OrderInfoDialog from "./OrderInfoDialog/Index";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import OrderInfoRef from "./OrderInfoRef";
 
 function OrderProcessing() {
-  const setSelectedOrderId = useSelectedOrder.use.setOrderId();
   const { tokenCookie } = useUserTokenCookie();
-  const defaultDate = new Date();
-  const [year, setYear] = useState(defaultDate.getFullYear());
-  const [month, setMonth] = useState(defaultDate.getMonth());
-  const [day, setDay] = useState(defaultDate.getDate());
+  const [checkoutDate, setCheckoutDate] = useState(new Date());
+  const [year, setYear] = useState(new Date().getFullYear());
+  const [month, setMonth] = useState(new Date().getMonth());
+  const [day, setDay] = useState(new Date().getDate());
   const [orderStatus, setOrderStatus] = useState<OrderStatus>(OrderStatus.ALL);
 
-  const [orders, setOrders] = useState<OrderInfoForMerchant[]>();
+  const {
+    status,
+    data,
+    error,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+  } = useInfiniteQuery({
+    queryKey: ["orderStatus", orderStatus.toString()],
+    queryFn: ({ pageParam }) =>
+      getOrdersByMerchant(
+        tokenCookie!,
+        orderStatus,
+        pageParam,
+        Math.ceil(checkoutDate.getTime() / 1000),
+      ),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPages) => {
+      return lastPage.length ? allPages.length + 1 : undefined;
+    },
+    refetchOnWindowFocus: false,
+  });
+
+  const intObserver = useRef<IntersectionObserver>();
+  const lastOrderRef = useCallback(
+    (order: HTMLDivElement | null) => {
+      if (isFetchingNextPage) return;
+
+      if (intObserver.current) intObserver.current.disconnect();
+
+      intObserver.current = new IntersectionObserver((order) => {
+        if (order[0].isIntersecting && hasNextPage) {
+          void fetchNextPage();
+        }
+      });
+
+      if (order) intObserver.current.observe(order);
+    },
+    [isFetchingNextPage, fetchNextPage, hasNextPage],
+  );
+
+  if (status === "error") return <p>Error: {error.message}</p>;
+
+  const content = data?.pages.map((pages) => {
+    return pages.map((order, index) => {
+      if (pages.length === index + 1) {
+        return <OrderInfoRef ref={lastOrderRef} info={order} key={index} />;
+      }
+      return <OrderInfoRef info={order} key={index} />;
+    });
+  });
 
   function onChangeYear(value: number) {
     setYear(value);
@@ -30,23 +79,9 @@ function OrderProcessing() {
     setDay(value);
   }
 
-  async function submit(e: React.FormEvent<HTMLFormElement>) {
+  function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const date = new Date(year, month, day);
-    try {
-      setOrders(
-        await getOrdersByMerchant(
-          tokenCookie!,
-          orderStatus,
-          1,
-          date.getTime() / 1000,
-        ),
-      );
-    } catch (error) {
-      if (error instanceof Error) {
-        showToast("error", error.message);
-      }
-    }
+    setCheckoutDate(new Date(year, month, day));
   }
 
   return (
@@ -112,57 +147,8 @@ function OrderProcessing() {
           <button className="btn">查詢</button>
         </div>
       </form>
-      {orders?.length === 0 ? (
-        <div>無資料</div>
-      ) : (
-        orders?.map((object) => (
-          <button
-            onClick={() => setSelectedOrderId(object.orderId)}
-            key={object.orderId}
-            className="w-full"
-          >
-            <table
-              className="w-fit table text-center border border-[#263238] bg-[#F9F9F9] my-2"
-              key={object.orderId}
-            >
-              <thead>
-                <tr>
-                  <th className="w-[25%]">訂單編號</th>
-                  <th className="w-[20%]">下單日期</th>
-                  <th className="w-[20%]">訂單狀態</th>
-                  <th className="w-[20%]">訂單完成日期</th>
-                  <th className="w-[20%]">結帳日期</th>
-                  <th className="w-[20%]">訂單總金額</th>
-                  <th className="w-[20%]">可領取金額</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="text-red-500 break-all text-ellipsis">
-                    <span>{object.orderId}</span>
-                  </td>
-                  <td className="break-all text-ellipsis">
-                    <span>{object.orderDate}</span>
-                  </td>
-                  <td className="break-all text-ellipsis">
-                    {object.orderStatus}
-                  </td>
-                  <td>{object.orderFinishTimestamp}</td>
-                  <td>{object.merchantCheckoutTimestamp}</td>
-                  <td>NT${object.totalPrice.toLocaleString()}</td>
-                  <td>
-                    {object.merchantCheckoutTotalPrice !== null && (
-                      <p>
-                        NT$ {object.merchantCheckoutTotalPrice.toLocaleString()}
-                      </p>
-                    )}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </button>
-        ))
-      )}
+      {content}
+      {isFetchingNextPage && <p>Loading...</p>}
 
       <OrderInfoDialog />
     </>
