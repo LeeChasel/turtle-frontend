@@ -27,6 +27,32 @@ export default function UpdateSenderInfo() {
   );
 }
 
+const senderSchema = z.object({
+  senderName: z
+    .string()
+    .regex(/^[^\d\s!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]+$/u, {
+      message: "不可包含特殊符號或數字",
+    })
+    .min(2, { message: "姓名長度最少2為2" })
+    .max(4, { message: "姓名長度最多為4" }),
+  senderCellPhone: z.string().regex(/^09\d{8}$/, {
+    message: "手機號碼格式錯誤",
+  }),
+  senderZipCode: z
+    .string()
+    .regex(/^\d{3}(?:\d{2})?$/, { message: "郵遞區號格式錯誤" }),
+
+  // 只接受數字，且小數點後最多兩位
+  goodsWeight: z
+    .string()
+    .regex(/^(\d+(\.\d{1,2})?)$/, { message: "重量格式錯誤" })
+    .transform((value) => parseFloat(value)),
+  senderAddress: z
+    .string()
+    .min(6, { message: "地址長度需大於6個字元" })
+    .max(60, { message: "地址長度不可超過60個字元" }),
+});
+
 const SenderInfoDialog = forwardRef<HTMLDialogElement>((_, ref) => {
   const nameRef = useRef<HTMLInputElement>(null);
   const cellPhoneRef = useRef<HTMLInputElement>(null);
@@ -44,30 +70,7 @@ const SenderInfoDialog = forwardRef<HTMLDialogElement>((_, ref) => {
     tokenCookie,
   ]);
 
-  const senderSchema = z.object({
-    senderName: z
-      .string()
-      .regex(/^[^\d\s!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]+$/u, {
-        message: "不可包含特殊符號或數字",
-      })
-      .min(2, { message: "姓名長度最少2為2" })
-      .max(4, { message: "姓名長度最多為4" }),
-    senderCellPhone: z.string().regex(/^09\d{8}$/, {
-      message: "手機號碼格式錯誤",
-    }),
-    senderZipCode: z
-      .string()
-      .regex(/^\d{3}(?:\d{2})?$/, { message: "郵遞區號格式錯誤" }),
-
-    // 只接受數字，且小數點後最多兩位
-    goodsWeight: z
-      .string()
-      .regex(/^(\d+(\.\d{1,2})?)$/, { message: "重量格式錯誤" })
-      .transform((value) => parseFloat(value)),
-    senderAddress: z.string().min(1, {
-      message: "必須填寫地址",
-    }),
-  });
+  const canUpdateInfo = data?.logisticsOrderStatus.length === 0;
 
   async function handleUpdateSenderInfo() {
     try {
@@ -78,6 +81,7 @@ const SenderInfoDialog = forwardRef<HTMLDialogElement>((_, ref) => {
         goodsWeight: weightRef.current?.value,
         senderAddress: addressRef.current?.value,
       });
+
       await updateShippingInfo(tokenCookie!, {
         orderId: orderId,
         logisticsType: data?.shippingInfo.logisticsType,
@@ -174,17 +178,19 @@ const SenderInfoDialog = forwardRef<HTMLDialogElement>((_, ref) => {
               className="btn btn-outline"
               onClick={() => setIsEditing(false)}
             >
-              取消
+              {isEditing ? "取消" : "關閉"}
             </button>
-            <button
-              className="btn btn-outline"
-              type="button"
-              onClick={
-                isEditing ? handleUpdateSenderInfo : () => setIsEditing(true)
-              }
-            >
-              {isEditing ? "儲存" : "編輯"}
-            </button>
+            {canUpdateInfo && (
+              <button
+                className="btn btn-outline"
+                type="button"
+                onClick={
+                  isEditing ? handleUpdateSenderInfo : () => setIsEditing(true)
+                }
+              >
+                {isEditing ? "儲存" : "編輯"}
+              </button>
+            )}
           </form>
         </div>
       </div>

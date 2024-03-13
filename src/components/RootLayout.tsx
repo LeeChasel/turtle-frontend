@@ -1,18 +1,21 @@
-import { FormEvent, useEffect } from "react";
+import { useEffect } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
-import { IoSearch } from "react-icons/io5";
 import useUserTokenCookie from "../hooks/useUserTokenCookie";
 import validateTokenRole from "../utils/validateTokenRole";
 import useAnonymousProductStore from "../store/useAnonymousProductStore";
 import login from "../actions/login";
 import { anonymousUser } from "../utils/anonymity";
+import { CiMail } from "react-icons/ci";
+import { SiShopee } from "react-icons/si";
 
 function RootLayout() {
   return (
     <>
       <Header />
-      <Outlet />
+      <main>
+        <Outlet />
+      </main>
       <Footer />
     </>
   );
@@ -85,35 +88,37 @@ function AnonymousHeader() {
   const productId = useAnonymousProductStore((state) => state.productId);
   const linkPath = productId === "" ? "#" : `/special/product/${productId}`;
   return (
-    <header className="flex items-center justify-between w-[768.7px] h-[100px] bg-gray-800 px-[16.25rem] md:w-full lg:px-[16.25rem] lg:w-full">
-      <nav>
-        <ul className="flex items-center">
-          <li className="translate-y-1">
-            <Link to={linkPath}>
-              <img
-                src={
-                  import.meta.env.VITE_TURTLE_FRONTEND_IMAGE_URL + "/Logo.webp"
-                }
-                alt="Logo image"
-                width={120}
-                height={81}
-                className="pointer-events-none"
-              />
-            </Link>
-          </li>
-        </ul>
-      </nav>
+    <header className="h-[50px] md:h-[80px] lg:h-[100px] bg-gray-800 px-3 md:px-7 lg:px-10">
+      <div className="flex items-center justify-between h-full max-w-[1500px] mx-auto">
+        <nav className="h-full">
+          <ul className="flex items-center h-full">
+            <li className="h-full p-2 translate-y-1 md:p-3 lg:p-5">
+              <Link to={linkPath} className="h-full">
+                <img
+                  src={
+                    import.meta.env.VITE_TURTLE_FRONTEND_IMAGE_URL +
+                    "/Logo.webp"
+                  }
+                  alt="Logo image"
+                  loading="lazy"
+                  className="max-h-full"
+                />
+              </Link>
+            </li>
+          </ul>
+        </nav>
 
-      <div className="flex items-center gap-7">
-        <Link to="/special/cart">
-          <FaShoppingCart className="w-10 h-10 text-sky-50" />
-        </Link>
-        <Link
-          to="/special/orderSearch"
-          className="text-2xl font-normal rounded-md text-sky-50 hover:bg-gray-700"
-        >
-          訂單查詢
-        </Link>
+        <div className="flex items-center gap-3 md:gap-5 lg:gap-7">
+          <Link to="/special/cart">
+            <FaShoppingCart className="w-7 h-7 md:w-9 md:h-9 lg:w-10 lg:h-10 text-sky-50" />
+          </Link>
+          <Link
+            to="/special/orderSearch"
+            className="rounded-md text-md md:text-xl lg:text-2xl text-sky-50 hover:bg-gray-700"
+          >
+            訂單查詢
+          </Link>
+        </div>
       </div>
     </header>
   );
@@ -122,56 +127,54 @@ function AnonymousHeader() {
 // 可登入的記名使用者
 function RegisteredHeader() {
   return (
-    <header className="w-screen flex items-center justify-between h-[100px] bg-gray-800 px-[260px]">
-      <nav>
-        <ul className="flex items-center gap-6 ">
-          <li className="translate-y-1">
-            <Link to="/" aria-label="Logo image can link to homepage">
-              <img
-                src={
-                  import.meta.env.VITE_TURTLE_FRONTEND_IMAGE_URL + "/Logo.webp"
-                }
-                alt="Logo image"
-                width={120}
-                height={81}
-                className="pointer-events-none"
-              />
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/products"
-              className="relative p-1 text-4xl font-normal rounded-md text-sky-50 top-1 hover:bg-gray-700"
-            >
-              全部商品
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/newProducts"
-              className="relative p-1 text-4xl font-normal rounded-md text-sky-50 top-1 hover:bg-gray-700"
-            >
-              新上市
-            </Link>
-          </li>
-        </ul>
-      </nav>
+    <header className="h-[50px] md:h-[80px] lg:h-[100px] bg-gray-800 px-3 md:px-7 lg:px-10">
+      <div className="flex items-center justify-between h-full max-w-[1500px] mx-auto">
+        <nav className="h-full">
+          <ul className="flex items-center h-full gap-2 md:gap-4 lg:gap-6">
+            <li className="h-full p-2 translate-y-1 md:p-3 lg:p-5">
+              <Link to="/" className="h-full">
+                <img
+                  src={
+                    import.meta.env.VITE_TURTLE_FRONTEND_IMAGE_URL +
+                    "/Logo.webp"
+                  }
+                  alt="Logo image"
+                  loading="lazy"
+                  className="max-h-full"
+                />
+              </Link>
+            </li>
 
-      <div className="flex items-center gap-7">
-        <Link to="/shoppingCart" aria-label="Icon link to shopping cart page">
-          <FaShoppingCart className="w-10 h-10 text-sky-50" />
-        </Link>
-        <div className="flex flex-col gap-2">
-          <SearchBar />
-          <div className="flex justify-between gap-3">
-            <UserStatusLink />
-            <Link
-              to="/orderSearch"
-              className="text-2xl font-normal rounded-md text-sky-50 hover:bg-gray-700"
-            >
-              訂單查詢
-            </Link>
-          </div>
+            <li>
+              <Link
+                to="/products"
+                className="text-sm rounded-md md:text-xl lg:text-2xl text-sky-50 hover:bg-gray-700"
+              >
+                全部商品
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/newProducts"
+                className="text-sm rounded-md md:text-xl lg:text-2xl text-sky-50 hover:bg-gray-700"
+              >
+                新上市
+              </Link>
+            </li>
+          </ul>
+        </nav>
+
+        <div className="flex items-center gap-2 md:gap-4 lg:gap-6">
+          <Link to="/shoppingCart" aria-label="Icon link to shopping cart page">
+            <FaShoppingCart className="w-7 h-7 md:w-9 md:h-9 lg:w-10 lg:h-10 text-sky-50" />
+          </Link>
+          <UserStatusLink />
+          <Link
+            to="/orderSearch"
+            className="text-sm rounded-md md:text-xl lg:text-2xl text-sky-50 hover:bg-gray-700"
+          >
+            訂單查詢
+          </Link>
         </div>
       </div>
     </header>
@@ -188,39 +191,30 @@ function UserStatusLink() {
   return (
     <Link
       to={linkData.to}
-      className="text-2xl font-normal rounded-md text-sky-50 hover:bg-gray-700"
+      className="text-sm rounded-md md:text-xl lg:text-2xl text-sky-50 hover:bg-gray-700"
     >
       {linkData.text}
     </Link>
   );
 }
 
-function SearchBar() {
-  const handleSearch = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    alert("you search for something");
-  };
-
-  return (
-    <form onSubmit={handleSearch} className="flex w-full">
-      <input
-        type="text"
-        placeholder="Search"
-        className="w-full h-8 indent-2 rounded-l-md"
-      />
-      <button aria-label="搜尋商品按鈕" className="bg-white rounded-r-md">
-        <IoSearch className="w-6 h-6" />
-      </button>
-    </form>
-  );
-}
-
 function Footer() {
   return (
-    <footer className="mt-60 lg:w-screen md:w-screen w-[768.7px]">
-      <div className="border-4 border-gray-800 shadow" />
-      <div className="border-4 border-gray-100 shadow" />
-      <div className="h-60">footer</div>
+    <footer className="items-center p-4 bg-gray-800 footer text-neutral-content">
+      <aside className="items-center grid-flow-col">
+        <a
+          href="mailto:lazyturtleshopping@gmail.com"
+          className="flex items-center gap-2"
+        >
+          聯絡我們
+          <CiMail className="w-5 h-5" />
+        </a>
+      </aside>
+      <nav className="grid-flow-col gap-4 md:place-self-center md:justify-self-end">
+        <a href="https://shopee.tw/turtlelazy" target="_blank" rel="noreferrer">
+          <SiShopee className="w-5 h-5" />
+        </a>
+      </nav>
     </footer>
   );
 }

@@ -100,38 +100,41 @@ export default function PurchaseInfo() {
       <div className="items-center join">
         <button
           onClick={() => modifyNumber("subtract")}
-          className="join-item btn"
+          className="join-item btn btn-sm md:btn-md lg:btn-lg"
         >
-          <GrFormSubtract className="w-7 h-7" />
+          <GrFormSubtract className="md:w-7 md:h-7" />
         </button>
-        <div className="text-xl pointer-events-none join-item btn">
+        <div className="pointer-events-none md:text-xl lg:text-2xl join-item btn btn-sm md:btn-md lg:btn-lg">
           {itemNumber}
         </div>
-        <button onClick={() => modifyNumber("add")} className="join-item btn">
-          <GrFormAdd className="w-7 h-7" />
+        <button
+          onClick={() => modifyNumber("add")}
+          className="join-item btn btn-sm md:btn-md lg:btn-lg"
+        >
+          <GrFormAdd className="md:w-7 md:h-7" />
         </button>
       </div>
 
       {isSpecial ? (
         <button
           onClick={handleAnonymousAddToCart}
-          className="btn btn-lg"
+          className="w-1/2 btn btn-sm md:btn-md lg:btn-lg"
           disabled={buttonTriggered}
         >
           加入訂單
         </button>
       ) : (
-        <div>
+        <div className="flex flex-col gap-2 md:gap-3 md:flex-row">
           <button
             onClick={handleDirectPurchase}
-            className="mr-3 btn btn-lg"
+            className="btn btn-sm md:btn-md lg:btn-lg"
             disabled={buttonTriggered}
           >
             直接購買
           </button>
           <button
             onClick={handleAddToShoppingCart}
-            className="btn btn-lg"
+            className="btn btn-sm md:btn-md lg:btn-lg"
             disabled={buttonTriggered}
           >
             加入購物車

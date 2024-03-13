@@ -81,6 +81,7 @@ function ShoppingCartItem({ product, removeItemFn }: ShoppingCartItemProps) {
               <img
                 src={imageSrc}
                 alt={product.variation.bannerImage?.imageId}
+                loading="lazy"
               />
             </div>
           </div>

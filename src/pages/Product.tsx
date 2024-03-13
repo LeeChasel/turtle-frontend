@@ -89,7 +89,7 @@ function Product() {
         relatedProducts: availableRelatedProducts,
       }}
     >
-      <div className="w-fit pt-20">
+      <div className="pt-20">
         <VariationProvider defaultVariation={defaultVariation}>
           <InfoContainer />
         </VariationProvider>
@@ -99,7 +99,7 @@ function Product() {
             <RelatedProductsContainer />
           </>
         )}
-        <div className="mb-6 border-2 border-black" />
+        <div className="my-2 border-2 border-black md:my-4" />
         <DetailImagesContainer />
       </div>
     </ProductProvider>

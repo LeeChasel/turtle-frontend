@@ -98,7 +98,7 @@ function OrderCart() {
   }
 
   return (
-    <main className="mt-[110px] w-[90%] lg:w-4/5 mx-auto">
+    <div className="mt-[110px] w-[90%] lg:w-4/5 mx-auto">
       <CartTable
         items={products.items}
         exitFn={exitCart}
@@ -133,7 +133,7 @@ function OrderCart() {
           </div>
         </div>
       </dialog>
-    </main>
+    </div>
   );
 }
 

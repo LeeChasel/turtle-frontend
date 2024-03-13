@@ -48,7 +48,7 @@ function LoginOrSignup() {
     <div className="flex justify-center pt-10">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col items-center justify-center max-w-xs gap-2 p-4 border border-black rounded-md shadow-md bg-gray-50"
+        className="flex flex-col items-center justify-center w-full max-w-md gap-2 p-4 mx-2 border border-black rounded-md shadow-md bg-gray-50"
       >
         <label className="w-full form-control">
           <span className="label label-text">電子信箱</span>
