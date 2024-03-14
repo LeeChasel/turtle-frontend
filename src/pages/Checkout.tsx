@@ -79,22 +79,25 @@ function Checkout() {
     if (orderInfo.orderStatus === OrderStatus.PAYMENT_REQUIRED) {
       return (
         <>
-          <div className="w-fit px-[11.5rem] lg:px-[16.25rem] items-center pt-10 text-base text-[#263238]">
-            <div className="md:p-5 lg:p-5 overflow-x-auto">
-              <table className="w-fit table text-center border-2 border-[#263238] bg-[#F9F9F9]">
+          <div className="mx-5 grid lg:justify-center md:justify-center items-center pt-10 text-xs md:mx-10 md:text-base lg:text-lg lg:mx-[200px]">
+            <div className="overflow-x-auto">
+              <table className="table table-fixed text-center border-2 border-[#263238] bg-[#F9F9F9]">
                 <thead>
                   <tr>
-                    <th className="w-[25%]">商品名稱</th>
-                    <th className="w-[20%]">樣式</th>
-                    <th className="w-[20%]">規格</th>
-                    <th className="w-[20%]">單價</th>
-                    <th className="w-[20%]">數量</th>
-                    <th className="w-[20%]">小計</th>
+                    <th className="w-[30%]">商品名稱</th>
+                    <th className="w-[14%]">樣式</th>
+                    <th className="w-[14%]">規格</th>
+                    <th className="w-[14%]">單價</th>
+                    <th className="w-[14%]">數量</th>
+                    <th className="w-[14%]">小計</th>
                   </tr>
                 </thead>
                 <tbody>
                   {orderInfo.items?.map((object) => (
-                    <tr key={object.productId}>
+                    <tr
+                      key={object.productId}
+                      className="text-xs md:text-base lg:text-lg"
+                    >
                       <td className="break-all text-ellipsis">
                         <span>{object.productName}</span>
                       </td>
@@ -104,9 +107,13 @@ function Checkout() {
                       <td className="break-all text-ellipsis">
                         {object.variationSpec}
                       </td>
-                      <td>{object.currentPrice.toLocaleString()}</td>
-                      <td>{object.quantity.toLocaleString()}</td>
-                      <td>
+                      <td className="text-ellipsis">
+                        {object.currentPrice.toLocaleString()}
+                      </td>
+                      <td className="text-ellipsis">
+                        {object.quantity.toLocaleString()}
+                      </td>
+                      <td className="text-ellipsis">
                         {(
                           object.currentPrice * object.quantity
                         ).toLocaleString()}
@@ -123,7 +130,10 @@ function Checkout() {
               </span>
             </div>
             <p className="text-right">
-              <button className="btn  btn-outline shadow-lg" onClick={payment}>
+              <button
+                className="btn  btn-outline shadow-lg btn-sm md:btn-md lg:btn-md"
+                onClick={payment}
+              >
                 立即付款
               </button>
             </p>

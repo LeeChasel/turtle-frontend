@@ -68,10 +68,10 @@ function CheckOrder() {
   } else {
     return (
       <>
-        <div className="w-fit px-[11.5rem] lg:px-[16.25rem] items-center pt-10 text-base">
-          <div className="bg-[#F9F9F9] bg-center  bg-contain text-[#263238]  ">
+        <div className="mx-[20px] grid lg:justify-center md:justify-center items-center pt-10 text-xs md:mx-10 md:text-base lg:text-lg lg:mx-[200px]">
+          <div className="bg-[#F9F9F9] bg-center text-[#263238] w-[280px] md:w-fit lg:w-fit ">
             <div className="mx-8">訂單資訊</div>
-            <div className="border mx-8 border-black w-[90%]"></div>
+            <div className="border mx-6 border-black w-[90%]"></div>
             <div> </div>
             <div className="grid grid-rows-6 grid-flow-col my-2 text-center">
               <div>訂單編號:</div>
@@ -90,21 +90,24 @@ function CheckOrder() {
 
             <div className="mx-8">購買明細</div>
             <div className="border mx-6 border-black w-[90%]"></div>
-            <div className="p-5 overflow-x-auto">
-              <table className="table text-center">
+            <div className="px-1 overflow-x-auto">
+              <table className="table text-center table-fixed">
                 <thead>
                   <tr>
-                    <th className="w-[25%]">商品名稱</th>
-                    <th className="w-[20%]">樣式</th>
-                    <th className="w-[20%]">規格</th>
-                    <th className="w-[20%]">單價</th>
-                    <th className="w-[20%]">數量</th>
-                    <th className="w-[20%]">小計</th>
+                    <th className="w-[27%]">商品名稱</th>
+                    <th className="w-[17%]">樣式</th>
+                    <th className="w-[17%]">規格</th>
+                    <th className="w-[17%]">單價</th>
+                    <th className="w-[10%]">數量</th>
+                    <th className="w-[17%]">小計</th>
                   </tr>
                 </thead>
                 <tbody>
                   {orderInfo.items?.map((object) => (
-                    <tr key={object.productId}>
+                    <tr
+                      key={object.productId}
+                      className="text-xs md:text-base lg:text-lg"
+                    >
                       <td className="break-all text-ellipsis">
                         <span>{object.productName}</span>
                       </td>
@@ -114,9 +117,13 @@ function CheckOrder() {
                       <td className="break-all text-ellipsis">
                         {object.variationSpec}
                       </td>
-                      <td>{object.currentPrice.toLocaleString()}</td>
-                      <td>{object.quantity.toLocaleString()}</td>
-                      <td>
+                      <td className="text-ellipsis">
+                        {object.currentPrice.toLocaleString()}
+                      </td>
+                      <td className="text-ellipsis">
+                        {object.quantity.toLocaleString()}
+                      </td>
+                      <td className="text-ellipsis">
                         {(
                           object.currentPrice * object.quantity
                         ).toLocaleString()}
@@ -134,11 +141,14 @@ function CheckOrder() {
             </div>
           </div>
 
-          <p className="text-right">
-            <button className="btn btn-outline" onClick={cancel}>
+          <div className="text-right text-xs">
+            <button
+              className="btn btn-outline btn-sm md:btn-md lg:btn-md"
+              onClick={cancel}
+            >
               上一頁
             </button>
-          </p>
+          </div>
         </div>
       </>
     );

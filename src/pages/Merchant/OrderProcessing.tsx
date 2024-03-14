@@ -9,10 +9,13 @@ import OrderInfoRef from "./OrderInfoRef";
 
 function OrderProcessing() {
   const { tokenCookie } = useUserTokenCookie();
-  const [checkoutDate, setCheckoutDate] = useState(new Date());
-  const [year, setYear] = useState(new Date().getFullYear());
-  const [month, setMonth] = useState(new Date().getMonth());
-  const [day, setDay] = useState(new Date().getDate());
+  const [checkoutDate, setCheckoutDate] = useState<Date>();
+  const [date, setDate] = useState({
+    year: new Date().getFullYear(),
+    month: new Date().getMonth(),
+    day: new Date().getDate(),
+  });
+  const [isSearching, setIsSearching] = useState(false);
   const [orderStatus, setOrderStatus] = useState<OrderStatus>(OrderStatus.ALL);
 
   const {
@@ -23,19 +26,20 @@ function OrderProcessing() {
     fetchNextPage,
     hasNextPage,
   } = useInfiniteQuery({
+    enabled: isSearching,
     queryKey: ["orderStatus", orderStatus.toString()],
     queryFn: ({ pageParam }) =>
       getOrdersByMerchant(
         tokenCookie!,
         orderStatus,
         pageParam,
-        Math.ceil(checkoutDate.getTime() / 1000),
+        Math.ceil(checkoutDate!.getTime() / 1000),
       ),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
       return lastPage.length ? allPages.length + 1 : undefined;
     },
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
   });
 
   const intObserver = useRef<IntersectionObserver>();
@@ -68,20 +72,25 @@ function OrderProcessing() {
   });
 
   function onChangeYear(value: number) {
-    setYear(value);
+    setDate((prevDate) => ({ ...prevDate, year: value }));
   }
 
   function onChangeMonth(value: number) {
-    setMonth(value);
+    setDate((prevDate) => ({ ...prevDate, month: value }));
   }
 
   function onChangeDay(value: number) {
-    setDay(value);
+    setDate((prevDate) => ({ ...prevDate, day: value }));
   }
 
   function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setCheckoutDate(new Date(year, month, day));
+    setCheckoutDate(new Date(date.year, date.month, date.day));
+    if (checkoutDate?.toString.length === 0) {
+      setIsSearching(false);
+    } else {
+      setIsSearching(true);
+    }
   }
 
   return (
@@ -115,7 +124,7 @@ function OrderProcessing() {
             start={2010} // default is 1900
             reverse // default is ASCENDING
             required={true} // default is false
-            value={year} // mandatory
+            value={date.year} // mandatory
             onChange={onChangeYear}
           />
         </div>
@@ -126,20 +135,20 @@ function OrderProcessing() {
             short // default is full name
             caps // default is Titlecase
             endYearGiven // mandatory if end={} is given in YearPicker
-            year={year} // mandatory
+            year={date.year} // mandatory
             required={true} // default is false
-            value={month} // mandatory
+            value={date.month} // mandatory
             onChange={onChangeMonth}
           />
         </div>
         <div className="m-auto">
           <DayPicker
             defaultValue={""}
-            year={year} // mandatory
-            month={month} // mandatory
+            year={date.year} // mandatory
+            month={date.month} // mandatory
             endYearGiven // mandatory if end={} is given in YearPicker
             required={true} // default is false
-            value={day} // mandatory
+            value={date.day} // mandatory
             onChange={onChangeDay}
           />
         </div>
