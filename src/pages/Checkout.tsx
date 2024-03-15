@@ -126,7 +126,7 @@ function Checkout() {
             <div className="flex justify-end mt-3 text-right">
               <span>總金額：</span>
               <span className="font-bold text-red-500">
-                NT${orderInfo.totalPrice}
+                NT${orderInfo.totalPrice.toLocaleString()}
               </span>
             </div>
             <p className="text-right">
