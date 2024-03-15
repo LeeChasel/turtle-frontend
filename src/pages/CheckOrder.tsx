@@ -3,6 +3,7 @@ import useUserTokenCookie from "../hooks/useUserTokenCookie";
 import validateTokenRole from "../utils/validateTokenRole";
 import useOrderChecking from "../hooks/useAnonymityOrderChecking";
 import { useNavigate } from "react-router-dom";
+import { transformOrderStatus } from "@/utils/transformStatusEnum";
 
 function CheckOrder() {
   const [searchParams] = useSearchParams();
@@ -32,6 +33,8 @@ function CheckOrder() {
 
   const orderstatus = orderStatus(orderInfo!.orderStatus);*/
 
+  const orderStatus = transformOrderStatus(orderInfo!.orderStatus);
+
   function trace() {
     const last = orderInfo?.logisticsOrderStatus.length;
     if (last == 0) {
@@ -50,9 +53,8 @@ function CheckOrder() {
     }
   }
 
-  function cancel(e: React.MouseEvent<HTMLButtonElement>) {
-    e.preventDefault();
-    navigate("/");
+  function cancel() {
+    navigate(-1);
   }
 
   const orderTrace = trace();
@@ -68,12 +70,12 @@ function CheckOrder() {
   } else {
     return (
       <>
-        <div className="mx-[20px] grid lg:justify-center md:justify-center items-center pt-10 text-xs md:mx-10 md:text-base lg:text-lg lg:mx-[200px]">
+        <div className="mx-[20px] grid justify-center md:justify-center items-center pt-10 text-xs md:mx-10 md:text-base lg:text-lg lg:mx-[200px] gap-3">
           <div className="bg-[#F9F9F9] bg-center text-[#263238] w-[280px] md:w-fit lg:w-fit ">
             <div className="mx-8">訂單資訊</div>
             <div className="border mx-6 border-black w-[90%]"></div>
             <div> </div>
-            <div className="grid grid-rows-6 grid-flow-col my-2 text-center">
+            <div className="grid grid-flow-col grid-rows-6 my-2 text-center">
               <div>訂單編號:</div>
               <div>訂購日期:</div>
               <div>收件人姓名:</div>
@@ -84,7 +86,7 @@ function CheckOrder() {
               <div>{orderInfo.orderDate}</div>
               <div>{orderInfo.shippingInfo.receiverName}</div>
               <div>{orderInfo.shippingInfo.receiverCellPhone}</div>
-              <div>{orderInfo.orderStatus}</div>
+              <div>{orderStatus}</div>
               <div>{orderTrace}</div>
             </div>
 
@@ -141,7 +143,7 @@ function CheckOrder() {
             </div>
           </div>
 
-          <div className="text-right text-xs">
+          <div className="text-xs text-right">
             <button
               className="btn btn-outline btn-sm md:btn-md lg:btn-md"
               onClick={cancel}
