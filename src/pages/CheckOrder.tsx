@@ -17,24 +17,6 @@ function CheckOrder() {
   } = useOrderChecking(orderId!, email!, tokenCookie!);
   const navigate = useNavigate();
 
-  /*function orderStatus(status: string) {
-    if (status === "SHIPPED") {
-      return "運送中";
-    } else if (status === "PAIED") {
-      return "已付款";
-    } else if (status === "PAYMENT_REQUIRED") {
-      return "待付款";
-    } else if (status === "COMPLETE_REQUIRED") {
-      return "待填寫訂單資訊";
-    } else {
-      return "取消訂單";
-    }
-  }
-
-  const orderstatus = orderStatus(orderInfo!.orderStatus);*/
-
-  const orderStatus = transformOrderStatus(orderInfo!.orderStatus);
-
   function trace() {
     const last = orderInfo?.logisticsOrderStatus.length;
     if (last == 0) {
@@ -64,7 +46,7 @@ function CheckOrder() {
   } else if (status === "error") {
     return <div>Error happened: {error.message}</div>;
   }
-
+  const orderstatus = transformOrderStatus(orderInfo.orderStatus);
   if (!validateTokenRole(tokenCookie, "ROLE_ANONYMITY_CUSTOMER")) {
     return <>無資料</>;
   } else {
@@ -86,7 +68,7 @@ function CheckOrder() {
               <div>{orderInfo.orderDate}</div>
               <div>{orderInfo.shippingInfo.receiverName}</div>
               <div>{orderInfo.shippingInfo.receiverCellPhone}</div>
-              <div>{orderStatus}</div>
+              <div>{orderstatus}</div>
               <div>{orderTrace}</div>
             </div>
 

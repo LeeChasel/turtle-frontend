@@ -110,7 +110,9 @@ function OrderProcessing() {
               (orderStatusRef.current = e.target.value as OrderStatus)
             }
           >
-            <option value="ALL">全部</option>
+            <option value="SHIPPED,PAIED,PAYMENT_REQUIRED,COMPLETE_REQUIRED,CANCEL,WITHDRAWN,CLOSED,RECEIVED">
+              全部
+            </option>
             <option value="WITHDRAWN">已收款</option>
             <option value="CLOSED">可收款</option>
             <option value="RECEIVED">買家已收到貨</option>
