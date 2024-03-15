@@ -9,14 +9,18 @@ import OrderInfoRef from "./OrderInfoRef";
 
 function OrderProcessing() {
   const { tokenCookie } = useUserTokenCookie();
-  const [checkoutDate, setCheckoutDate] = useState<Date>();
   const [date, setDate] = useState({
     year: new Date().getFullYear(),
     month: new Date().getMonth(),
     day: new Date().getDate(),
   });
-  const [isSearching, setIsSearching] = useState(false);
-  const [orderStatus, setOrderStatus] = useState<OrderStatus>(OrderStatus.ALL);
+
+  const [checkoutDate, setCheckoutDate] = useState<Date>(
+    new Date(date.year, date.month, date.day),
+  );
+
+  // prevent orderStatus changes would trigger re fetch resource
+  const orderStatusRef = useRef<OrderStatus>(OrderStatus.ALL);
 
   const {
     status,
@@ -26,14 +30,17 @@ function OrderProcessing() {
     fetchNextPage,
     hasNextPage,
   } = useInfiniteQuery({
-    enabled: isSearching,
-    queryKey: ["orderStatus", orderStatus.toString()],
+    queryKey: [
+      "orderList",
+      orderStatusRef.current.toString(),
+      checkoutDate.getTime(),
+    ],
     queryFn: ({ pageParam }) =>
       getOrdersByMerchant(
         tokenCookie!,
-        orderStatus,
+        orderStatusRef.current,
         pageParam,
-        Math.ceil(checkoutDate!.getTime() / 1000),
+        Math.ceil(checkoutDate.getTime() / 1000),
       ),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
@@ -86,11 +93,6 @@ function OrderProcessing() {
   function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setCheckoutDate(new Date(date.year, date.month, date.day));
-    if (checkoutDate?.toString.length === 0) {
-      setIsSearching(false);
-    } else {
-      setIsSearching(true);
-    }
   }
 
   return (
@@ -103,8 +105,10 @@ function OrderProcessing() {
         <div className="m-auto">
           <select
             className="border-2 border-black"
-            value={orderStatus}
-            onChange={(e) => setOrderStatus(e.target.value as OrderStatus)}
+            defaultValue={orderStatusRef.current}
+            onChange={(e) =>
+              (orderStatusRef.current = e.target.value as OrderStatus)
+            }
           >
             <option value="ALL">全部</option>
             <option value="WITHDRAWN">已收款</option>

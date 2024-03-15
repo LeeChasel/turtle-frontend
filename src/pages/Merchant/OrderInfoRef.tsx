@@ -1,5 +1,6 @@
 import useSelectedOrder from "@/store/useSelectedOrder";
 import { OrderInfoForMerchant } from "@/types/Order";
+import { transformOrderStatus } from "@/utils/transformStatusEnum";
 import React, { forwardRef } from "react";
 
 type OrderInfoRefProps = {
@@ -9,6 +10,7 @@ type OrderInfoRefProps = {
 const OrderInfoRef = forwardRef<HTMLDivElement, OrderInfoRefProps>(
   ({ info }, ref) => {
     const setSelectedOrderId = useSelectedOrder.use.setOrderId();
+    const orderStatus = transformOrderStatus(info.orderStatus);
     const content = ref ? (
       <div ref={ref}>
         <button
@@ -39,7 +41,7 @@ const OrderInfoRef = forwardRef<HTMLDivElement, OrderInfoRefProps>(
                 <td className="break-all text-ellipsis">
                   <span>{info.orderDate}</span>
                 </td>
-                <td className="break-all text-ellipsis">{info.orderStatus}</td>
+                <td className="break-all text-ellipsis">{orderStatus}</td>
                 <td>{info.orderFinishTimestamp}</td>
                 <td>{info.merchantCheckoutTimestamp}</td>
                 <td>NT${info.totalPrice.toLocaleString()}</td>
@@ -85,7 +87,7 @@ const OrderInfoRef = forwardRef<HTMLDivElement, OrderInfoRefProps>(
                 <td className="break-all text-ellipsis">
                   <span>{info.orderDate}</span>
                 </td>
-                <td className="break-all text-ellipsis">{info.orderStatus}</td>
+                <td className="break-all text-ellipsis">{orderStatus}</td>
                 <td>{info.orderFinishTimestamp}</td>
                 <td>{info.merchantCheckoutTimestamp}</td>
                 <td>NT${info.totalPrice.toLocaleString()}</td>
