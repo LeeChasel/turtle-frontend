@@ -72,11 +72,11 @@ function InfoContainer() {
           showFullscreenButton={false}
           ref={galleryRef}
           renderItem={(item) => (
-            <div className="aspect-square">
+            <div className="aspect-square flex">
               <img
                 src={item.original}
                 alt={item.originalAlt}
-                className="max-w-full max-h-full m-auto"
+                className="justify-items-center items-center w-full object-contain"
               />
             </div>
           )}
