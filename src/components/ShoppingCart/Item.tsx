@@ -67,7 +67,7 @@ function ShoppingCartItem({ product, removeItemFn }: ShoppingCartItemProps) {
         <label>
           <input
             type="checkbox"
-            className="checkbox"
+            className="checkbox checkbox-sm md:checkbox-md"
             checked={isChecked}
             onChange={toggleCheckbox}
             disabled={shouldDisabled}
@@ -85,27 +85,45 @@ function ShoppingCartItem({ product, removeItemFn }: ShoppingCartItemProps) {
               />
             </div>
           </div>
-          <div
-            className="font-bold line-clamp-2"
-            title={product.product.productName}
-          >
-            {product.product.productName}
+          <div className="tooltip" data-tip={product.product.productName}>
+            <span className="line-clamp-2 font-bold">
+              {product.product.productName}
+            </span>
           </div>
         </div>
       </td>
       <td>
-        <span className="line-clamp-2" title={product.variation.variationName}>
-          {product.variation.variationName}
-        </span>
+        <div className="tooltip" data-tip={product.variation.variationName}>
+          <span className="line-clamp-2">
+            {product.variation.variationName}
+          </span>
+        </div>
       </td>
       <td>
-        <span className="line-clamp-2" title={product.variation.variationSpec}>
-          {product.variation.variationSpec}
-        </span>
+        <div className="tooltip" data-tip={product.variation.variationSpec}>
+          <span className="line-clamp-2">
+            {product.variation.variationSpec}
+          </span>
+        </div>
       </td>
-      <td>NT$ {currentPrice.toLocaleString()}</td>
-      <td>{quantity.toLocaleString()}</td>
-      <td>NT$ {subtotal.toLocaleString()}</td>
+      <td>
+        <div
+          className="tooltip"
+          data-tip={`NT$ ${currentPrice.toLocaleString()}`}
+        >
+          NT$ {currentPrice.toLocaleString()}
+        </div>
+      </td>
+      <td>
+        <div className="tooltip" data-tip={quantity.toLocaleString()}>
+          {quantity.toLocaleString()}
+        </div>
+      </td>
+      <td>
+        <div className="tooltip" data-tip={`NT$ ${subtotal.toLocaleString()}`}>
+          NT$ {subtotal.toLocaleString()}
+        </div>
+      </td>
       <td>
         <button type="button" onClick={removeItem}>
           <BsFillTrash3Fill />

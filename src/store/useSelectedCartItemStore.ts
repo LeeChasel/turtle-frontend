@@ -3,22 +3,26 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import { TShoppingCartDetail } from "../types/ShoppingCart";
 import { TOrderItem } from "../types/Order";
 import { remove } from "lodash";
+import createSelectors from "@/lib/zustand";
 
-type SelectedCartItemStore = {
+type State = {
   selectedProducts: TShoppingCartDetail[] | TOrderItem[];
   merchantId: string;
+};
+
+type Action = {
   increaseSelectedProducts: (product: TShoppingCartDetail | TOrderItem) => void;
   decreaseSelectedProducts: (product: TShoppingCartDetail | TOrderItem) => void;
   increaseMultipleSelectedProducts: (
-    products: TShoppingCartDetail[] | TOrderItem[],
+    products: State["selectedProducts"],
   ) => void;
   decreaseMultipleSelectedProducts: (
-    products: TShoppingCartDetail[] | TOrderItem[],
+    products: State["selectedProducts"],
   ) => void;
-  setMerchantId: (merchantId: string) => void;
+  setMerchantId: (merchantId: State["merchantId"]) => void;
 };
 
-const useSelectedCartItemStore = create<SelectedCartItemStore>()(
+const useSelectedCartItemStore = create<State & Action>()(
   persist(
     (set) => ({
       selectedProducts: [],
@@ -87,4 +91,4 @@ const useSelectedCartItemStore = create<SelectedCartItemStore>()(
   ),
 );
 
-export default useSelectedCartItemStore;
+export default createSelectors(useSelectedCartItemStore);
