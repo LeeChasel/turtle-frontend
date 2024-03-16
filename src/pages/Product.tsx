@@ -89,7 +89,7 @@ function Product() {
         relatedProducts: availableRelatedProducts,
       }}
     >
-      <div className="pt-20">
+      <div className="pt-5 md:pt-10 lg:pt-20">
         <VariationProvider defaultVariation={defaultVariation}>
           <InfoContainer />
         </VariationProvider>

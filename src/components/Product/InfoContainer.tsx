@@ -18,6 +18,7 @@ function InfoContainer() {
   galleryImages.push({
     original: `${ImageURL}/${product.productId}/${product.bannerImage?.imageId}`,
     thumbnail: `${ImageURL}/${product.productId}/${product.bannerImage?.imageId}`,
+    loading: "lazy",
   });
   // Preview image
   product.previewImages?.forEach((image) => {
@@ -28,6 +29,7 @@ function InfoContainer() {
     galleryImages.push({
       original: url,
       thumbnail: url,
+      loading: "lazy",
     });
   });
   // Variation image
@@ -36,6 +38,7 @@ function InfoContainer() {
     galleryImages.push({
       original: url,
       thumbnail: url,
+      loading: "lazy",
     });
     variationIndexs.push(galleryImages.length - 1);
   });
@@ -68,67 +71,80 @@ function InfoContainer() {
           showPlayButton={false}
           showFullscreenButton={false}
           ref={galleryRef}
-        />
-      </div>
-      <div className="flex flex-col w-1/2">
-        <div className="flex-1 space-y-1">
-          <div
-            className="pl-2 text-sm font-bold md:text-md lg:text-xl line-clamp-3"
-            title={product.productName}
-          >
-            {product.productName}
-          </div>
-          {product.productDescription && (
-            <div
-              className="pl-4 text-sm md:text-md lg:text-xl line-clamp-2"
-              title={product.productDescription}
-            >
-              {product.productDescription}
+          renderItem={(item) => (
+            <div className="aspect-square">
+              <img
+                src={item.original}
+                alt={item.originalAlt}
+                className="max-w-full max-h-full m-auto"
+              />
             </div>
           )}
-          <div className="border-2 border-black" />
-          <section className="inline-block p-2 text-lg text-white bg-blue-500 rounded-full md:text-center lg:text-2xl w-fit">
-            ${variation.currentPrice}
-          </section>
+          renderThumbInner={(item) => (
+            <div className="aspect-square">
+              <img
+                src={item.thumbnail}
+                alt={item.thumbnailAlt}
+                className="max-w-full max-h-full m-auto"
+              />
+            </div>
+          )}
+        />
+      </div>
+      <div className="flex flex-col w-1/2 space-y-2">
+        <div
+          className="pl-2 text-sm font-bold md:text-md lg:text-xl line-clamp-3"
+          title={product.productName}
+        >
+          {product.productName}
         </div>
-
-        <div className="flex-1 space-y-2">
-          <div className="flex flex-col p-1 border border-black rounded-lg shadow md:p-2 border-opacity-20">
-            <label className="text-sm md:text-md lg:text-xl" htmlFor="select">
-              種類
-            </label>
-            <select
-              id="select"
-              className="w-full select select-bordered select-sm md:select-md"
-              defaultValue={
-                variation.variationName + "-" + variation.variationSpec
-              }
-              onChange={changeImage}
-            >
-              {product.variations?.map((item, index) => {
-                const optionName =
-                  item.variationName + " - " + item.variationSpec;
-                const optionValue =
-                  item.variationName + "-" + item.variationSpec + "-" + index;
-                const available = item.available;
-                return (
-                  <option
-                    key={index}
-                    value={optionValue}
-                    disabled={available ? false : true}
-                    className={clsx(
-                      "text-sm md:text-base lg:text-lg",
-                      available ? "" : "bg-gray-300",
-                    )}
-                  >
-                    {optionName}
-                  </option>
-                );
-              })}
-            </select>
+        {product.productDescription && (
+          <div
+            className="pl-2 text-sm md:text-md lg:text-xl line-clamp-2"
+            title={product.productDescription}
+          >
+            {product.productDescription}
           </div>
-          <PurchaseInfo />
+        )}
+        <div className="border-2 border-gray-800" />
+        <section className="inline-block p-2 text-lg text-white bg-blue-500 rounded-full md:text-center lg:text-2xl w-fit">
+          ${variation.currentPrice}
+        </section>
+        <div className="flex flex-col p-1 border border-gray-800 rounded-lg shadow md:p-2 border-opacity-20">
+          <label className="text-sm md:text-md lg:text-xl" htmlFor="select">
+            種類
+          </label>
+          <select
+            id="select"
+            className="w-full select select-bordered select-sm md:select-md"
+            defaultValue={
+              variation.variationName + "-" + variation.variationSpec
+            }
+            onChange={changeImage}
+          >
+            {product.variations?.map((item, index) => {
+              const optionName =
+                item.variationName + " - " + item.variationSpec;
+              const optionValue =
+                item.variationName + "-" + item.variationSpec + "-" + index;
+              const available = item.available;
+              return (
+                <option
+                  key={index}
+                  value={optionValue}
+                  disabled={available ? false : true}
+                  className={clsx(
+                    "text-sm md:text-base lg:text-lg",
+                    available ? "" : "bg-gray-300",
+                  )}
+                >
+                  {optionName}
+                </option>
+              );
+            })}
+          </select>
         </div>
+        <PurchaseInfo />
       </div>
     </div>
   );
