@@ -14,11 +14,15 @@ async function addProduct(token: string, productData: TProduct) {
     }),
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const json = await res.json();
+
   if (!res.ok) {
+    console.error(json);
     throw new Error("新增商品錯誤");
   }
 
-  return res.json() as Promise<TProduct>;
+  return json as TProduct;
 }
 
 export default addProduct;

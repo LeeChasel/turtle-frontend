@@ -168,11 +168,11 @@ function AddProducts() {
         stock: formData.stock,
         available: formData.available,
         productUpstreamUrl: formData.productUpstreamUrl,
-        merchantId: merchantId,
         relatedProducts: relatedProductIds,
         // TODO: waiting for enum of type property
         // customizations: formData.customizations ?? [],
         customizations: [],
+        ...(merchantId && { merchantId }),
       };
 
       // process bannerImage

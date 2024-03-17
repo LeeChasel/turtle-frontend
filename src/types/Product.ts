@@ -1,7 +1,7 @@
 export type TProduct = {
   productId?: string;
   productName: string;
-  merchantId: string;
+  merchantId?: string;
   productDescription?: string;
   originalPrice?: number;
   currentPrice?: number;
