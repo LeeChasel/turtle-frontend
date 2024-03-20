@@ -118,7 +118,7 @@ export default function PurchaseInfo() {
       {isSpecial ? (
         <button
           onClick={handleAnonymousAddToCart}
-          className="w-1/2 btn btn-sm md:btn-md lg:btn-lg"
+          className="w-1/2 btn bg-[#263238] text-white btn-sm md:btn-md lg:btn-lg"
           disabled={buttonTriggered}
         >
           加入訂單
@@ -127,14 +127,14 @@ export default function PurchaseInfo() {
         <div className="flex flex-col gap-2 md:gap-3 md:flex-row">
           <button
             onClick={handleDirectPurchase}
-            className="btn btn-sm md:btn-md lg:btn-lg"
+            className="btn bg-[#263238] text-white btn-sm md:btn-md lg:btn-lg"
             disabled={buttonTriggered}
           >
             直接購買
           </button>
           <button
             onClick={handleAddToShoppingCart}
-            className="btn btn-sm md:btn-md lg:btn-lg"
+            className="btn bg-[#263238] text-white btn-sm md:btn-md lg:btn-lg"
             disabled={buttonTriggered}
           >
             加入購物車

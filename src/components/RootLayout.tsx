@@ -8,6 +8,7 @@ import login from "../actions/login";
 import { anonymousUser } from "../utils/anonymity";
 import { CiMail } from "react-icons/ci";
 import { SiShopee } from "react-icons/si";
+import useBeOrderedProductsStore from "@/store/useBeOrderedProductsStore";
 
 function RootLayout() {
   return (
@@ -35,6 +36,7 @@ function Header() {
   const isPaymentCompletedRoute =
     location.pathname.startsWith("/PaymentCompleted");
   const isCheckoutRoute = location.pathname.startsWith("/checkout");
+
   // from special route to normal route will delete token cookie
   useEffect(() => {
     if (
@@ -87,6 +89,8 @@ function Header() {
 function AnonymousHeader() {
   const productId = useAnonymousProductStore((state) => state.productId);
   const linkPath = productId === "" ? "#" : `/special/product/${productId}`;
+  const products = useBeOrderedProductsStore((state) => state.products.items);
+  const productNum = products.reduce((prev, curr) => prev + curr.quantity, 0);
   return (
     <header className="h-[50px] md:h-[80px] lg:h-[100px] bg-gray-800 px-3 md:px-7 lg:px-10">
       <div className="flex items-center justify-between h-full max-w-[1500px] mx-auto">
@@ -110,7 +114,16 @@ function AnonymousHeader() {
 
         <div className="flex items-center gap-3 md:gap-5 lg:gap-7">
           <Link to="/special/cart">
-            <FaShoppingCart className="w-7 h-7 md:w-9 md:h-9 lg:w-10 lg:h-10 text-sky-50" />
+            {productNum === 0 ? (
+              <FaShoppingCart className="w-7 h-7 md:w-9 md:h-9 lg:w-10 lg:h-10 text-sky-50" />
+            ) : (
+              <div className="indicator">
+                <span className="indicator-item badge bg-[red]">
+                  {productNum}
+                </span>
+                <FaShoppingCart className="w-7 h-7 md:w-9 md:h-9 lg:w-10 lg:h-10 text-sky-50" />
+              </div>
+            )}
           </Link>
           <Link
             to="/special/orderSearch"
