@@ -89,8 +89,12 @@ function Header() {
 function AnonymousHeader() {
   const productId = useAnonymousProductStore((state) => state.productId);
   const linkPath = productId === "" ? "#" : `/special/product/${productId}`;
-  const products = useBeOrderedProductsStore((state) => state.products.items);
-  const productNum = products.reduce((prev, curr) => prev + curr.quantity, 0);
+  //TO-DO:同頁面購買無法刷新數字
+  const products = useBeOrderedProductsStore((state) => state.products);
+  const productNum = products.items.reduce(
+    (prev, curr) => prev + curr.quantity,
+    0,
+  );
   return (
     <header className="h-[50px] md:h-[80px] lg:h-[100px] bg-gray-800 px-3 md:px-7 lg:px-10">
       <div className="flex items-center justify-between h-full max-w-[1500px] mx-auto">

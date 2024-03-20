@@ -107,7 +107,7 @@ function InfoContainer() {
           </div>
         )}
         <div className="border-2 border-gray-800" />
-        <section className="inline-block p-2 text-lg text-white bg-blue-500 rounded-full md:text-center lg:text-2xl w-fit">
+        <section className="inline-block p-2 text-lg bg-white rounded-full md:text-center lg:text-2xl w-fit">
           ${variation.currentPrice}
         </section>
         <div className="flex flex-col p-1 border border-gray-800 rounded-lg shadow md:p-2 border-opacity-20">
@@ -116,7 +116,7 @@ function InfoContainer() {
           </label>
           <select
             id="select"
-            className="w-full select select-bordered select-sm md:select-md"
+            className="bg-white w-full select select-bordered select-sm md:select-md"
             defaultValue={
               variation.variationName + "-" + variation.variationSpec
             }
@@ -134,8 +134,8 @@ function InfoContainer() {
                   value={optionValue}
                   disabled={available ? false : true}
                   className={clsx(
-                    "text-sm md:text-base lg:text-lg",
-                    available ? "" : "bg-gray-300",
+                    "text-sm  bg-white md:text-base lg:text-lg",
+                    available ? "" : "",
                   )}
                 >
                   {optionName}

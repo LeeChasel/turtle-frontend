@@ -100,16 +100,16 @@ export default function PurchaseInfo() {
       <div className="items-center join">
         <button
           onClick={() => modifyNumber("subtract")}
-          className="join-item btn btn-sm md:btn-md lg:btn-lg"
+          className="bg-[#263238]  text-white join-item btn btn-sm md:btn-md lg:btn-lg"
         >
           <GrFormSubtract className="md:w-7 md:h-7" />
         </button>
-        <div className="pointer-events-none md:text-xl lg:text-2xl join-item btn btn-sm md:btn-md lg:btn-lg">
+        <div className="bg-[#263238]  text-white pointer-events-none md:text-xl lg:text-2xl join-item btn btn-sm md:btn-md lg:btn-lg">
           {itemNumber}
         </div>
         <button
           onClick={() => modifyNumber("add")}
-          className="join-item btn btn-sm md:btn-md lg:btn-lg"
+          className="bg-[#263238]  text-white join-item btn btn-sm md:btn-md lg:btn-lg"
         >
           <GrFormAdd className="md:w-7 md:h-7" />
         </button>
