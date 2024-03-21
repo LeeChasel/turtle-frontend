@@ -29,6 +29,7 @@ import FillInOrder from "./pages/Anonymity/FillInOrder";
 import CvsMapSuccess from "./pages/Anonymity/CvsMapSuccess";
 import Checkout from "./pages/Checkout";
 import OrderProcessing from "./pages/Merchant/OrderProcessing";
+import ModifyProduct from "./pages/ModifyProduct";
 
 const specialRoutes: RouteObject[] = [
   { path: "/special/product/:productId", Component: Product },
@@ -73,7 +74,10 @@ const routerData: RouteObject[] = [
               },
               {
                 Component: AdminRoutes,
-                children: [{ path: "addProduct", Component: AddProduct }],
+                children: [
+                  { path: "addProduct", Component: AddProduct },
+                  { path: "modifyProduct", Component: ModifyProduct },
+                ],
               },
             ],
           },
