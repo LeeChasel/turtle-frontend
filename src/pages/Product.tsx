@@ -49,12 +49,13 @@ function Product() {
   // Change document title when component mount and unmount
   useEffect(() => {
     if (productName) {
-      document.title = productName + " | LazyTurtle";
+      document.title = productName + " | Lazyturtle 精緻禮遇";
     } else if (dataById) {
-      document.title = dataById.productName + " | LazyTurtle";
+      document.title = dataById.productName + " | Lazyturtle 精緻禮遇";
     }
     return () => {
-      document.title = "Lazy Turtle";
+      document.title =
+        "Lazyturtle 精緻禮遇| 傳遞心意的橋樑，每份禮物都是一段故事";
     };
   }, [productName, dataById]);
 
