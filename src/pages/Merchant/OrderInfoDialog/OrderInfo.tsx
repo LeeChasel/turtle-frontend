@@ -2,7 +2,10 @@ import useUserTokenCookie from "@/hooks/useUserTokenCookie";
 import useSelectedOrder from "@/store/useSelectedOrder";
 import { OrderDetail } from "@/types/Order";
 import formatCellphone from "@/utils/formatCellphone";
-import { transformOrderStatus } from "@/utils/transformStatusEnum";
+import {
+  transformLogisticsSubType,
+  transformOrderStatus,
+} from "@/utils/transformStatusEnum";
 import { useQueryClient } from "@tanstack/react-query";
 
 export default function OrderInfo() {
@@ -17,8 +20,12 @@ export default function OrderInfo() {
   ]);
 
   const cellphone = formatCellphone(data?.shippingInfo.receiverCellPhone ?? "");
-  const address = data?.shippingInfo.receiverAddress ?? "-";
+  const address =
+    data?.shippingInfo.receiverAddress ?? data?.cvsMap?.CVSStoreName;
   const orderStatus = transformOrderStatus(data!.orderStatus);
+  const logisticsSubType = transformLogisticsSubType(
+    data!.shippingInfo.logisticsSubType!,
+  );
 
   return (
     <div className="grid items-center grid-cols-2 p-2 border border-black rounded justify-items-center grow bg-stone-50">
@@ -30,10 +37,14 @@ export default function OrderInfo() {
       <span>{data?.shippingInfo.receiverName}</span>
       <span>收件人電話</span>
       <span>{cellphone}</span>
-      <span>訂單狀態</span>
-      <span>{orderStatus}</span>
+      <span>收件人電子信箱</span>
+      <span>{data?.shippingInfo.receiverEmail}</span>
+      <span>寄送方式</span>
+      <span>{logisticsSubType}</span>
       <span>收件地址</span>
       <span>{address}</span>
+      <span>訂單狀態</span>
+      <span>{orderStatus}</span>
     </div>
   );
 }
