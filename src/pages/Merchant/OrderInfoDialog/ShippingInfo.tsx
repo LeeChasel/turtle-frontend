@@ -1,21 +1,8 @@
-import useUserTokenCookie from "@/hooks/useUserTokenCookie";
-import useSelectedOrder from "@/store/useSelectedOrder";
 import { OrderDetail } from "@/types/Order";
 import { LogisticsSubType, LogisticsType } from "@/types/Shipping";
-import { useQueryClient } from "@tanstack/react-query";
 
-export default function ShippingInfo() {
-  const queryClient = useQueryClient();
-  const orderId = useSelectedOrder.use.orderId();
-  const { tokenCookie } = useUserTokenCookie();
-
-  const data = queryClient.getQueryData<OrderDetail>([
-    "order",
-    orderId,
-    tokenCookie,
-  ]);
-
-  const hasLogisticsOrder = data?.logisticsOrderStatus.length !== 0;
+export default function ShippingInfo({ data }: { data: OrderDetail }) {
+  const hasLogisticsOrder = data.logisticsOrderStatus.length !== 0;
   if (!hasLogisticsOrder) {
     return (
       <div className="p-2 border border-black rounded bg-stone-50">
@@ -26,13 +13,13 @@ export default function ShippingInfo() {
 
   // 陣列最後的元素為最新的物流訂單資訊
   const lastestLogisticsOrderStatus =
-    data!.logisticsOrderStatus[data!.logisticsOrderStatus.length - 1];
+    data.logisticsOrderStatus[data.logisticsOrderStatus.length - 1];
 
-  const shippingType = data!.shippingInfo.logisticsType!;
+  const shippingType = data.shippingInfo.logisticsType!;
   let shippingCode = "";
   if (shippingType === LogisticsType.CVS) {
     shippingCode = lastestLogisticsOrderStatus.cvspaymentNo;
-    if (data?.shippingInfo.logisticsSubType === LogisticsSubType.UNIMARTC2C) {
+    if (data.shippingInfo.logisticsSubType === LogisticsSubType.UNIMARTC2C) {
       shippingCode += `${lastestLogisticsOrderStatus.cvsvalidationNo}`;
     }
   } else if (shippingType === LogisticsType.HOME) {

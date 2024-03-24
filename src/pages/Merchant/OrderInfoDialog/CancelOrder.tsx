@@ -3,20 +3,10 @@ import useUserTokenCookie from "@/hooks/useUserTokenCookie";
 import useSelectedOrder from "@/store/useSelectedOrder";
 import { OrderDetail, OrderStatus } from "@/types/Order";
 import { showToast } from "@/utils/toastAlert";
-import { useQueryClient } from "@tanstack/react-query";
 
-export default function CancelOrder() {
-  const queryClient = useQueryClient();
+export default function CancelOrder({ data }: { data: OrderDetail }) {
   const { tokenCookie } = useUserTokenCookie();
-  const orderId = useSelectedOrder.use.orderId();
   const setOrderId = useSelectedOrder.use.setOrderId();
-
-  const data = queryClient.getQueryData<OrderDetail>([
-    "order",
-    orderId,
-    tokenCookie,
-  ]);
-
   const isDisabled = data?.orderStatus === OrderStatus.CANCEL;
 
   async function onCancelOrder() {
@@ -30,8 +20,8 @@ export default function CancelOrder() {
         throw new Error("隨機字串錯誤");
       }
 
-      await cancelOrderById(tokenCookie!, orderId);
-      showToast("success", `取消訂單${orderId}成功`);
+      await cancelOrderById(tokenCookie!, data.orderId);
+      showToast("success", `取消訂單${data.orderId}成功`);
       setOrderId("");
     } catch (error) {
       if (error instanceof Error) {

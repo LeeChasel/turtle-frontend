@@ -20,7 +20,7 @@ export default function OrderInfoDialog() {
   const { tokenCookie } = useUserTokenCookie();
   const isAdmin = validateTokenRole(tokenCookie, "ROLE_ADMIN");
 
-  const { status, error } = useOrderForMerchant(tokenCookie!, orderId);
+  const { data, status, error } = useOrderForMerchant(tokenCookie!, orderId);
   if (status === "error") return <div>Error: {error.message}</div>;
   if (status === "pending") return;
 
@@ -44,15 +44,15 @@ export default function OrderInfoDialog() {
           </button>
           <div className="pr-5 mr-1 overflow-y-auto grow">
             <div className="flex gap-2">
-              <OrderInfo />
-              <ShippingInfo />
+              <OrderInfo data={data} />
+              <ShippingInfo data={data} />
               <div className="flex flex-col gap-2">
-                <ProcessOrder />
-                <UpdateSenderInfo />
+                <ProcessOrder data={data} />
+                <UpdateSenderInfo data={data} />
               </div>
             </div>
-            <ItemList />
-            {isAdmin && <CancelOrder />}
+            <ItemList data={data} />
+            {isAdmin && <CancelOrder data={data} />}
           </div>
         </Dialog.Panel>
       </div>
