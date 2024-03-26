@@ -1,0 +1,42 @@
+{
+  "avif": {
+    "extension": ".avif",
+    "mime": "image/avif"
+  },
+  "jpg": {
+    "extension": ".jpg",
+    "mime": "image/jpeg"
+  },
+  "jpeg": {
+    "extension": ".jpeg",
+    "mime": "image/jpeg"
+  },
+  "png": {
+    "extension": ".png",
+    "mime": "image/png"
+  },
+  "svg": {
+    "extension": ".svg",
+    "mime": "image/svg+xml"
+  },
+  "webp": {
+    "extension": ".webp",
+    "mime": "image/webp"
+  },
+  "mp3": {
+    "extension": ".mp3",
+    "mime": "audio/mpeg"
+  },
+  "aac": {
+    "extension": ".aac",
+    "mime": "audio/aac"
+  },
+  "mp4": {
+    "extension": ".mp4",
+    "mime": "video/mp4"
+  },
+  "avi": {
+    "extension": ".avi",
+    "mime": "video/x-msvideo"
+  }
+}

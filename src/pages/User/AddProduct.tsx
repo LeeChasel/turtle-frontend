@@ -15,11 +15,17 @@ import type {
   TImage,
   TVariation,
   TImageData,
-  CustomizationItem,
 } from "../../types/Product";
 import { getImageData } from "../../utils/processFile";
-import { isEmpty, uniq } from "lodash";
+import { isEmpty, map, uniq } from "lodash";
 import getUserByEmail from "@/actions/getUserByEmail";
+import {
+  AllCustomizations,
+  CustomizationType,
+} from "@/types/Customization/CustomizationBase";
+import { useState } from "react";
+import Select from "react-select";
+import mimeTypes from "@/data/mimeTypes.json";
 
 type VariationData = {
   variationName: string;
@@ -43,7 +49,7 @@ type FormInputs = {
   previewImages?: TImageData[];
   detailImages: TImageData[];
   variations: VariationData[];
-  customizations?: CustomizationItem[];
+  customizations?: AllCustomizations[];
   relatedProducts?: {
     productName: string;
   }[];
@@ -129,6 +135,14 @@ function AddProducts() {
   });
 
   const { tokenCookie } = useUserTokenCookie();
+  const [customizationType, setCustomizationType] = useState<CustomizationType>(
+    CustomizationType.SIMPLEFILES,
+  );
+  const customizationTypeOptions = Object.values(CustomizationType);
+  const mimeTypesOptions = map(mimeTypes, (value, key) => ({
+    value: value.mime,
+    label: key,
+  }));
 
   const onSubmit: SubmitHandler<FormInputs> = async (formData) => {
     try {
@@ -169,9 +183,7 @@ function AddProducts() {
         available: formData.available,
         productUpstreamUrl: formData.productUpstreamUrl,
         relatedProducts: relatedProductIds,
-        // TODO: waiting for enum of type property
-        // customizations: formData.customizations ?? [],
-        customizations: [],
+        customizations: formData.customizations ?? [],
         ...(merchantId && { merchantId }),
       };
 
@@ -215,6 +227,29 @@ function AddProducts() {
       }
     }
   };
+
+  const addCustomizationField = () => {
+    switch (customizationType) {
+      case CustomizationType.SIMPLEFILES:
+        appendCustomization({
+          name: "",
+          required: false,
+          type: CustomizationType.SIMPLEFILES,
+          customization: {
+            price: 0,
+            fileRequirePara: {
+              fileMimeTypes: [],
+              minRequiredfilesCount: 0,
+              maxRequiredfilesCount: 0,
+            },
+          },
+        });
+        break;
+      default:
+        throw new Error("不支援的客製化類型");
+    }
+  };
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -758,24 +793,28 @@ function AddProducts() {
       <div className="col-span-2 form-control">
         <div className="label">
           <div>客製化</div>
-          <button
-            type="button"
-            onClick={() =>
-              appendCustomization(
-                {
-                  name: "",
-                  type: "",
-                  customization: { description: "" },
-                },
-                {
-                  shouldFocus: false,
-                },
-              )
-            }
-            className="btn btn-ghost btn-sm"
-          >
-            新增欄位
-          </button>
+          <div className="flex items-center">
+            <select
+              className="w-full select select-bordered shadow"
+              value={customizationType}
+              onChange={(e) =>
+                setCustomizationType(e.target.value as CustomizationType)
+              }
+            >
+              {customizationTypeOptions.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+            <button
+              type="button"
+              onClick={addCustomizationField}
+              className="btn btn-ghost btn-sm"
+            >
+              新增欄位
+            </button>
+          </div>
         </div>
         {customizationField.map((customization, index) => (
           <div key={customization.id} className="grid grid-cols-2 gap-3 mt-2">
@@ -790,6 +829,8 @@ function AddProducts() {
                 <GiCancel className="w-7 h-7" />
               </button>
             </div>
+
+            {/* shared property fields */}
             <Controller
               name={`customizations.${index}.name` as const}
               control={control}
@@ -817,68 +858,162 @@ function AddProducts() {
                 </div>
               )}
             />
-            <Controller
-              name={`customizations.${index}.type` as const}
-              control={control}
-              // waiting for enum type
-              // rules={{
-              //   validate: (value) => !isEmpty(value.trim()) || "必須選擇類型",
-              // }}
-              render={({ field, fieldState: { error } }) => (
-                <div className="w-full">
-                  <label className="label label-text">
-                    <span>
-                      <span>類型</span>
-                      <span className="text-red-700">*</span>
-                    </span>
-                  </label>
-                  <select {...field} className="w-full select select-bordered">
-                    <option
-                      value=""
-                      defaultChecked
-                      disabled
-                      className="bg-gray-300"
-                    >
-                      選擇類型...
-                    </option>
-                    {/* TODO: use enum type as option value and text */}
-                  </select>
-                  {error && (
-                    <label className="justify-end label label-text-alt text-error">
-                      {error.message}
-                    </label>
+
+            <div className="self-end w-full border-[1px] rounded-lg border-opacity-20 bg-base-100 border-black form-control">
+              <label className="cursor-pointer label">
+                <span className="text-lg label-text">是否必需</span>
+                <input
+                  type="checkbox"
+                  {...register(`customizations.${index}.required` as const)}
+                  className="checkbox checkbox-lg"
+                />
+              </label>
+            </div>
+
+            <div>
+              <label className="label label-text">
+                <span>客製化類型</span>
+              </label>
+              <input
+                type="text"
+                className="w-full input input-bordered"
+                defaultValue={customization.type}
+                readOnly={true}
+              />
+            </div>
+
+            {/* customization specific fields */}
+            {customization.type === CustomizationType.SIMPLEFILES && (
+              <>
+                <Controller
+                  name={`customizations.${index}.customization.price` as const}
+                  control={control}
+                  rules={{
+                    validate: (value) => value >= 0 || "價錢必須大於等於0",
+                  }}
+                  render={({ field, fieldState: { error } }) => (
+                    <div className="">
+                      <label className="label label-text">
+                        <span>
+                          <span>價錢</span>
+                        </span>
+                      </label>
+                      <input
+                        {...field}
+                        type="number"
+                        className="w-full input input-bordered"
+                        min="0"
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value || "0", 10))
+                        }
+                      />
+                      {error && (
+                        <label className="justify-end label label-text-alt text-error">
+                          {error.message}
+                        </label>
+                      )}
+                    </div>
                   )}
-                </div>
-              )}
-            />
-            <Controller
-              name={
-                `customizations.${index}.customization.description` as const
-              }
-              control={control}
-              rules={{
-                validate: (value) => !isEmpty(value.trim()) || "不可空白",
-              }}
-              render={({ field, fieldState: { error } }) => (
-                <div className="col-span-full">
-                  <label className="label label-text">
-                    <span>
-                      <span>描述</span>
-                      <span className="text-red-700">*</span>
-                    </span>
-                  </label>
-                  <textarea
-                    {...field}
-                    className="w-full h-24 resize-none textarea textarea-bordered"
-                  />
-                  {error && (
-                    <label className="justify-end label label-text-alt text-error">
-                      {error.message}
-                    </label>
+                />
+
+                <Controller
+                  name={
+                    `customizations.${index}.customization.fileRequirePara.minRequiredfilesCount` as const
+                  }
+                  control={control}
+                  rules={{
+                    validate: (value) =>
+                      value >= 0 || "最少上傳檔案數量必須大於等於0",
+                  }}
+                  render={({ field, fieldState: { error } }) => (
+                    <div className="">
+                      <label className="label label-text">
+                        <span>
+                          <span>最少上傳檔案數量</span>
+                        </span>
+                      </label>
+                      <input
+                        {...field}
+                        type="number"
+                        className="w-full input input-bordered"
+                        min="0"
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value || "0", 10))
+                        }
+                      />
+                      {error && (
+                        <label className="justify-end label label-text-alt text-error">
+                          {error.message}
+                        </label>
+                      )}
+                    </div>
                   )}
-                </div>
-              )}
-            />
+                />
+
+                <Controller
+                  name={
+                    `customizations.${index}.customization.fileRequirePara.maxRequiredfilesCount` as const
+                  }
+                  control={control}
+                  rules={{
+                    validate: (value) =>
+                      value >= 0 || "最多上傳檔案數量必須大於等於0",
+                  }}
+                  render={({ field, fieldState: { error } }) => (
+                    <div className="">
+                      <label className="label label-text">
+                        <span>
+                          <span>最多上傳檔案數量</span>
+                        </span>
+                      </label>
+                      <input
+                        {...field}
+                        type="number"
+                        className="w-full input input-bordered"
+                        min="0"
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value || "0", 10))
+                        }
+                      />
+                      {error && (
+                        <label className="justify-end label label-text-alt text-error">
+                          {error.message}
+                        </label>
+                      )}
+                    </div>
+                  )}
+                />
+
+                <Controller
+                  name={
+                    `customizations.${index}.customization.fileRequirePara.fileMimeTypes` as const
+                  }
+                  control={control}
+                  rules={{
+                    required: "不可空白",
+                  }}
+                  render={({ field, fieldState: { error } }) => (
+                    <div className="col-span-full">
+                      <label className="label label-text">檔案格式</label>
+                      <Select
+                        isMulti
+                        options={mimeTypesOptions}
+                        onChange={(selectedOptions) => {
+                          field.onChange(
+                            selectedOptions.map((option) => option.value),
+                          );
+                        }}
+                      />
+                      {error && (
+                        <label className="justify-end label label-text-alt text-error">
+                          {error.message}
+                        </label>
+                      )}
+                    </div>
+                  )}
+                />
+              </>
+            )}
           </div>
         ))}
       </div>

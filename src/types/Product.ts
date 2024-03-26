@@ -1,3 +1,5 @@
+import { AllCustomizations } from "./Customization/CustomizationBase";
+
 export type TProduct = {
   productId?: string;
   productName: string;
@@ -15,7 +17,7 @@ export type TProduct = {
   detailImages?: TImage[];
   specification?: string;
   keyWords?: string[];
-  customizations: CustomizationItem[];
+  customizations: AllCustomizations[];
   relatedProducts?: string[];
 };
 
