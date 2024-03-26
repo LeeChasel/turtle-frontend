@@ -1,4 +1,4 @@
-import { AllCustomizations } from "./Customization/CustomizationBase";
+import { CustomizationDetail } from "./Customization/CustomizationBase";
 
 export type TProduct = {
   productId?: string;
@@ -17,7 +17,7 @@ export type TProduct = {
   detailImages?: TImage[];
   specification?: string;
   keyWords?: string[];
-  customizations: AllCustomizations[];
+  customizations: CustomizationDetail[];
   relatedProducts?: string[];
 };
 

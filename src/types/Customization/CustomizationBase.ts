@@ -1,4 +1,7 @@
-import { SimpleFilesCustomization } from "./SimpleFilesCustomization";
+import {
+  SimpleFilesCustomization,
+  SimpleFilesCustomizationBrief,
+} from "./SimpleFilesCustomization";
 
 export type CustomizationBase = {
   name: string;
@@ -10,4 +13,6 @@ export enum CustomizationType {
   SIMPLEFILES = "SimpleFiles",
 }
 
-export type AllCustomizations = CustomizationBase & SimpleFilesCustomization;
+export type CustomizationDetail = CustomizationBase & SimpleFilesCustomization;
+export type CustomizationBrief = Omit<CustomizationBase, "required"> &
+  SimpleFilesCustomizationBrief;

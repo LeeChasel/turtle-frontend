@@ -20,7 +20,7 @@ import { getImageData } from "../../utils/processFile";
 import { isEmpty, map, uniq } from "lodash";
 import getUserByEmail from "@/actions/getUserByEmail";
 import {
-  AllCustomizations,
+  CustomizationDetail,
   CustomizationType,
 } from "@/types/Customization/CustomizationBase";
 import { useState } from "react";
@@ -49,7 +49,7 @@ type FormInputs = {
   previewImages?: TImageData[];
   detailImages: TImageData[];
   variations: VariationData[];
-  customizations?: AllCustomizations[];
+  customizations?: CustomizationDetail[];
   relatedProducts?: {
     productName: string;
   }[];
