@@ -1,6 +1,6 @@
 import { GrFormAdd, GrFormSubtract } from "react-icons/gr";
-import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useMemo, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { useVariationContext } from "../../Provider/VariationProvider";
 import { useProductContext } from "../../Provider/ProductProvider";
 import { showToast } from "../../utils/toastAlert";
@@ -22,6 +22,10 @@ export default function PurchaseInfo() {
   const { variation } = useVariationContext();
   const { product } = useProductContext();
   const { tokenCookie, setUserTokenCookie } = useUserTokenCookie();
+  const hasCustomization = product.customizations.length > 0;
+  const hasRequiredCustomization = product.customizations.some(
+    (item) => item.required,
+  );
 
   function modifyNumber(action: "add" | "subtract") {
     if (itemNumber === 1 && action === "subtract") return;
@@ -95,6 +99,17 @@ export default function PurchaseInfo() {
     }
   }
 
+  const customizationLink = `${isSpecial ? "/special" : ""}/customization`;
+  const customizationState = useMemo(
+    () => ({
+      product: product as TBanner,
+      variation: variation,
+      quantity: itemNumber,
+      customization: product.customizations,
+    }),
+    [product, variation, itemNumber],
+  );
+
   return (
     <div className="flex flex-col gap-3">
       <div className="items-center join">
@@ -114,33 +129,47 @@ export default function PurchaseInfo() {
           <GrFormAdd className="md:w-7 md:h-7" />
         </button>
       </div>
-
-      {isSpecial ? (
-        <button
-          onClick={handleAnonymousAddToCart}
-          className="w-1/2 btn bg-[#263238] text-white btn-sm md:btn-md lg:btn-lg"
-          disabled={buttonTriggered}
-        >
-          加入訂單
-        </button>
-      ) : (
-        <div className="flex flex-col gap-2 md:gap-3 md:flex-row">
-          <button
-            onClick={handleDirectPurchase}
+      <div className="flex flex-col gap-2 md:gap-3 md:flex-row">
+        {!hasRequiredCustomization && (
+          <>
+            {isSpecial ? (
+              <button
+                onClick={handleAnonymousAddToCart}
+                className="btn bg-[#263238] text-white btn-sm md:btn-md lg:btn-lg"
+                disabled={buttonTriggered}
+              >
+                加入訂單
+              </button>
+            ) : (
+              <>
+                <button
+                  onClick={handleDirectPurchase}
+                  className="btn bg-[#263238] text-white btn-sm md:btn-md lg:btn-lg"
+                  disabled={buttonTriggered}
+                >
+                  直接購買
+                </button>
+                <button
+                  onClick={handleAddToShoppingCart}
+                  className="btn bg-[#263238] text-white btn-sm md:btn-md lg:btn-lg"
+                  disabled={buttonTriggered}
+                >
+                  加入購物車
+                </button>
+              </>
+            )}
+          </>
+        )}
+        {hasCustomization && (
+          <Link
             className="btn bg-[#263238] text-white btn-sm md:btn-md lg:btn-lg"
-            disabled={buttonTriggered}
+            to={customizationLink}
+            state={customizationState}
           >
-            直接購買
-          </button>
-          <button
-            onClick={handleAddToShoppingCart}
-            className="btn bg-[#263238] text-white btn-sm md:btn-md lg:btn-lg"
-            disabled={buttonTriggered}
-          >
-            加入購物車
-          </button>
-        </div>
-      )}
+            前往客製化
+          </Link>
+        )}
+      </div>
     </div>
   );
 }

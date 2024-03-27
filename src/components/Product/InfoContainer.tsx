@@ -6,6 +6,7 @@ import PurchaseInfo from "./PurchaseInfo";
 import ImageGallery, { type ReactImageGalleryItem } from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
 import clsx from "clsx";
+import { FaCheck } from "react-icons/fa";
 
 const ImageURL = import.meta.env.VITE_TURTLE_PRODUCT_IMAGE_URL as string;
 
@@ -63,6 +64,10 @@ function InfoContainer() {
     changeVariation(newVariation);
   };
 
+  const requiredCustomizations = product.customizations.filter(
+    (item) => item.required,
+  );
+
   return (
     <div className="flex gap-2 px-1 lg:px-5">
       <div className="w-1/2 md:px-5 lg:px-10">
@@ -110,6 +115,33 @@ function InfoContainer() {
         <section className="inline-block p-2 text-lg bg-white rounded-full md:text-center lg:text-2xl w-fit">
           ${variation.currentPrice}
         </section>
+        {requiredCustomizations.length > 0 && (
+          <section className="">
+            <span className="text-sm md:text-lg lg:text-xl">客製化選項</span>
+            <div className="overflow-x-auto">
+              <table className="table table-xs md:table-sm lg:table-lg p-1 border border-gray-800 border-opacity-20">
+                <thead>
+                  <tr>
+                    <th className="w-[15%]">必要</th>
+                    <th>名稱</th>
+                    <th className="w-[25%]">費用</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {product.customizations.map((item) => (
+                    <tr key={item.name}>
+                      <td>{item.required && <FaCheck />}</td>
+                      <td className="tooltip" data-tip={item.name}>
+                        <span className="line-clamp-2">{item.name}</span>
+                      </td>
+                      <td>{item.customization.price.toLocaleString()}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
         <div className="flex flex-col p-1 border border-gray-800 rounded-lg shadow md:p-2 border-opacity-20">
           <label className="text-sm md:text-md lg:text-xl" htmlFor="select">
             種類
