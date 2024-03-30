@@ -1,20 +1,14 @@
 import { showToast } from "@/utils/toastAlert";
-import { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { CustomizationContainerState } from "../types";
 import { CustomizationProvider } from "../context/CustomizationProvider";
 
 export function CustomizationContainer() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const locationState = location.state as CustomizationContainerState;
-  const { product, variation, quantity, customization } = locationState;
-  useEffect(() => {
-    if (!customization || !product || !variation || !quantity) {
-      showToast("error", "無法取得商品資訊，請重新選擇商品");
-      navigate(-1);
-    }
-  }, [customization, product, quantity, variation, navigate]);
+  const locationState = useLocation().state as CustomizationContainerState;
+  if (!locationState) {
+    showToast("error", "無法取得商品客製化資訊，請重新選擇商品");
+    return <Navigate to="/" replace />;
+  }
 
   return (
     <CustomizationProvider defaultCustomization={locationState}>
