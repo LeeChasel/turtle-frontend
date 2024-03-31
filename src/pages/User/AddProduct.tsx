@@ -146,6 +146,25 @@ function AddProducts() {
 
   const onSubmit: SubmitHandler<FormInputs> = async (formData) => {
     try {
+      // Todo: move validation to ui validation, not here
+      // validate customizations are the same media type
+      if (formData.customizations) {
+        formData.customizations.forEach((customizationItem) => {
+          if (customizationItem.type === CustomizationType.SIMPLEFILES) {
+            const fileMimeTypes =
+              customizationItem.customization.fileRequirePara.fileMimeTypes;
+            // check if all fileMimeTypes are the same media type
+            const mediaType = fileMimeTypes[0].split("/")[0];
+            const isAllSameMediaType = fileMimeTypes.every(
+              (mimeType) => mimeType.split("/")[0] === mediaType,
+            );
+            if (!isAllSameMediaType) {
+              throw new Error("檔案格式必須為同一類型(圖片、音訊、影片)");
+            }
+          }
+        });
+      }
+
       // check productName is exited or not
       const validateName = await getProductByName(formData.productName);
       if (validateName.length !== 0) {
@@ -994,7 +1013,12 @@ function AddProducts() {
                   }}
                   render={({ field, fieldState: { error } }) => (
                     <div className="col-span-full">
-                      <label className="label label-text">檔案格式</label>
+                      <div className="label">
+                        <span className="label-text">檔案格式</span>
+                        <span className="label-text-alt">
+                          只可選同一類型(圖片、音訊、影片)
+                        </span>
+                      </div>
                       <Select
                         isMulti
                         options={mimeTypesOptions}
