@@ -2,8 +2,9 @@ import React, { createContext, useContext, useMemo, useState } from "react";
 import { CustomizationContainerState } from "../types";
 
 type CustomizationContextData = {
-  customization: CustomizationContainerState;
+  customization: Omit<CustomizationContainerState, "customization">;
 };
+
 const CustomizationContext = createContext<
   CustomizationContextData | undefined
 >(undefined);
