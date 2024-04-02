@@ -219,11 +219,11 @@ function Footer() {
   return (
     <footer className="items-center p-4 bg-gray-800 footer text-neutral-content">
       <aside className="items-center grid-flow-col">
+        <span className="font-serif">lazyturtleshopping@gmail.com</span>
         <a
           href="mailto:lazyturtleshopping@gmail.com"
           className="flex items-center gap-2"
         >
-          聯絡我們
           <CiMail className="w-5 h-5" />
         </a>
       </aside>
