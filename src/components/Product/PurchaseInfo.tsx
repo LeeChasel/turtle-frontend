@@ -129,47 +129,51 @@ export default function PurchaseInfo() {
           <GrFormAdd className="md:w-7 md:h-7" />
         </button>
       </div>
-      <div className="flex flex-col gap-2 md:gap-3 md:flex-row">
-        {!hasRequiredCustomization && (
-          <>
-            {isSpecial ? (
-              <button
-                onClick={handleAnonymousAddToCart}
-                className="btn bg-[#263238] text-white btn-sm md:btn-md lg:btn-lg"
-                disabled={buttonTriggered}
-              >
-                加入訂單
-              </button>
-            ) : (
-              <>
+
+      {/* disable for prod env */}
+      {import.meta.env.MODE !== "production" && (
+        <div className="flex flex-col gap-2 md:gap-3 md:flex-row">
+          {!hasRequiredCustomization && (
+            <>
+              {isSpecial ? (
                 <button
-                  onClick={handleDirectPurchase}
+                  onClick={handleAnonymousAddToCart}
                   className="btn bg-[#263238] text-white btn-sm md:btn-md lg:btn-lg"
                   disabled={buttonTriggered}
                 >
-                  直接購買
+                  加入訂單
                 </button>
-                <button
-                  onClick={handleAddToShoppingCart}
-                  className="btn bg-[#263238] text-white btn-sm md:btn-md lg:btn-lg"
-                  disabled={buttonTriggered}
-                >
-                  加入購物車
-                </button>
-              </>
-            )}
-          </>
-        )}
-        {hasCustomization && (
-          <Link
-            className="btn bg-[#263238] text-white btn-sm md:btn-md lg:btn-lg"
-            to={customizationLink}
-            state={customizationState}
-          >
-            前往客製化
-          </Link>
-        )}
-      </div>
+              ) : (
+                <>
+                  <button
+                    onClick={handleDirectPurchase}
+                    className="btn bg-[#263238] text-white btn-sm md:btn-md lg:btn-lg"
+                    disabled={buttonTriggered}
+                  >
+                    直接購買
+                  </button>
+                  <button
+                    onClick={handleAddToShoppingCart}
+                    className="btn bg-[#263238] text-white btn-sm md:btn-md lg:btn-lg"
+                    disabled={buttonTriggered}
+                  >
+                    加入購物車
+                  </button>
+                </>
+              )}
+            </>
+          )}
+          {hasCustomization && (
+            <Link
+              className="btn bg-[#263238] text-white btn-sm md:btn-md lg:btn-lg"
+              to={customizationLink}
+              state={customizationState}
+            >
+              前往客製化
+            </Link>
+          )}
+        </div>
+      )}
     </div>
   );
 }
