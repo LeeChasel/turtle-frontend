@@ -25,7 +25,7 @@ async function updateFile(
 
   const form = new FormData();
   form.append("file", file);
-  const res = await fetch(URL, {
+  const res = await fetch(`${URL}?${searchParams.toString()}`, {
     method: "POST",
     body: form,
   });
