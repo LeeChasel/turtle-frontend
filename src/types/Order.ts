@@ -2,18 +2,10 @@ import { AioCheckOutPaymentInfo, AioCheckOutReturn } from "./AllInOne";
 import { CustomizationBrief } from "./Customization/CustomizationBase";
 import { CvsMap } from "./Cvs";
 import { LogisticsOrderStatus, ShippingInfo } from "./Shipping";
-import { TShoppingCartDetail, TShoppingCartBrief } from "./ShoppingCart";
+import { TShoppingCartDetail } from "./ShoppingCart";
 
-export type TOrder = {
-  items: TOrderItem[];
-};
-
-export type TOrderItem = Omit<TShoppingCartDetail, "addedTime">;
-
-export type TOrderRequestItem = Omit<TShoppingCartBrief, "addedTime">;
-
-export type TOrderRequest = {
-  items: TOrderRequestItem[];
+export type CartItem = Omit<TShoppingCartDetail, "addedTime"> & {
+  customizations: CustomizationBrief[];
 };
 
 export type OrderDetail = {

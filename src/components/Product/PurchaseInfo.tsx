@@ -44,10 +44,10 @@ export default function PurchaseInfo() {
         setUserTokenCookie(jwt);
       }
       increaseProduct({
-        // TProduct type has all the properties of TBanner
         product: product as TBanner,
-        variation: variation,
         quantity: itemNumber,
+        variation: variation,
+        customizations: [],
       });
       showToast("success", "加入購物車成功");
     } catch (error) {

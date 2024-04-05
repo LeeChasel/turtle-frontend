@@ -1,111 +1,58 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { TOrder, TOrderItem } from "../types/Order";
-import { isEqual, remove } from "lodash";
+import { CartItem } from "../types/Order";
+import { isEqual, pullAt } from "lodash";
+import createSelectors from "@/lib/zustand";
 
-type BeOrderedProducts = {
-  products: TOrder;
-  increaseProduct: (product: TOrderItem) => void;
-  removeProduct: (product: TOrderItem) => void;
-  removeMultipleProducts: (products: TOrderItem[]) => void;
+type State = {
+  products: CartItem[];
 };
 
-const useBeOrderedProductsStore = create<BeOrderedProducts>()(
+type Action = {
+  increaseProduct: (product: State["products"][0]) => void;
+  removeProducts: (products: State["products"][0] | State["products"]) => void;
+};
+
+const initialState: State = {
+  products: [],
+};
+
+const useBeOrderedProductsStore = create<State & Action>()(
   persist(
-    (set) => ({
-      products: {
-        items: [],
+    (set, get) => ({
+      ...initialState,
+      increaseProduct: (newProduct) => {
+        const originalProductItems = get().products;
+        const index = getProductIndex(originalProductItems, newProduct);
+        if (index === -1) {
+          originalProductItems.push(newProduct);
+        } else {
+          originalProductItems[index].quantity += newProduct.quantity;
+        }
+
+        set({
+          products: [...originalProductItems],
+        });
       },
 
-      increaseProduct: (product) =>
-        set((state) => {
-          // for the first product
-          if (state.products.items.length === 0) {
-            return {
-              products: {
-                items: [product],
-              },
-            };
-          }
+      removeProducts: (removedProducts) => {
+        const originalProductItems = get().products;
+        if (!Array.isArray(removedProducts)) {
+          removedProducts = [removedProducts];
+        }
 
-          // for the second and more products
-          const index = state.products.items.findIndex(
-            (item) =>
-              isEqual(item.product.productId, product.product.productId) &&
-              isEqual(
-                item.variation.variationName,
-                product.variation.variationName,
-              ) &&
-              isEqual(
-                item.variation.variationSpec,
-                product.variation.variationSpec,
-              ),
-          );
+        // find the indexes of the products to be removed
+        const indexes = removedProducts.map((removedProduct) =>
+          getProductIndex(originalProductItems, removedProduct),
+        );
+        const beRemovedProducts = pullAt(originalProductItems, indexes);
+        if (beRemovedProducts.length !== removedProducts.length) {
+          // should not happen
+          console.error("Some products are not found in the original products");
+        }
 
-          if (index === -1) {
-            return {
-              products: {
-                items: [...state.products.items, product],
-              },
-            };
-          } else {
-            state.products.items[index].quantity += product.quantity;
-            return state;
-          }
-        }),
-
-      removeProduct: (product) =>
-        set((state) => {
-          // remove function would change the original array
-          remove(
-            state.products.items,
-            (orderProduct) =>
-              isEqual(
-                product.product.productId,
-                orderProduct.product.productId,
-              ) &&
-              isEqual(
-                product.variation.variationName,
-                orderProduct.variation.variationName,
-              ) &&
-              isEqual(
-                product.variation.variationSpec,
-                orderProduct.variation.variationSpec,
-              ),
-          );
-
-          return {
-            products: {
-              items: state.products.items,
-            },
-          };
-        }),
-      removeMultipleProducts: (products) => {
-        set((state) => {
-          products.forEach((product) => {
-            remove(
-              state.products.items,
-              (orderProduct) =>
-                isEqual(
-                  product.product.productId,
-                  orderProduct.product.productId,
-                ) &&
-                isEqual(
-                  product.variation.variationName,
-                  orderProduct.variation.variationName,
-                ) &&
-                isEqual(
-                  product.variation.variationSpec,
-                  orderProduct.variation.variationSpec,
-                ),
-            );
-          });
-
-          return {
-            products: {
-              items: state.products.items,
-            },
-          };
+        set({
+          products: [...originalProductItems],
         });
       },
     }),
@@ -116,4 +63,19 @@ const useBeOrderedProductsStore = create<BeOrderedProducts>()(
   ),
 );
 
-export default useBeOrderedProductsStore;
+const getProductIndex = (
+  originalProducts: CartItem[],
+  newProduct: CartItem,
+) => {
+  const { product, variation, customizations } = newProduct;
+  const { variationName, variationSpec } = variation;
+  return originalProducts.findIndex(
+    (originalProduct) =>
+      isEqual(originalProduct.product.productId, product.productId) &&
+      isEqual(originalProduct.variation.variationName, variationName) &&
+      isEqual(originalProduct.variation.variationSpec, variationSpec) &&
+      isEqual(originalProduct.customizations, customizations),
+  );
+};
+
+export default createSelectors(useBeOrderedProductsStore);

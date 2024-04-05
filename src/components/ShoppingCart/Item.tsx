@@ -1,14 +1,14 @@
 import { BsFillTrash3Fill } from "react-icons/bs";
 import type { TShoppingCartDetail } from "../../types/ShoppingCart";
-import type { TOrderItem } from "../../types/Order";
+import type { CartItem } from "../../types/Order";
 import { showToast } from "../../utils/toastAlert";
 import useSelectedCartItemStore from "../../store/useSelectedCartItemStore";
 import { isEmpty } from "lodash";
 
 type ShoppingCartItemProps = {
-  product: TShoppingCartDetail | TOrderItem;
+  product: TShoppingCartDetail | CartItem;
   removeItemFn: (
-    product: TShoppingCartDetail | TOrderItem,
+    product: TShoppingCartDetail | CartItem,
   ) => Promise<void> | void;
 };
 

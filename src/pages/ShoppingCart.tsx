@@ -3,13 +3,13 @@ import { useNavigate } from "react-router-dom";
 import useShoppingCart from "../hooks/useShoppingCart";
 import CartTable from "../components/ShoppingCart/CartTable";
 import { TShoppingCartBrief, TShoppingCartDetail } from "../types/ShoppingCart";
-import { TOrderItem, TOrderRequestItem } from "../types/Order";
+import { CartItem } from "@/types/Order";
 import updateShoppingCart from "../actions/updateShoppingCart";
 import useUserTokenCookie from "../hooks/useUserTokenCookie";
 import { useQueryClient } from "@tanstack/react-query";
 import useSelectedCartItemStore from "../store/useSelectedCartItemStore";
 import { showToast } from "../utils/toastAlert";
-import { createOrder } from "../actions/createOrder";
+import { createOrder, CreateOrderItemDTO } from "@/actions/createOrder";
 
 function ShoppingCart() {
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ function ShoppingCart() {
     navigate("/");
   }
 
-  async function removeProduct(item: TShoppingCartDetail | TOrderItem) {
+  async function removeProduct(item: TShoppingCartDetail | CartItem) {
     const removedItem: TShoppingCartBrief = {
       productId: item.product.productId!,
       variationName: item.variation.variationName,
@@ -53,16 +53,17 @@ function ShoppingCart() {
     try {
       setIsLoading(true);
 
-      const orderItems: TOrderRequestItem[] = [];
+      const orderItems: CreateOrderItemDTO[] = [];
       selectedProducts.forEach((product) => {
         orderItems.push({
           productId: product.product.productId!,
-          quantity: product.quantity,
           variationName: product.variation.variationName,
           variationSpec: product.variation.variationSpec,
+          quantity: product.quantity,
+          customizations:
+            "customizations" in product ? product.customizations : [],
         });
       });
-
       const orderResponse = await createOrder(
         { items: orderItems },
         tokenCookie!,
@@ -103,7 +104,13 @@ function ShoppingCart() {
   return (
     <div className="mt-[110px] mx-48">
       <CartTable
-        items={items}
+        items={items.map((item) => ({
+          product: item.product,
+          variation: item.variation,
+          quantity: item.quantity,
+          // TODO: add customizations
+          customizations: [],
+        }))}
         exitFn={exitCart}
         removeItemFn={removeProduct}
         createOrderFn={createOrderFn}

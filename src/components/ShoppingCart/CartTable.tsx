@@ -1,15 +1,13 @@
-import { TOrderItem } from "../../types/Order";
+import { CartItem } from "@/types/Order";
 import { TShoppingCartDetail } from "../../types/ShoppingCart";
 import ShoppingCartItem from "./Item";
 import useSelectedCartItemStore from "../../store/useSelectedCartItemStore";
 import { useEffect } from "react";
 
 type CartTableProps = {
-  items: TShoppingCartDetail[] | TOrderItem[];
+  items: TShoppingCartDetail[] | CartItem[];
   exitFn: () => void;
-  removeItemFn: (
-    item: TShoppingCartDetail | TOrderItem,
-  ) => Promise<void> | void;
+  removeItemFn: (item: TShoppingCartDetail | CartItem) => Promise<void> | void;
   createOrderFn: () => void;
   isLoading?: boolean;
 };
@@ -22,17 +20,15 @@ function CartTable({
   isLoading,
 }: CartTableProps) {
   const selectedProducts = useSelectedCartItemStore.use.selectedProducts();
-  const decreaseMultipleSelectedProducts =
-    useSelectedCartItemStore.use.decreaseMultipleSelectedProducts();
-  const setMerchantId = useSelectedCartItemStore.use.setMerchantId();
+  const reset = useSelectedCartItemStore.use.reset();
 
   useEffect(() => {
     // clear selected products when exit the page
     return () => {
-      decreaseMultipleSelectedProducts(items);
-      setMerchantId("");
+      reset();
     };
-  }, [decreaseMultipleSelectedProducts, items, setMerchantId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const totalPrice = selectedProducts.reduce(
     (acc, item) => acc + item.variation.currentPrice! * item.quantity,
@@ -55,13 +51,9 @@ function CartTable({
           </tr>
         </thead>
         <tbody>
-          {items.map((item) => (
+          {items.map((item, index) => (
             <ShoppingCartItem
-              key={
-                item.variation.variationName +
-                "-" +
-                item.variation.variationSpec
-              }
+              key={index}
               product={item}
               removeItemFn={removeItemFn}
             />

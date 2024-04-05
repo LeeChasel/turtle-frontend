@@ -7,15 +7,16 @@ import { showToast } from "../../utils/toastAlert";
 import useSelectedCartItemStore from "../../store/useSelectedCartItemStore";
 import { z } from "zod";
 import { createOrderForAnonymity } from "../../actions/createOrder";
-import { TOrderRequestItem } from "../../types/Order";
+import { CartItem } from "@/types/Order";
 import useUserTokenCookie from "../../hooks/useUserTokenCookie";
 import login from "../../actions/login";
 import { anonymousUser } from "../../utils/anonymity";
+import { TShoppingCartDetail } from "@/types/ShoppingCart";
 
 function OrderCart() {
   const [isLoading, setIsLoading] = useState(false);
-  const { products, removeProduct, removeMultipleProducts } =
-    useBeOrderedProductsStore();
+  const products = useBeOrderedProductsStore.use.products();
+  const removeProducts = useBeOrderedProductsStore.use.removeProducts();
   const productId = useAnonymousProductStore((state) => state.productId);
   const { selectedProducts, decreaseMultipleSelectedProducts } =
     useSelectedCartItemStore();
@@ -42,6 +43,15 @@ function OrderCart() {
     modalRef.current?.showModal();
   }
 
+  function removeProduct(item: TShoppingCartDetail | CartItem) {
+    removeProducts({
+      product: item.product,
+      variation: item.variation,
+      quantity: item.quantity,
+      customizations: "customizations" in item ? item.customizations : [],
+    });
+  }
+
   async function createOrder() {
     // for unexpected situation
     if (!tokenCookie) {
@@ -51,32 +61,48 @@ function OrderCart() {
 
     try {
       // validate email
-      const userEmail = z
-        .string()
-        .email()
-        .parse(userEmailRef.current?.value);
+      const userEmail = z.string().email().parse(userEmailRef.current?.value);
 
       setIsLoading(true);
       updateUserEmail(userEmail);
 
-      const orderItems: TOrderRequestItem[] = [];
+      const orderItems: CartItem[] = [];
       selectedProducts.forEach((product) => {
         orderItems.push({
-          productId: product.product.productId!,
+          product: product.product,
           quantity: product.quantity,
-          variationName: product.variation.variationName,
-          variationSpec: product.variation.variationSpec,
+          variation: product.variation,
+          customizations:
+            "customizations" in product ? product.customizations : [],
         });
       });
 
       const orderResponse = await createOrderForAnonymity(
-        { items: orderItems },
+        {
+          items: orderItems.map((orderItem) => ({
+            productId: orderItem.product.productId!,
+            quantity: orderItem.quantity,
+            variationName: orderItem.variation.variationName,
+            variationSpec: orderItem.variation.variationSpec,
+            customizations: orderItem.customizations,
+          })),
+        },
         userEmail,
         tokenCookie!,
       );
 
       // clear cart
-      removeMultipleProducts(selectedProducts);
+      removeProducts(
+        selectedProducts.map((selectedProduct) => ({
+          product: selectedProduct.product,
+          variation: selectedProduct.variation,
+          quantity: selectedProduct.quantity,
+          customizations:
+            "customizations" in selectedProduct
+              ? selectedProduct.customizations
+              : [],
+        })),
+      );
       decreaseMultipleSelectedProducts(selectedProducts);
       modalRef.current?.close();
 
@@ -100,7 +126,7 @@ function OrderCart() {
   return (
     <div className="mt-[110px] w-[90%] lg:w-4/5 mx-auto">
       <CartTable
-        items={products.items}
+        items={products}
         exitFn={exitCart}
         removeItemFn={removeProduct}
         createOrderFn={openDialog}
