@@ -13,6 +13,9 @@ export type SimpleFileRequirePara = {
   fileMimeTypes: string[];
   minRequiredfilesCount: number;
   maxRequiredfilesCount: number;
+  image_width: number;
+  image_height: number;
+  audio_length: number;
 };
 
 // Brief
