@@ -30,6 +30,7 @@ import CvsMapSuccess from "./pages/Anonymity/CvsMapSuccess";
 import Checkout from "./pages/Checkout";
 import OrderProcessing from "./pages/Merchant/OrderProcessing";
 import { CustomizationContainer } from "./features/customization/components/CustomizationContainer";
+import MusicTesting from "./pages/MusicTesting";
 
 const specialRoutes: RouteObject[] = [
   { path: "/special/product/:productId", Component: Product },
@@ -59,6 +60,7 @@ const routerData: RouteObject[] = [
       { path: "/PaymentCompleted", Component: PaymentCompleted },
       { path: "/checkout", Component: Checkout },
       { path: "/customization", Component: CustomizationContainer },
+      { path: "/test", Component: MusicTesting },
       ...specialRoutes,
       {
         Component: AuthRoutes,
