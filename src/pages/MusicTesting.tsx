@@ -11,6 +11,8 @@ function MusicTesting() {
   const [startTime, setStartTime] = useState(0);
   const [endTime, setEndTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [wavesurfer, setWavesurfer] = useState<WaveSurfer>();
+  const [wsRegion, setWsRegion] = useState<RegionsPlugin>();
 
   useEffect(() => {
     const container = containerRef.current;
@@ -28,7 +30,9 @@ function MusicTesting() {
         }),
       ],
     });
+    setWavesurfer(wavesurfer);
     const wsRegion = wavesurfer.registerPlugin(RegionsPlugin.create());
+    setWsRegion(wsRegion);
 
     wavesurfer.on("decode", () => {
       wsRegion.addRegion({
@@ -40,30 +44,13 @@ function MusicTesting() {
       });
     });
 
-    wavesurfer.on("click", async () => {
-      wavesurfer.playPause();
-    });
-
     wsRegion.on("region-updated", () => {
       setStartTime(wsRegion.getRegions()[0].start);
       setEndTime(wsRegion.getRegions()[0].end);
     });
 
-    wsRegion.on("region-double-clicked", () => {
-      wsRegion.getRegions()[0].play();
-    });
-
-    wsRegion.on("region-out", () => {
-      wavesurfer.pause();
-    });
-
-    wavesurfer.on("ready", async () => {
-      await wavesurfer.play();
-    });
-
     return () => {
       wavesurfer.destroy();
-      setIsPlaying(false);
     };
   }, [file]);
 
@@ -73,6 +60,56 @@ function MusicTesting() {
       setFileURL(URL.createObjectURL(e.target.files[0]));
     }
   }
+
+  async function playPause(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    try {
+      if (wavesurfer === undefined) {
+        throw new Error("請選擇檔案!");
+      }
+      await wavesurfer.playPause();
+      if (isPlaying === true) {
+        setIsPlaying(false);
+      } else {
+        setIsPlaying(true);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        showToast("error", error.message);
+      }
+    }
+  }
+
+  function playClip(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    try {
+      if (wsRegion === undefined) {
+        throw new Error("請選擇檔案!");
+      }
+      setIsPlaying(true);
+      wsRegion.getRegions()[0].play();
+      wsRegion.on("region-out", () => {
+        wavesurfer?.pause();
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        showToast("error", error.message);
+      }
+    }
+  }
+
+  /*const handleTrim = () => {
+    try {
+      if (wavesurfer === undefined) {
+        throw new Error("請選擇檔案!");
+      }
+      const trimData = wavesurfer.exportPeaks(1024, startTime, endTime);
+    } catch (error) {
+      if (error instanceof Error) {
+        showToast("error", error.message);
+      }
+    }
+  };*/
 
   return (
     <form>
@@ -84,7 +121,12 @@ function MusicTesting() {
 
       <div className="grid grid-flow-col grid-rows-1">
         <div>
-          <button className="btn">試聽</button>
+          <button className="btn" onClick={playPause}>
+            {isPlaying ? "PAUSE" : "PLAY"}
+          </button>
+          <button className="btn" onClick={playClip}>
+            試聽
+          </button>
         </div>
         <div className=" text-center grid grid-flow-col grid-rows-1 w-4/5">
           <label className="m-auto">剪裁時間</label>
