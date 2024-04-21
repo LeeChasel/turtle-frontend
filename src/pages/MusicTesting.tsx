@@ -13,6 +13,7 @@ function MusicTesting() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [wavesurfer, setWavesurfer] = useState<WaveSurfer>();
   const [wsRegion, setWsRegion] = useState<RegionsPlugin>();
+  const [result, setResult] = useState<AudioBuffer>();
 
   useEffect(() => {
     const container = containerRef.current;
@@ -49,6 +50,13 @@ function MusicTesting() {
       setEndTime(wsRegion.getRegions()[0].end);
     });
 
+    wavesurfer.on("play", () => {
+      setIsPlaying(true);
+    });
+    wavesurfer.on("pause", () => {
+      setIsPlaying(false);
+    });
+
     return () => {
       wavesurfer.destroy();
     };
@@ -68,11 +76,6 @@ function MusicTesting() {
         throw new Error("請選擇檔案!");
       }
       await wavesurfer.playPause();
-      if (isPlaying === true) {
-        setIsPlaying(false);
-      } else {
-        setIsPlaying(true);
-      }
     } catch (error) {
       if (error instanceof Error) {
         showToast("error", error.message);
@@ -83,11 +86,12 @@ function MusicTesting() {
   function playClip(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     try {
-      if (wsRegion === undefined) {
+      if (wsRegion === undefined || wavesurfer === undefined) {
         throw new Error("請選擇檔案!");
       }
-      setIsPlaying(true);
+
       wsRegion.getRegions()[0].play();
+
       wsRegion.on("region-out", () => {
         wavesurfer?.pause();
       });
@@ -98,19 +102,56 @@ function MusicTesting() {
     }
   }
 
-  /*const handleTrim = () => {
+  const handleTrim = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     try {
+      if (wsRegion === undefined) {
+        throw new Error("請選擇檔案!");
+      }
       if (wavesurfer === undefined) {
         throw new Error("請選擇檔案!");
       }
-      const trimData = wavesurfer.exportPeaks(1024, startTime, endTime);
+      const clip = edit(wavesurfer.getDecodedData()!);
+      setResult(clip);
     } catch (error) {
       if (error instanceof Error) {
         showToast("error", error.message);
       }
     }
-  };*/
+  };
 
+  function edit(clip: AudioBuffer) {
+    const channels = clip.numberOfChannels;
+    const rate = clip.sampleRate;
+    const startOffset = rate * startTime;
+    const endOffset = rate * endTime;
+    const frameCount = endOffset - startOffset;
+
+    const newAudioBuffer = new AudioContext().createBuffer(
+      channels,
+      endOffset - startOffset,
+      rate,
+    );
+    const anotherArray = new Float32Array(frameCount);
+    const offset = 0;
+    for (let channel = 0; channel < channels; channel++) {
+      clip.copyFromChannel(anotherArray, channel, startOffset);
+      newAudioBuffer.copyToChannel(anotherArray, channel, offset);
+    }
+
+    return newAudioBuffer;
+  }
+
+  function test(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    const audioCtx = new AudioContext();
+    const source = audioCtx.createBufferSource();
+    source.buffer = result!;
+
+    source.connect(audioCtx.destination);
+    // 资源开始播放
+    source.start();
+  }
   return (
     <form>
       <div>
@@ -165,7 +206,12 @@ function MusicTesting() {
                 .padStart(2, "0")
             }
           />
-          <button className="btn">剪裁</button>
+          <button className="btn" onClick={handleTrim}>
+            剪裁
+          </button>
+          <button className="btn" onClick={test}>
+            play
+          </button>
         </div>
       </div>
     </form>
