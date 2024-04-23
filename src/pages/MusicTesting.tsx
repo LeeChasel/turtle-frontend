@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import WaveSurfer from "wavesurfer.js";
 import Hover from "wavesurfer.js/dist/plugins/hover.esm.js";
 import RegionsPlugin from "wavesurfer.js/dist/plugins/regions.esm.js";
+import AudioPlayer from "react-h5-audio-player";
 
 function MusicTesting() {
   const [file, setFile] = useState<File | null>(null);
@@ -14,6 +15,7 @@ function MusicTesting() {
   const [wavesurfer, setWavesurfer] = useState<WaveSurfer>();
   const [wsRegion, setWsRegion] = useState<RegionsPlugin>();
   const [result, setResult] = useState<AudioBuffer>();
+  const [blob, setBlob] = useState<Blob>();
 
   useEffect(() => {
     const container = containerRef.current;
@@ -21,6 +23,7 @@ function MusicTesting() {
     const wavesurfer = WaveSurfer.create({
       container: container,
       url: fileURL,
+      waveColor: "#263238",
       plugins: [
         Hover.create({
           lineColor: "#ff0000",
@@ -102,7 +105,7 @@ function MusicTesting() {
     }
   }
 
-  const handleTrim = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleTrim = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
       if (wsRegion === undefined) {
@@ -111,7 +114,11 @@ function MusicTesting() {
       if (wavesurfer === undefined) {
         throw new Error("請選擇檔案!");
       }
-      const clip = edit(wavesurfer.getDecodedData()!);
+      const audioContext = new AudioContext();
+      const arrayBuffer = await file!.arrayBuffer();
+      const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+      const clip = edit(audioBuffer);
+
       setResult(clip);
     } catch (error) {
       if (error instanceof Error) {
@@ -129,14 +136,13 @@ function MusicTesting() {
 
     const newAudioBuffer = new AudioContext().createBuffer(
       channels,
-      endOffset - startOffset,
+      frameCount,
       rate,
     );
     const anotherArray = new Float32Array(frameCount);
-    const offset = 0;
     for (let channel = 0; channel < channels; channel++) {
       clip.copyFromChannel(anotherArray, channel, startOffset);
-      newAudioBuffer.copyToChannel(anotherArray, channel, offset);
+      newAudioBuffer.copyToChannel(anotherArray, channel, 0);
     }
 
     return newAudioBuffer;
@@ -162,10 +168,10 @@ function MusicTesting() {
 
       <div className="grid grid-flow-col grid-rows-1">
         <div>
-          <button className="btn" onClick={playPause}>
+          <button className="btn bg-[#263238] text-white" onClick={playPause}>
             {isPlaying ? "PAUSE" : "PLAY"}
           </button>
-          <button className="btn" onClick={playClip}>
+          <button className="btn bg-[#263238] text-white" onClick={playClip}>
             試聽
           </button>
         </div>
@@ -206,10 +212,10 @@ function MusicTesting() {
                 .padStart(2, "0")
             }
           />
-          <button className="btn" onClick={handleTrim}>
+          <button className="btn bg-[#263238] text-white" onClick={handleTrim}>
             剪裁
           </button>
-          <button className="btn" onClick={test}>
+          <button className="btn bg-[#263238] text-white" onClick={test}>
             play
           </button>
         </div>
