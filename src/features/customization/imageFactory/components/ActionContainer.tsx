@@ -19,7 +19,7 @@ export function ActionContainer(props: ActionContainerProps) {
           剪裁
         </button>
       </div>
-      <div className="basis-2/3 border-l-2">ada</div>
+      <div className="basis-2/3 border-l-2"></div>
     </div>
   );
 }
