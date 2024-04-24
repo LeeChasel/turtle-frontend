@@ -21,8 +21,8 @@ export function UploadButton(props: UploadButtonProps) {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const fileList = e.target.files;
     if (fileList && fileList.length > 0) {
-      changeSourceImageCallback(fileList[0]);
       dialogRef.current?.close();
+      changeSourceImageCallback(fileList[0]);
     }
   };
   return (

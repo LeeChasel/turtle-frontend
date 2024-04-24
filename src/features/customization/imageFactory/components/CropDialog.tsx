@@ -49,12 +49,13 @@ export const CropDialog = forwardRef<HTMLDialogElement, CutDialogProps>(
             }}
             maxWidth={image_width || undefined}
             maxHeight={image_height || undefined}
+            className="size-full border-2 border-gray-800"
           >
             <img
               ref={imageRef}
               src={originalImage}
               alt="crop image"
-              className="w-full h-full"
+              className="size-full"
             />
           </ReactCrop>
 

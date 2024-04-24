@@ -20,7 +20,7 @@ export const ImageContainer = forwardRef<
         ref={ref}
         width={defaultWidth}
         height={defaultHeight}
-        className="object-contain mx-auto border border-gray-800 max-w-full"
+        className="object-contain m-auto border border-gray-800 w-full max-h-[60vh]"
       />
     </div>
   );

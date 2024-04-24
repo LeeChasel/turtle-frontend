@@ -53,6 +53,7 @@ export function ImageFactoryContainer({
             canvas.height,
         );
     });
+    cropDialogRef.current?.showModal();
   };
 
   const handleCropImageChange = (
