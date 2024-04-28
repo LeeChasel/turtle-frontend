@@ -16,3 +16,8 @@ export enum CustomizationType {
 export type CustomizationDetail = CustomizationBase & SimpleFilesCustomization;
 export type CustomizationBrief = Omit<CustomizationBase, "required"> &
   SimpleFilesCustomizationBrief;
+
+export type AudioBrief = {
+  name: string;
+  file: AudioBuffer;
+};
