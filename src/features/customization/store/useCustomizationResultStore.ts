@@ -1,9 +1,11 @@
 import createSelectors from "@/lib/zustand";
 import { CustomizationBrief } from "@/types/Customization/CustomizationBase";
 import { create } from "zustand";
+import { ImageFactoryDataStore } from "../imageFactory";
 
 type State = {
   customizationResult: CustomizationBrief[];
+  imageFactoryData: ImageFactoryDataStore[];
 };
 
 type Action = {
@@ -12,11 +14,13 @@ type Action = {
    * @param newCustomization The new customization to be added to the result
    */
   addCustomization: (newCustomization: State["customizationResult"][0]) => void;
+  setImageFactory: (newImageFactoryData: ImageFactoryDataStore[]) => void;
   reset: () => void;
 };
 
 const initialState: State = {
   customizationResult: [],
+  imageFactoryData: [],
 };
 
 const useCustomizationResultStore = create<State & Action>((set, get) => ({
@@ -33,6 +37,9 @@ const useCustomizationResultStore = create<State & Action>((set, get) => ({
     } else {
       set({ customizationResult: [...customizationResult, newCustomization] });
     }
+  },
+  setImageFactory: (newImageFactoryData) => {
+    set({ imageFactoryData: [...newImageFactoryData] });
   },
   reset: () => set(initialState),
 }));

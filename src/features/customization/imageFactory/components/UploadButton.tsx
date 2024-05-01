@@ -26,7 +26,7 @@ export function UploadButton(props: UploadButtonProps) {
     }
   };
   return (
-    <div className="flex justify-end">
+    <>
       <button
         type="button"
         className="btn btn-primary"
@@ -58,6 +58,6 @@ export function UploadButton(props: UploadButtonProps) {
           </div>
         </div>
       </dialog>
-    </div>
+    </>
   );
 }
