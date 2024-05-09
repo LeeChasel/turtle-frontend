@@ -3,11 +3,15 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import getAllProduct from "@/actions/getAllProduct";
 import getProductByName from "@/actions/getProductByName";
 import ProductInfoRef from "./ProductInfoRef";
+import { ProductResponse } from "@/types/Product";
+import ProductModifiedInfoRef from "./ProductModifiedInfoRef";
+import { showToast } from "@/utils/toastAlert";
 
 function ModifyProduct() {
   const productNameRef = useRef<HTMLInputElement>(null);
   const [priceOrder, setPriceOrder] = useState("DESCENDING");
-  const productName = productNameRef.current?.value;
+  const [targetTProduct, setTargetTProduct] = useState<ProductResponse[]>();
+
   const {
     status,
     data,
@@ -55,15 +59,33 @@ function ModifyProduct() {
   });
 
   const targetProduct =
-    productName != undefined ? (
-      <ProductInfoRef info={getProductByName(productName)} key={0} />
+    targetTProduct != undefined ? (
+      <ProductModifiedInfoRef info={targetTProduct[0]} key={0} />
     ) : null;
+
+  async function getProductResponse(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    const name = productNameRef.current?.value;
+    if (name != undefined && name.length > 0) {
+      try {
+        const target = await getProductByName(name);
+        if (target.length === 0) {
+          throw new Error("查無資料");
+        } else {
+          setTargetTProduct(target);
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          showToast("error", error.message);
+        }
+      }
+    } else {
+      setTargetTProduct(undefined);
+    }
+  }
   return (
     <>
-      <form
-        className="bg-[#F9F9F9] border border-black grid grid-cols-5 gap-4 pl-12 grow h-20 text-center"
-        //onSubmit={submit}
-      >
+      <form className="bg-[#F9F9F9] border border-black grid grid-cols-5 gap-4 pl-12 grow h-20 text-center">
         <div className="m-auto">商品名稱：</div>
         <div className="m-auto">
           <input
@@ -85,10 +107,12 @@ function ModifyProduct() {
         </div>
 
         <div className="m-auto">
-          <button className="btn">查詢</button>
+          <button className="btn" onClick={getProductResponse}>
+            查詢
+          </button>
         </div>
       </form>
-      {content}
+      {targetProduct ? targetProduct : content}
       {isFetchingNextPage && <p>Loading...</p>}
     </>
   );
