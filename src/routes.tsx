@@ -32,6 +32,7 @@ import OrderProcessing from "./pages/Merchant/OrderProcessing";
 import ModifyProduct from "./pages/ModifyProduct";
 import { CustomizationContainer } from "./features/customization/components/CustomizationContainer";
 import MusicTesting from "./pages/MusicTesting";
+import ModifyProductInfo from "./pages/ModifyProductInfo";
 
 const specialRoutes: RouteObject[] = [
   { path: "/special/product/:productId", Component: Product },
@@ -81,7 +82,14 @@ const routerData: RouteObject[] = [
                 Component: AdminRoutes,
                 children: [
                   { path: "addProduct", Component: AddProduct },
-                  { path: "modifyProduct", Component: ModifyProduct },
+                  {
+                    path: "modifyProduct",
+                    Component: ModifyProduct,
+                  },
+                  {
+                    path: "modifyProductInfo",
+                    Component: ModifyProductInfo,
+                  },
                 ],
               },
             ],
