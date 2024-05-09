@@ -52,9 +52,14 @@ function SideNavbar() {
           </li>
         )}
         {isAdmin && (
-          <li>
-            <Link to="/user/addProduct">新增商品</Link>
-          </li>
+          <>
+            <li>
+              <Link to="/user/addProduct">新增商品</Link>
+            </li>
+            <li>
+              <Link to="/user/modifyProduct">修改商品</Link>
+            </li>
+          </>
         )}
         <li>
           <button onClick={handleLogout}>登出</button>
