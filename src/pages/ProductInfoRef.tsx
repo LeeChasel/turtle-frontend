@@ -51,7 +51,7 @@ const ProductInfoRef = forwardRef<HTMLDivElement, ProductInfoRefProps>(
           className="w-full"
         >
           <table
-            className="w-fit table text-center border border-[#263238] bg-[#F9F9F9] my-2"
+            className="w-full table text-center border border-[#263238] bg-[#F9F9F9] my-2"
             key={info.productId}
           >
             <thead>
