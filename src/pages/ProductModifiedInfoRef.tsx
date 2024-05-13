@@ -1,24 +1,33 @@
-import useSelectedOrder from "@/store/useSelectedOrder";
-import { ProductResponse } from "@/types/Product";
 import React, { forwardRef } from "react";
+import { useNavigate } from "react-router-dom";
+
+type productData = {
+  id: string;
+  name: string;
+  price: number;
+  stock: number;
+  sold: number;
+};
 
 type ProductInfoRefProps = {
-  info: ProductResponse;
+  info: productData;
 };
 
 const ProductModifiedInfoRef = forwardRef<HTMLDivElement, ProductInfoRefProps>(
   ({ info }, ref) => {
-    const setSelectedOrderId = useSelectedOrder.use.setOrderId();
+    const navigate = useNavigate();
     const content = ref ? (
       <div ref={ref}>
         <button
-          onClick={() => setSelectedOrderId(info.productId!)}
-          key={info.productId}
+          onClick={() =>
+            navigate("/user/modifyProductInfo?productID=" + info.id)
+          }
+          key={info.id}
           className="w-full"
         >
           <table
             className="w-full table text-center border border-[#263238] my-2"
-            key={info.productId}
+            key={info.id}
           >
             <thead>
               <tr>
@@ -31,10 +40,10 @@ const ProductModifiedInfoRef = forwardRef<HTMLDivElement, ProductInfoRefProps>(
             <tbody>
               <tr>
                 <td className="break-all text-ellipsis">
-                  <span>{info.productName}</span>
+                  <span>{info.name}</span>
                 </td>
                 <td className="break-all text-ellipsis">
-                  <span>{info.currentPrice}</span>
+                  <span>{info.price}</span>
                 </td>
                 <td className="break-all text-ellipsis">{info.stock}</td>
                 <td>{info.sold}</td>
@@ -46,13 +55,15 @@ const ProductModifiedInfoRef = forwardRef<HTMLDivElement, ProductInfoRefProps>(
     ) : (
       <div>
         <button
-          onClick={() => setSelectedOrderId(info.productId!)}
-          key={info.productId}
+          onClick={() =>
+            navigate("/user/modifyProductInfo?productID=" + info.id)
+          }
+          key={info.id}
           className="w-full"
         >
           <table
             className="w-full table text-center border border-[#263238] bg-[#F9F9F9] my-2"
-            key={info.productId}
+            key={info.id}
           >
             <thead>
               <tr>
@@ -65,10 +76,10 @@ const ProductModifiedInfoRef = forwardRef<HTMLDivElement, ProductInfoRefProps>(
             <tbody>
               <tr>
                 <td className="break-all text-ellipsis">
-                  <span>{info.productName}</span>
+                  <span>{info.name}</span>
                 </td>
                 <td className="break-all text-ellipsis">
-                  <span>{info.currentPrice}</span>
+                  <span>{info.price}</span>
                 </td>
                 <td className="break-all text-ellipsis">{info.stock}</td>
                 <td>{info.sold}</td>

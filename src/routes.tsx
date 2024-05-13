@@ -31,7 +31,6 @@ import Checkout from "./pages/Checkout";
 import OrderProcessing from "./pages/Merchant/OrderProcessing";
 import ModifyProduct from "./pages/ModifyProduct";
 import { CustomizationContainer } from "./features/customization/components/CustomizationContainer";
-import MusicTesting from "./pages/MusicTesting";
 import ModifyProductInfo from "./pages/ModifyProductInfo";
 
 const specialRoutes: RouteObject[] = [
@@ -62,7 +61,7 @@ const routerData: RouteObject[] = [
       { path: "/PaymentCompleted", Component: PaymentCompleted },
       { path: "/checkout", Component: Checkout },
       { path: "/customization", Component: CustomizationContainer },
-      { path: "/test", Component: MusicTesting },
+
       ...specialRoutes,
       {
         Component: AuthRoutes,

@@ -4,7 +4,6 @@ import {
   Controller,
   useFieldArray,
 } from "react-hook-form";
-import useSelectedOrder from "@/store/useSelectedOrder";
 import { GiCancel } from "react-icons/gi";
 import clsx from "clsx";
 import { showToast } from "@/utils/toastAlert";
@@ -22,6 +21,7 @@ import Select from "react-select";
 import mimeTypes from "@/data/mimeTypes.json";
 import useProductByAdmin from "@/hooks/useProductByAdmin";
 import getProductByName from "@/actions/getProductByName";
+import { useSearchParams } from "react-router-dom";
 
 type VariationData = {
   variationName: string;
@@ -44,7 +44,7 @@ type FormInputs = {
   bannerImage?: FileList;
   previewImages?: TImageData[];
   detailImages: TImageData[];
-  variations: TVariation[];
+  variations: VariationData[];
   customizations?: CustomizationDetail[];
   relatedProducts?: {
     productName: string;
@@ -52,21 +52,35 @@ type FormInputs = {
   merchantEmail: string;
 };
 
+const variationDefaultValue = {
+  variationName: "",
+  variationSpec: "",
+  originalPrice: 0,
+  currentPrice: 0,
+  available: true,
+  stock: 0,
+  bannerImage: null,
+};
+
+const formDefaultValue: FormInputs = {
+  productName: "",
+  originalPrice: 0,
+  currentPrice: 0,
+  stock: 0,
+  available: true,
+  detailImages: [{ description: "", image: null }],
+  variations: [variationDefaultValue],
+  merchantEmail: "",
+};
+
 function ModifyProductInfo() {
   const { tokenCookie } = useUserTokenCookie();
-  const productId = useSelectedOrder.use.orderId();
-  const productInfo = useProductByAdmin(productId, tokenCookie);
-
-  const formDefaultValue: FormInputs = {
-    productName: productInfo.data!.productName,
-    originalPrice: productInfo.data!.originalPrice,
-    currentPrice: productInfo.data!.currentPrice,
-    stock: productInfo.data!.stock,
-    available: productInfo.data!.available,
-    detailImages: [{ description: "", image: null }],
-    variations: productInfo.data!.variations!,
-    merchantEmail: "",
-  };
+  const [searchParams] = useSearchParams();
+  const productID = searchParams.get("productID");
+  const { data: productInfo, status } = useProductByAdmin(
+    productID!,
+    tokenCookie!,
+  );
 
   const {
     register,
@@ -76,7 +90,7 @@ function ModifyProductInfo() {
     control,
   } = useForm<FormInputs>({
     mode: "onBlur",
-    defaultValues: formDefaultValue,
+    //defaultValues: formDefaultValue,
   });
 
   const {
@@ -132,6 +146,11 @@ function ModifyProductInfo() {
     value: value.mime,
     label: key,
   }));
+
+  if (status === "pending") {
+    return <>Loading...</>;
+  }
+  console.log(tokenCookie);
 
   const onSubmit: SubmitHandler<FormInputs> = async (formData) => {
     try {
@@ -280,6 +299,7 @@ function ModifyProductInfo() {
             validate: (value) => !isEmpty(value.trim()) || "商品名稱必填！",
           })}
           className="input input-bordered"
+          defaultValue={productInfo!.productName}
         />
         {errors.productName && (
           <label className="justify-end label label-text-alt text-error">
@@ -297,6 +317,7 @@ function ModifyProductInfo() {
           type="url"
           {...register("productUpstreamUrl")}
           className="input input-bordered"
+          defaultValue={productInfo!.productUpstreamUrl}
         />
       </div>
 
@@ -306,6 +327,7 @@ function ModifyProductInfo() {
         <textarea
           {...register("productDescription")}
           className="h-24 resize-none textarea textarea-bordered"
+          defaultValue={productInfo!.productDescription}
         />
       </div>
 
@@ -322,6 +344,7 @@ function ModifyProductInfo() {
           })}
           min="0"
           className="input input-bordered"
+          defaultValue={productInfo!.originalPrice}
         />
         {errors.originalPrice && (
           <label className="justify-end label label-text-alt text-error">
@@ -343,6 +366,7 @@ function ModifyProductInfo() {
           })}
           min="0"
           className="input input-bordered"
+          defaultValue={productInfo!.currentPrice}
         />
         {errors.currentPrice && (
           <label className="justify-end label label-text-alt text-error">
@@ -364,6 +388,7 @@ function ModifyProductInfo() {
           })}
           min="0"
           className="input input-bordered"
+          defaultValue={productInfo!.stock}
         />
         {errors.stock && (
           <label className="justify-end label label-text-alt text-error">
@@ -414,6 +439,7 @@ function ModifyProductInfo() {
             type="checkbox"
             {...register("available")}
             className="checkbox checkbox-lg"
+            defaultChecked={productInfo!.available}
           />
         </label>
       </div>
@@ -561,7 +587,7 @@ function ModifyProductInfo() {
           </span>
           <button
             onClick={() =>
-              appendVariation(productInfo.data!.variations!, {
+              appendVariation(productInfo!.variations!, {
                 shouldFocus: false,
               })
             }
@@ -1182,7 +1208,7 @@ async function updateImages(
   }
 }
 
-async function processVariationArraySequentially(
+/*async function processVariationArraySequentially(
   variationDataArray: VariationData[],
 ) {
   const variationData: TVariation[] = [];
@@ -1202,7 +1228,7 @@ async function processVariationArraySequentially(
   return variationData;
 }
 
-/*async function sendRequest(data: TProduct, token: string | undefined) {
+async function sendRequest(data: TProduct, token: string | undefined) {
   
 }*/
 export default ModifyProductInfo;

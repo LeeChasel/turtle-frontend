@@ -14,7 +14,7 @@ function WaveForm() {
   const [wavesurfer, setWavesurfer] = useState<WaveSurfer>();
   const [wsRegion, setWsRegion] = useState<RegionsPlugin>();
   const [result, setResult] = useState<AudioBuffer>();
-  const [blob, setBlob] = useState<Blob>();
+  //const [blob, setBlob] = useState<Blob>();
 
   useEffect(() => {
     const container = containerRef.current;

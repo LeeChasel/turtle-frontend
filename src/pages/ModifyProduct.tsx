@@ -2,7 +2,6 @@ import { useCallback, useRef, useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import getAllProduct from "@/actions/getAllProduct";
 import getProductByName from "@/actions/getProductByName";
-import ProductInfoRef from "./ProductInfoRef";
 import { ProductResponse } from "@/types/Product";
 import ProductModifiedInfoRef from "./ProductModifiedInfoRef";
 import { showToast } from "@/utils/toastAlert";
@@ -52,15 +51,47 @@ function ModifyProduct() {
   const content = data?.pages.map((pages) => {
     return pages.map((order, index) => {
       if (pages.length === index + 1) {
-        return <ProductInfoRef ref={lastOrderRef} info={order} key={index} />;
+        return (
+          <ProductModifiedInfoRef
+            ref={lastOrderRef}
+            info={{
+              id: order.productId!,
+              name: order.productName,
+              price: order.currentPrice!,
+              stock: order.stock!,
+              sold: order.sold!,
+            }}
+            key={index}
+          />
+        );
       }
-      return <ProductInfoRef info={order} key={index} />;
+      return (
+        <ProductModifiedInfoRef
+          info={{
+            id: order.productId!,
+            name: order.productName,
+            price: order.currentPrice!,
+            stock: order.stock!,
+            sold: order.sold!,
+          }}
+          key={index}
+        />
+      );
     });
   });
 
   const targetProduct =
     targetTProduct != undefined ? (
-      <ProductModifiedInfoRef info={targetTProduct[0]} key={0} />
+      <ProductModifiedInfoRef
+        info={{
+          id: targetTProduct[0].productId!,
+          name: targetTProduct[0].productName,
+          price: targetTProduct[0].currentPrice!,
+          stock: targetTProduct[0].stock!,
+          sold: targetTProduct[0].sold!,
+        }}
+        key={0}
+      />
     ) : null;
 
   async function getProductResponse(e: React.MouseEvent<HTMLButtonElement>) {
