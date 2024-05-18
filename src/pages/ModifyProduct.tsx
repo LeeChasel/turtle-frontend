@@ -1,13 +1,11 @@
 import { useCallback, useRef, useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import getAllProduct from "@/actions/getAllProduct";
-import getProductByName from "@/actions/getProductByName";
 import ProductInfoRef from "./ProductInfoRef";
 
 function ModifyProduct() {
   const productNameRef = useRef<HTMLInputElement>(null);
   const [priceOrder, setPriceOrder] = useState("DESCENDING");
-  const productName = productNameRef.current?.value;
   const {
     status,
     data,
@@ -54,10 +52,6 @@ function ModifyProduct() {
     });
   });
 
-  const targetProduct =
-    productName != undefined ? (
-      <ProductInfoRef info={getProductByName(productName)} key={0} />
-    ) : null;
   return (
     <>
       <form

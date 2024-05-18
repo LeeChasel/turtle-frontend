@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import WaveSurfer from "wavesurfer.js";
 import Hover from "wavesurfer.js/dist/plugins/hover.esm.js";
 import RegionsPlugin from "wavesurfer.js/dist/plugins/regions.esm.js";
-import AudioPlayer from "react-h5-audio-player";
 
 function MusicTesting() {
   const [file, setFile] = useState<File | null>(null);
@@ -15,7 +14,6 @@ function MusicTesting() {
   const [wavesurfer, setWavesurfer] = useState<WaveSurfer>();
   const [wsRegion, setWsRegion] = useState<RegionsPlugin>();
   const [result, setResult] = useState<AudioBuffer>();
-  const [blob, setBlob] = useState<Blob>();
 
   useEffect(() => {
     const container = containerRef.current;
