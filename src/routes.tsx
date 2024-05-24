@@ -31,7 +31,7 @@ import Checkout from "./pages/Checkout";
 import OrderProcessing from "./pages/Merchant/OrderProcessing";
 import ModifyProduct from "./pages/ModifyProduct";
 import { CustomizationContainer } from "./features/customization/components/CustomizationContainer";
-import ModifyProductInfo from "./pages/ModifyProductInfo";
+import ModifiedProductInfoContainer from "./pages/ModifiedProductInfoContainer";
 
 const specialRoutes: RouteObject[] = [
   { path: "/special/product/:productId", Component: Product },
@@ -87,7 +87,7 @@ const routerData: RouteObject[] = [
                   },
                   {
                     path: "modifyProductInfo",
-                    Component: ModifyProductInfo,
+                    Component: ModifiedProductInfoContainer,
                   },
                 ],
               },
