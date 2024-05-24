@@ -9,7 +9,7 @@ import clsx from "clsx";
 import { showToast } from "@/utils/toastAlert";
 import useUserTokenCookie from "@/hooks/useUserTokenCookie";
 import getUserByEmail from "@/actions/getUserByEmail";
-import type { TProduct, TImage, TVariation, TImageData } from "@/types/Product";
+import type { TProduct, TImage, TImageData } from "@/types/Product";
 import { getImageData } from "@/utils/processFile";
 import { isEmpty, map, uniq } from "lodash";
 import {
@@ -62,17 +62,6 @@ const variationDefaultValue = {
   bannerImage: null,
 };
 
-const formDefaultValue: FormInputs = {
-  productName: "",
-  originalPrice: 0,
-  currentPrice: 0,
-  stock: 0,
-  available: true,
-  detailImages: [{ description: "", image: null }],
-  variations: [variationDefaultValue],
-  merchantEmail: "",
-};
-
 function ModifyProductInfo() {
   const { tokenCookie } = useUserTokenCookie();
   const [searchParams] = useSearchParams();
@@ -82,6 +71,11 @@ function ModifyProductInfo() {
     tokenCookie!,
   );
 
+  const url =
+    "https://storage.googleapis.com/dev_turtle_static/backend/product/" +
+    productID +
+    "/";
+
   const {
     register,
     handleSubmit,
@@ -90,7 +84,6 @@ function ModifyProductInfo() {
     control,
   } = useForm<FormInputs>({
     mode: "onBlur",
-    //defaultValues: formDefaultValue,
   });
 
   const {
@@ -150,7 +143,10 @@ function ModifyProductInfo() {
   if (status === "pending") {
     return <>Loading...</>;
   }
-  console.log(tokenCookie);
+
+  const defaultPreviewImg = productInfo?.previewImages;
+  const defaultDetailImg = productInfo?.detailImages;
+  const defaultVariations = productInfo?.variations;
 
   const onSubmit: SubmitHandler<FormInputs> = async (formData) => {
     try {
@@ -215,10 +211,14 @@ function ModifyProductInfo() {
       };
 
       // process bannerImage
-      const updateBannerImage = await getImageData({
-        image: formData.bannerImage![0],
-      });
-      productData.bannerImage = updateBannerImage;
+      if (formData.bannerImage === null) {
+        productData.bannerImage = productInfo?.bannerImage;
+      } else {
+        const updateBannerImage = await getImageData({
+          image: formData.bannerImage![0],
+        });
+        productData.bannerImage = updateBannerImage;
+      }
 
       // process previewImage
       if (
@@ -279,6 +279,9 @@ function ModifyProductInfo() {
         throw new Error("不支援的客製化類型");
     }
   };
+  console.log(variationField.length);
+
+  const mainPage = url + productInfo?.bannerImage?.imageId;
 
   return (
     <form
@@ -415,13 +418,18 @@ function ModifyProductInfo() {
         <label className="label">
           <span>
             <span>首頁縮圖</span>
-            <span className="text-red-700">*</span>
+          </span>
+        </label>
+        <label>
+          <span>現在縮圖</span>
+          <span>
+            <img src={mainPage} />
           </span>
         </label>
         <input
           type="file"
           accept=".webp, .avif"
-          {...register("bannerImage", { required: "首頁縮圖必填!" })}
+          {...register("bannerImage")}
           className="file-input file-input-bordered"
         />
         {errors.bannerImage && (
@@ -447,6 +455,7 @@ function ModifyProductInfo() {
       <div className="divider col-span-full" />
 
       {/* previewImage */}
+      {/*TODO: FIX ADD PROBLEM*/}
       <div className="col-span-2 form-control">
         <div className="label">
           <div>商品頁面預覽圖</div>
@@ -459,10 +468,29 @@ function ModifyProductInfo() {
           </button>
         </div>
         <ul>
+          {defaultPreviewImg!.map((img, index) => (
+            <>
+              <div className="badge badge-primary badge-outline badge-lg">
+                第{index + 1}個預覽圖
+              </div>
+              <img src={url + img.imageId} key={img.imageId} />
+              <button
+                className="btn bg-[#263238] text-white"
+                onClick={() => {
+                  const index = defaultPreviewImg!.indexOf(img);
+                  if (index > -1) {
+                    defaultPreviewImg!.splice(index, 1);
+                  }
+                }}
+              >
+                刪除
+              </button>
+            </>
+          ))}
           {previewField.map((item, index) => (
             <li key={item.id} className="flex flex-col gap-1 mt-2">
               <div className="badge badge-primary badge-outline badge-lg">
-                第{index + 1}個預覽圖
+                第{defaultPreviewImg!.length + index + 1}個預覽圖
               </div>
               <Controller
                 name={`previewImages.${index}.image` as const}
@@ -516,13 +544,65 @@ function ModifyProductInfo() {
           </button>
         </div>
         <ul>
+          {defaultDetailImg!.map((img, index) => (
+            <>
+              <div className="badge badge-primary badge-outline badge-lg m-1">
+                第{index + 1}個預覽圖
+              </div>
+
+              <img src={url + img.imageId} key={img.imageId} />
+
+              <Controller
+                name={`detailImages.${index}.description` as const}
+                control={control}
+                rules={{
+                  validate: (value) => {
+                    if (index === 0) {
+                      return !isEmpty(value!.trim()) || "第一個敘述為必填";
+                    }
+                  },
+                }}
+                render={({
+                  field: { value, onChange },
+                  fieldState: { error },
+                }) => (
+                  <>
+                    <textarea
+                      value={value}
+                      onChange={onChange}
+                      className="h-24 resize-none w-full textarea textarea-bordered m-1"
+                      defaultValue={img.description}
+                    />
+                    {error && (
+                      <label className="justify-end label label-text-alt text-error">
+                        {error.message}
+                      </label>
+                    )}
+                  </>
+                )}
+              />
+              <div>
+                <button
+                  className="btn bg-[#263238] text-white"
+                  onClick={() => {
+                    const index = defaultDetailImg!.indexOf(img);
+                    if (index > -1) {
+                      defaultDetailImg!.splice(index, 1);
+                    }
+                  }}
+                >
+                  刪除
+                </button>
+              </div>
+            </>
+          ))}
           {detailField.map((item, index) => (
             <li key={item.id} className="flex flex-col gap-1 mt-2">
               <div className="flex items-center justify-between">
-                <span className="badge badge-primary badge-outline badge-lg">
-                  第{index + 1}個詳細圖文欄位
-                </span>
-                {index > 0 && (
+                <div className="badge badge-primary badge-outline badge-lg">
+                  第{defaultDetailImg!.length + index + 1}個詳細圖文欄位
+                </div>
+                {defaultDetailImg!.length + index > 0 && (
                   <button
                     onClick={() => removeDetail(index)}
                     className="btn btn-square btn-ghost"
@@ -587,7 +667,7 @@ function ModifyProductInfo() {
           </span>
           <button
             onClick={() =>
-              appendVariation(productInfo!.variations!, {
+              appendVariation(variationDefaultValue, {
                 shouldFocus: false,
               })
             }
@@ -598,13 +678,206 @@ function ModifyProductInfo() {
           </button>
         </div>
         <ul>
+          {defaultVariations!.map((variation, index) => (
+            <>
+              <div className="flex items-center justify-between col-span-full">
+                <div className="badge badge-primary badge-outline badge-lg">
+                  第{index + 1}個規格欄位
+                </div>
+              </div>
+              <div>
+                <img
+                  src={url + variation.bannerImage?.imageId}
+                  key={variation.variationName}
+                  className="w-1/2"
+                />
+              </div>
+              <li
+                key={variation.variationName}
+                className="grid grid-cols-4 gap-3"
+              >
+                {/* first column */}
+                <Controller
+                  name={`variations.${index}.variationName` as const}
+                  control={control}
+                  rules={{
+                    validate: (value) =>
+                      !isEmpty(value.trim()) || "種類名稱必填",
+                  }}
+                  render={({ field, fieldState: { error } }) => (
+                    <div className="w-full">
+                      <label className="label label-text">
+                        <span>
+                          <span>種類名稱</span>
+                          <span className="text-red-700">*</span>
+                        </span>
+                      </label>
+                      <input
+                        {...field}
+                        type="text"
+                        className="w-full input input-bordered"
+                        defaultValue={variation.variationName}
+                      />
+                      {error && (
+                        <label className="justify-end label label-text-alt text-error">
+                          {error.message}
+                        </label>
+                      )}
+                    </div>
+                  )}
+                />
+                <Controller
+                  name={`variations.${index}.variationSpec` as const}
+                  control={control}
+                  rules={{
+                    validate: (value) =>
+                      !isEmpty(value.trim()) || "種類規格必填",
+                  }}
+                  render={({ field, fieldState: { error } }) => (
+                    <div className="w-full">
+                      <label className="label label-text">
+                        <span>
+                          <span>種類規格</span>
+                          <span className="text-red-700">*</span>
+                        </span>
+                      </label>
+                      <input
+                        {...field}
+                        type="text"
+                        className="w-full input input-bordered"
+                        defaultValue={variation.variationSpec}
+                      />
+                      {error && (
+                        <label className="justify-end label label-text-alt text-error">
+                          {error.message}
+                        </label>
+                      )}
+                    </div>
+                  )}
+                />
+                <Controller
+                  name={`variations.${index}.originalPrice` as const}
+                  control={control}
+                  render={({ field }) => (
+                    <div className="w-full">
+                      <label className="label label-text">商品原價</label>
+                      <input
+                        {...field}
+                        type="number"
+                        min={0}
+                        className="w-full input input-bordered"
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value || "0"))
+                        }
+                        defaultValue={variation.originalPrice}
+                      />
+                    </div>
+                  )}
+                />
+                <Controller
+                  name={`variations.${index}.currentPrice` as const}
+                  control={control}
+                  render={({ field }) => (
+                    <div className="w-full">
+                      <label className="label label-text">商品現價</label>
+                      <input
+                        {...field}
+                        type="number"
+                        min={0}
+                        className="w-full input input-bordered"
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value || "0"))
+                        }
+                        defaultValue={variation.currentPrice}
+                      />
+                    </div>
+                  )}
+                />
+
+                {/* second column */}
+                <Controller
+                  name={`variations.${index}.stock` as const}
+                  control={control}
+                  render={({ field }) => (
+                    <div className="w-full">
+                      <label className="label label-text">商品存貨</label>
+                      <input
+                        {...field}
+                        type="number"
+                        min={0}
+                        className="w-full input input-bordered"
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value || "0"))
+                        }
+                        defaultValue={variation.stock}
+                      />
+                    </div>
+                  )}
+                />
+                <Controller
+                  name={`variations.${index}.bannerImage` as const}
+                  control={control}
+                  rules={{ required: "必須上傳圖片" }}
+                  render={({ field: { onChange }, fieldState: { error } }) => (
+                    <div className="col-span-2">
+                      <label className="label">
+                        <span>
+                          <span>首頁縮圖</span>
+                          <span className="text-red-700">*</span>
+                        </span>
+                      </label>
+                      <input
+                        onChange={(e) =>
+                          onChange(e.target.files ? e.target.files[0] : null)
+                        }
+                        type="file"
+                        accept=".webp, .avif"
+                        className="w-full file-input file-input-bordered"
+                      />
+                      {error && (
+                        <label className="justify-end label label-text-alt text-error">
+                          {error.message}
+                        </label>
+                      )}
+                    </div>
+                  )}
+                />
+                <div className="self-end w-full border-[1px] rounded-lg border-opacity-20 bg-base-100 border-black form-control">
+                  <label className="cursor-pointer label">
+                    <span className="text-lg label-text">目前可購買</span>
+                    <input
+                      type="checkbox"
+                      {...register(`variations.${index}.available`)}
+                      className="checkbox checkbox-lg"
+                      defaultChecked={variation.available}
+                    />
+                  </label>
+                </div>
+                <div>
+                  <button
+                    className="btn bg-[#263238] text-white m-1"
+                    onClick={() => {
+                      const i = defaultVariations!.indexOf(variation);
+                      if (i > -1) {
+                        defaultDetailImg!.splice(i, 1);
+                      }
+                      removeVariation(index);
+                    }}
+                  >
+                    刪除
+                  </button>
+                </div>
+                <div className="divider col-span-full" />
+              </li>
+            </>
+          ))}
           {variationField.map((item, index) => (
             <li key={item.id} className="grid grid-cols-4 gap-3">
               <div className="flex items-center justify-between col-span-full">
                 <span className="badge badge-primary badge-outline badge-lg">
-                  第{index + 1}個規格欄位
+                  第{defaultVariations!.length + index + 1}個規格欄位
                 </span>
-                {index > 0 && (
+                {defaultVariations!.length + index > 0 && (
                   <button
                     onClick={() => removeVariation(index)}
                     className="btn btn-square btn-ghost"
@@ -1208,7 +1481,7 @@ async function updateImages(
   }
 }
 
-/*async function processVariationArraySequentially(
+async function processVariationArraySequentially(
   variationDataArray: VariationData[],
 ) {
   const variationData: TVariation[] = [];
@@ -1228,7 +1501,5 @@ async function updateImages(
   return variationData;
 }
 
-async function sendRequest(data: TProduct, token: string | undefined) {
-  
-}*/
+async function sendRequest(data: TProduct, token: string | undefined) {}
 export default ModifyProductInfo;
