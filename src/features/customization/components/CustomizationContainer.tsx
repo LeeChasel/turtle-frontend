@@ -10,6 +10,7 @@ import { useCustomizationForm } from "../hooks/useCustomizationForm";
 import { FinishCustomization } from "./FinishCustomization";
 import { useEffect } from "react";
 import useCustomizationResultStore from "../store/useCustomizationResultStore";
+import { VideoFactoryContainer } from "../videoFactory";
 
 export function CustomizationContainer() {
   const locationState = useLocation().state as CustomizationContainerState;
@@ -60,7 +61,12 @@ export function CustomizationContainer() {
             case "audio":
               return <div>音訊客製化</div>;
             case "video":
-              return <div>影片客製化</div>;
+              return (
+                <VideoFactoryContainer
+                  factoryData={customization}
+                  key={customization.name}
+                />
+              );
             default:
               return <div>未知客製化檔案類型</div>;
           }
