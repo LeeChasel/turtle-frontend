@@ -23,6 +23,10 @@
     "extension": ".webp",
     "mime": "image/webp"
   },
+  "gif": {
+    "extension": ".gif",
+    "mime": "image/gif"
+  },
   "mp3": {
     "extension": ".mp3",
     "mime": "audio/mpeg"
