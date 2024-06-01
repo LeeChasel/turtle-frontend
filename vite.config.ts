@@ -18,5 +18,8 @@ export default defineConfig(({ mode }) => {
           },
         }),
     ],
+    optimizeDeps: {
+      exclude: ["@ffmpeg/ffmpeg", "@ffmpeg/util"],
+    },
   };
 });
