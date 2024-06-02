@@ -1,7 +1,7 @@
+import { useRef, useState } from "react";
 import { CustomizationDetail } from "@/types/Customization/CustomizationBase";
 import { UploadButton } from "./UploadButton";
-import WaveSurfer from "wavesurfer.js";
-import { useEffect, useRef, useState } from "react";
+import { useWaveSurfer } from "../hooks";
 
 type VideoFactoryContainerProps = {
   factoryData: CustomizationDetail;
@@ -10,49 +10,42 @@ type VideoFactoryContainerProps = {
 export function VideoFactoryContainer({
   factoryData,
 }: VideoFactoryContainerProps) {
-  const [file, setFile] = useState<File | null>(null);
+  console.log(factoryData);
+  const [file, setFile] = useState<File | undefined>(undefined);
   const videoSrc = file ? URL.createObjectURL(file) : undefined;
-  const waveformRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  const { waveformRef } = useWaveSurfer({
+    file,
+    videoRef,
+  });
 
   const updateFile = (file: File) => {
     setFile(file);
     if (videoSrc) URL.revokeObjectURL(videoSrc);
   };
 
-  useEffect(() => {
-    if (!waveformRef.current || !videoRef.current || !file) return;
-
-    const ws = WaveSurfer.create({
-      container: waveformRef.current,
-      waveColor: "#263238",
-      progressColor: "rgb(100, 0, 100)",
-      media: videoRef.current,
-    });
-
-    return () => ws.destroy();
-  }, [file]);
-
   return (
-    <>
+    <div className="space-y-5">
       <div className="flex justify-end">
         <UploadButton
           hasVideo={Boolean(file)}
           updateFile={(targetFile) => updateFile(targetFile)}
         />
       </div>
-      <div className="flex flex-col items-center">
-        {videoSrc && (
+      {videoSrc && (
+        <div className="flex flex-col items-center">
           <video
+            key={videoSrc}
             controls
             playsInline
             className="block"
             ref={videoRef}
             src={videoSrc}
           />
-        )}
-        <div ref={waveformRef} className="w-full" />
-      </div>
-    </>
+        </div>
+      )}
+      <div ref={waveformRef} className="w-full" />
+    </div>
   );
 }
