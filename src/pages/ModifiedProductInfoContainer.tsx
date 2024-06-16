@@ -14,7 +14,6 @@ function ModifiedProductInfoContainer() {
   if (status === "pending") {
     return <>Loading...</>;
   }
-  console.log(productInfo);
   return <ModifyProductInfo data={productInfo!} tokenCookie={tokenCookie!} />;
 }
 export default ModifiedProductInfoContainer;
