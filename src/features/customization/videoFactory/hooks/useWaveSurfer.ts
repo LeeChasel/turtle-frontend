@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import { useEffect, useRef } from "react";
 import WaveSurfer from "wavesurfer.js";
-import RegionsPlugin from "wavesurfer.js/dist/plugins/regions.js";
+import RegionsPlugin, { Region } from "wavesurfer.js/dist/plugins/regions.js";
 import TimelinePlugin from "wavesurfer.js/dist/plugins/timeline.js";
 import Hover from "wavesurfer.js/dist/plugins/hover.esm.js";
 
@@ -9,11 +10,16 @@ type UseWaveSurferProps = {
   videoRef: React.RefObject<HTMLVideoElement>;
 };
 
-// TODO: 紀錄時間並使用剪輯按鈕保留選取的區域, 要使用ffmpeg
-
 export const useWaveSurfer = (props: UseWaveSurferProps) => {
   const { file, videoRef } = props;
   const waveformRef = useRef<HTMLDivElement>(null);
+  const region = useRef<Region | null>(null);
+
+  const getRegionTime = () => {
+    return region.current
+      ? { start: region.current.start, end: region.current.end }
+      : { start: 0, end: 0 };
+  };
 
   useEffect(() => {
     if (!waveformRef.current || !videoRef.current || !file) return;
@@ -36,7 +42,6 @@ export const useWaveSurfer = (props: UseWaveSurferProps) => {
       ],
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     ws.on("interaction", async () => {
       await ws.play();
     });
@@ -48,7 +53,6 @@ export const useWaveSurfer = (props: UseWaveSurferProps) => {
     });
 
     // 監聽 region-created 事件，當新的 region 被建立時，移除其他 region
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     wsRegion.on("region-created", async (newRegion) => {
       wsRegion.getRegions().forEach((r) => {
         if (r !== newRegion) {
@@ -56,6 +60,7 @@ export const useWaveSurfer = (props: UseWaveSurferProps) => {
         }
       });
       ws.setTime(newRegion.start);
+      region.current = newRegion;
       await ws.play();
     });
 
@@ -69,5 +74,8 @@ export const useWaveSurfer = (props: UseWaveSurferProps) => {
     };
   }, [file, videoRef]);
 
-  return { waveformRef };
+  return {
+    waveformRef,
+    getRegionTime,
+  };
 };

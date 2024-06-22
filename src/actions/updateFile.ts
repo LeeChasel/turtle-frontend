@@ -4,13 +4,20 @@ import { findKey } from "lodash";
 type FileUpdateJson = {
   fileId: string;
   mimeType?: string;
+  videoDetail?: {
+    /** millisecond */
+    duration: number;
+    width: number;
+    height: number;
+    frameRate: number;
+  };
 };
 
 const URL = import.meta.env.VITE_TURTLE_PUBLIC_URL + "/file";
 
 async function updateFile(
   file: File,
-  identifyMimeType = false,
+  showDetails = false,
 ): Promise<FileUpdateJson> {
   const searchParams = new URLSearchParams();
   const fileType = file.type;
@@ -21,7 +28,7 @@ async function updateFile(
     throw new Error("不支援的檔案格式，請確認上傳檔案類型或擴充支援的檔案格式");
   }
   searchParams.append("extension", extension);
-  searchParams.append("identifyMimeType", `${identifyMimeType}`);
+  searchParams.append("showDetails", String(showDetails));
 
   const form = new FormData();
   form.append("file", file);
@@ -31,7 +38,7 @@ async function updateFile(
   });
 
   if (!res.ok) {
-    throw new Error("上傳圖片失敗");
+    throw new Error("上傳檔案失敗");
   }
 
   return res.json() as Promise<FileUpdateJson>;
