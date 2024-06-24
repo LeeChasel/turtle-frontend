@@ -31,7 +31,7 @@ import Checkout from "./pages/Checkout";
 import OrderProcessing from "./pages/Merchant/OrderProcessing";
 import ModifyProduct from "./pages/ModifyProduct";
 import { CustomizationContainer } from "./features/customization/components/CustomizationContainer";
-import MusicTesting from "./pages/MusicTesting";
+import ModifiedProductInfoContainer from "./pages/ModifiedProductInfoContainer";
 
 const specialRoutes: RouteObject[] = [
   { path: "/special/product/:productId", Component: Product },
@@ -61,7 +61,7 @@ const routerData: RouteObject[] = [
       { path: "/PaymentCompleted", Component: PaymentCompleted },
       { path: "/checkout", Component: Checkout },
       { path: "/customization", Component: CustomizationContainer },
-      { path: "/test", Component: MusicTesting },
+
       ...specialRoutes,
       {
         Component: AuthRoutes,
@@ -81,7 +81,14 @@ const routerData: RouteObject[] = [
                 Component: AdminRoutes,
                 children: [
                   { path: "addProduct", Component: AddProduct },
-                  { path: "modifyProduct", Component: ModifyProduct },
+                  {
+                    path: "modifyProduct",
+                    Component: ModifyProduct,
+                  },
+                  {
+                    path: "modifyProductInfo",
+                    Component: ModifiedProductInfoContainer,
+                  },
                 ],
               },
             ],

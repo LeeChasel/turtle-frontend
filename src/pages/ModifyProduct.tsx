@@ -1,11 +1,16 @@
 import { useCallback, useRef, useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import getAllProduct from "@/actions/getAllProduct";
-import ProductInfoRef from "./ProductInfoRef";
+import getProductByName from "@/actions/getProductByName";
+import { ProductResponse } from "@/types/Product";
+import ProductModifiedInfoRef from "./ProductModifiedInfoRef";
+import { showToast } from "@/utils/toastAlert";
 
 function ModifyProduct() {
   const productNameRef = useRef<HTMLInputElement>(null);
   const [priceOrder, setPriceOrder] = useState("DESCENDING");
+  const [targetTProduct, setTargetTProduct] = useState<ProductResponse[]>();
+
   const {
     status,
     data,
@@ -46,18 +51,72 @@ function ModifyProduct() {
   const content = data?.pages.map((pages) => {
     return pages.map((order, index) => {
       if (pages.length === index + 1) {
-        return <ProductInfoRef ref={lastOrderRef} info={order} key={index} />;
+        return (
+          <ProductModifiedInfoRef
+            ref={lastOrderRef}
+            info={{
+              id: order.productId!,
+              name: order.productName,
+              price: order.currentPrice!,
+              stock: order.stock!,
+              sold: order.sold!,
+            }}
+            key={index}
+          />
+        );
       }
-      return <ProductInfoRef info={order} key={index} />;
+      return (
+        <ProductModifiedInfoRef
+          info={{
+            id: order.productId!,
+            name: order.productName,
+            price: order.currentPrice!,
+            stock: order.stock!,
+            sold: order.sold!,
+          }}
+          key={index}
+        />
+      );
     });
   });
 
+  const targetProduct =
+    targetTProduct != undefined ? (
+      <ProductModifiedInfoRef
+        info={{
+          id: targetTProduct[0].productId!,
+          name: targetTProduct[0].productName,
+          price: targetTProduct[0].currentPrice!,
+          stock: targetTProduct[0].stock!,
+          sold: targetTProduct[0].sold!,
+        }}
+        key={0}
+      />
+    ) : null;
+
+  async function getProductResponse(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    const name = productNameRef.current?.value;
+    if (name != undefined && name.length > 0) {
+      try {
+        const target = await getProductByName(name);
+        if (target.length === 0) {
+          throw new Error("查無資料");
+        } else {
+          setTargetTProduct(target);
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          showToast("error", error.message);
+        }
+      }
+    } else {
+      setTargetTProduct(undefined);
+    }
+  }
   return (
     <>
-      <form
-        className="bg-[#F9F9F9] border border-black grid grid-cols-5 gap-4 pl-12 grow h-20 text-center"
-        //onSubmit={submit}
-      >
+      <form className="bg-[#F9F9F9] border border-black grid grid-cols-5 gap-4 pl-12 grow h-20 text-center">
         <div className="m-auto">商品名稱：</div>
         <div className="m-auto">
           <input
@@ -79,10 +138,12 @@ function ModifyProduct() {
         </div>
 
         <div className="m-auto">
-          <button className="btn">查詢</button>
+          <button className="btn" onClick={getProductResponse}>
+            查詢
+          </button>
         </div>
       </form>
-      {content}
+      {targetProduct ? targetProduct : content}
       {isFetchingNextPage && <p>Loading...</p>}
     </>
   );
