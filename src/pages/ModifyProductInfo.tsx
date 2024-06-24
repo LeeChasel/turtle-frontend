@@ -364,7 +364,12 @@ export default function ModifyProductInfo({
         const files = formData.previewImages.filter(
           (item) => item.image !== null,
         );
-        await updateImages(files, productData, "previewImages");
+        await updateImages(
+          files,
+          formData.defaultPreviewImages!,
+          productData,
+          "previewImages",
+        );
       }
 
       // process detailImage
@@ -374,7 +379,12 @@ export default function ModifyProductInfo({
       const detailImagesData = formData.detailImages.filter(
         (item) => !(item.description === "" && item.image === null),
       );
-      await updateImages(detailImagesData, productData, "detailImages");
+      await updateImages(
+        detailImagesData,
+        formData.defaultDetailImages!,
+        productData,
+        "detailImages",
+      );
 
       // process variation
       const variationDataArray = await processVariationArraySequentially(
@@ -388,7 +398,7 @@ export default function ModifyProductInfo({
         "success",
         `商品「${modifyProductResult.productName}」修改成功!`,
       );
-      console.log(productData);
+      console.log(variationDataArray);
 
       // Success will rest the form, if fail will throw error and don't trigger reset
       reset();
@@ -756,7 +766,7 @@ export default function ModifyProductInfo({
                 control={control}
                 rules={{
                   validate: (value) => {
-                    if (index === 0) {
+                    if (defaultDetailImages.length + index === 0) {
                       return !isEmpty(value!.trim()) || "第一個敘述為必填";
                     }
                   },
@@ -938,7 +948,7 @@ export default function ModifyProductInfo({
                 )}
               />
               <Controller
-                name={`defaultVariations.${index}.bannerImage` as const}
+                name={`defaultVariations.${index}.bannerIMG` as const}
                 control={control}
                 render={({ field: { onChange }, fieldState: { error } }) => (
                   <div className="col-span-2">
@@ -1873,6 +1883,7 @@ export default function ModifyProductInfo({
 
 async function updateImages(
   data: TImageData[],
+  previewData: TImage[],
   productData: TProduct,
   key: keyof TProduct,
 ) {
@@ -1889,10 +1900,10 @@ async function updateImages(
   const imagesData = await processArraySequentially(data);
   switch (key) {
     case "previewImages":
-      productData[key]?.concat(imagesData);
+      productData[key] = previewData.concat(imagesData);
       break;
     case "detailImages":
-      productData[key]?.concat(imagesData);
+      productData[key] = previewData.concat(imagesData);
       break;
   }
 }
@@ -1902,20 +1913,11 @@ async function processVariationArraySequentially(
   defaultVariations: DefaultVariationData[],
 ) {
   const variationData: TVariation[] = [];
-  defaultVariations.map(async (data) => {
-    if (data.bannerIMG === null) {
-      const result: TVariation = {
-        variationName: data.variationName,
-        variationSpec: data.variationSpec,
-        originalPrice: data.originalPrice,
-        currentPrice: data.currentPrice,
-        available: data.available,
-        stock: data.stock,
-        bannerImage: data.bannerImage,
-      };
-      variationData.push(result);
-    } else {
+  console.log(defaultVariations);
+  for (const data of defaultVariations) {
+    if (data.bannerIMG !== null) {
       const bannerImage = await getImageData({ image: data.bannerIMG! });
+      console.log(1);
       const result: TVariation = {
         variationName: data.variationName,
         variationSpec: data.variationSpec,
@@ -1926,8 +1928,21 @@ async function processVariationArraySequentially(
         bannerImage: bannerImage,
       };
       variationData.push(result);
+    } else {
+      console.log(2);
+      const result: TVariation = {
+        variationName: data.variationName,
+        variationSpec: data.variationSpec,
+        originalPrice: data.originalPrice,
+        currentPrice: data.currentPrice,
+        available: data.available,
+        stock: data.stock,
+        bannerImage: data.bannerImage,
+      };
+      variationData.push(result);
     }
-  });
+  }
+
   for (const variation of variationDataArray) {
     const bannerImage = await getImageData({ image: variation.bannerImage });
     const result: TVariation = {
