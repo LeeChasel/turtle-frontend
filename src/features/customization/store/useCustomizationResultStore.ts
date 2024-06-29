@@ -42,7 +42,8 @@ const useCustomizationResultStore = create<State & Action>((set, get) => ({
   },
   addAudio: (newCustomization) => {
     const customizationResult = get().audioResult;
-    const index = customizationResult.findIndex(
+    set({ audioResult: [...customizationResult, newCustomization] });
+    /*const index = customizationResult.findIndex(
       (customization) => customization.name === newCustomization.name,
     );
     if (index !== -1) {
@@ -51,7 +52,7 @@ const useCustomizationResultStore = create<State & Action>((set, get) => ({
       set({ audioResult: newCustomizationResult });
     } else {
       set({ audioResult: [...customizationResult, newCustomization] });
-    }
+    }*/
   },
   reset: () => set(initialState),
 }));

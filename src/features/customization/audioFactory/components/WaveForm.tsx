@@ -17,6 +17,7 @@ function WaveForm() {
   const [wsRegion, setWsRegion] = useState<RegionsPlugin>();
   const [result, setResult] = useState<AudioBuffer>();
   const addAudio = useCustomizationResultStore.use.addAudio();
+  const preAudio = useCustomizationResultStore.getState().audioResult;
   //const [blob, setBlob] = useState<Blob>();
 
   useEffect(() => {
@@ -91,18 +92,36 @@ function WaveForm() {
   function playClip(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     try {
-      if (wavesurfer === undefined || result === undefined) {
-        throw new Error("請選擇檔案!");
-      }
       const audioCtx = new AudioContext();
       const source = audioCtx.createBufferSource();
-      // 设置AudioBufferSourceNode对象的buffer为复制的3秒AudioBuffer对象
-      source.buffer = result;
-      // 这一句是必须的，表示结束，没有这一句没法播放，没有声音
-      // 这里直接结束，实际上可以对结束做一些特效处理
-      source.connect(audioCtx.destination);
-      // 资源开始播放
-      source.start();
+      if (preAudio === null) {
+        if (wavesurfer === undefined || result === undefined) {
+          throw new Error("請選擇檔案!");
+        }
+        // 设置AudioBufferSourceNode对象的buffer为复制的3秒AudioBuffer对象
+        source.buffer = result;
+        // 这一句是必须的，表示结束，没有这一句没法播放，没有声音
+        // 这里直接结束，实际上可以对结束做一些特效处理
+        source.connect(audioCtx.destination);
+        // 资源开始播放
+        source.start();
+      } else {
+        if (wavesurfer === undefined || result === undefined) {
+          source.buffer = preAudio[preAudio.length - 1].file;
+          // 这一句是必须的，表示结束，没有这一句没法播放，没有声音
+          // 这里直接结束，实际上可以对结束做一些特效处理
+          source.connect(audioCtx.destination);
+          // 资源开始播放
+          source.start();
+        } else {
+          source.buffer = result;
+          // 这一句是必须的，表示结束，没有这一句没法播放，没有声音
+          // 这里直接结束，实际上可以对结束做一些特效处理
+          source.connect(audioCtx.destination);
+          // 资源开始播放
+          source.start();
+        }
+      }
     } catch (error) {
       if (error instanceof Error) {
         showToast("error", error.message);
@@ -165,6 +184,7 @@ function WaveForm() {
         name: file!.name,
         file: result!,
       });
+      showToast("success", "儲存成功");
     } catch (error) {
       if (error instanceof Error) {
         showToast("error", error.message);
