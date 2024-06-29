@@ -17,6 +17,13 @@ export function VideoFactoryContainer({
   const videoSrc = file ? URL.createObjectURL(file) : undefined;
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isProcessing, setIsPorcessing] = useState(false);
+  const {
+    video_length,
+    video_width,
+    video_height,
+    minRequiredfilesCount,
+    maxRequiredfilesCount,
+  } = factoryData.customization.fileRequirePara;
 
   const { waveformRef, getRegionTime } = useWaveSurfer({
     file,
@@ -38,6 +45,13 @@ export function VideoFactoryContainer({
       if (start === end || start < 0 || end < 0) {
         throw new Error("請選擇正確的剪輯區間");
       }
+
+      const duration = start - end;
+      if (duration > video_length) {
+        throw new Error(`剪輯區間不得超過 ${video_length} 秒`);
+      }
+
+      // @TODO: crop video width and height
 
       setIsPorcessing(true);
       const uploadedFile = await updateFile(file, true);
@@ -69,7 +83,21 @@ export function VideoFactoryContainer({
   return (
     <div className="space-y-5">
       {isProcessing && <LoadingComponent />}
-      <div className="flex justify-end">
+      <div className="flex justify-between">
+        <div>
+          <span className="font-bold">客製化限制</span>
+          <ul className="list-disc ml-4">
+            {video_length && <li>影片長度不得超過 ${video_length} 秒</li>}
+            {video_width && <li>影片寬度不得超過 ${video_width} px</li>}
+            {video_height && <li>影片高度不得超過 ${video_height} px</li>}
+            {minRequiredfilesCount && (
+              <li>最少需上傳 {minRequiredfilesCount} 個檔案</li>
+            )}
+            {maxRequiredfilesCount && (
+              <li>最多需上傳 {maxRequiredfilesCount} 個檔案</li>
+            )}
+          </ul>
+        </div>
         <UploadButton
           hasVideo={Boolean(file)}
           updateFile={(targetFile) => updateFileBlob(targetFile)}

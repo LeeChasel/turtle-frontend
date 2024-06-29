@@ -16,6 +16,9 @@ export type SimpleFileRequirePara = {
   image_width: number;
   image_height: number;
   audio_length: number;
+  video_length: number;
+  video_width: number;
+  video_height: number;
 };
 
 // Brief
