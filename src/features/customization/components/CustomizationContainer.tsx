@@ -10,6 +10,7 @@ import { useCustomizationForm } from "../hooks/useCustomizationForm";
 import { FinishCustomization } from "./FinishCustomization";
 import { useEffect } from "react";
 import useCustomizationResultStore from "../store/useCustomizationResultStore";
+import WaveForm from "../audioFactory/components/WaveForm";
 
 export function CustomizationContainer() {
   const locationState = useLocation().state as CustomizationContainerState;
@@ -58,7 +59,7 @@ export function CustomizationContainer() {
                 />
               );
             case "audio":
-              return <div>音訊客製化</div>;
+              return <WaveForm />;
             case "video":
               return <div>影片客製化</div>;
             default:

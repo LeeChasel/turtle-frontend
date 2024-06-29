@@ -3,17 +3,21 @@ import { useEffect, useRef, useState } from "react";
 import WaveSurfer from "wavesurfer.js";
 import Hover from "wavesurfer.js/dist/plugins/hover.esm.js";
 import RegionsPlugin from "wavesurfer.js/dist/plugins/regions.esm.js";
+import useCustomizationResultStore from "../../store/useCustomizationResultStore";
+import { AiFillPauseCircle, AiFillPlayCircle } from "react-icons/ai";
 
 function WaveForm() {
   const [file, setFile] = useState<File | null>(null);
   const containerRef = useRef(null);
-  const [fileURL, setFileURL] = useState<string | null>(null); //改成陣列
+  const [fileURL, setFileURL] = useState<string | null>(null);
   const [startTime, setStartTime] = useState(0);
   const [endTime, setEndTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [wavesurfer, setWavesurfer] = useState<WaveSurfer>();
   const [wsRegion, setWsRegion] = useState<RegionsPlugin>();
   const [result, setResult] = useState<AudioBuffer>();
+  const addAudio = useCustomizationResultStore.use.addAudio();
+  const preAudio = useCustomizationResultStore.getState().audioResult;
   //const [blob, setBlob] = useState<Blob>();
 
   useEffect(() => {
@@ -88,15 +92,36 @@ function WaveForm() {
   function playClip(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     try {
-      if (wsRegion === undefined || wavesurfer === undefined) {
-        throw new Error("請選擇檔案!");
+      const audioCtx = new AudioContext();
+      const source = audioCtx.createBufferSource();
+      if (preAudio === null) {
+        if (wavesurfer === undefined || result === undefined) {
+          throw new Error("請選擇檔案!");
+        }
+        // 设置AudioBufferSourceNode对象的buffer为复制的3秒AudioBuffer对象
+        source.buffer = result;
+        // 这一句是必须的，表示结束，没有这一句没法播放，没有声音
+        // 这里直接结束，实际上可以对结束做一些特效处理
+        source.connect(audioCtx.destination);
+        // 资源开始播放
+        source.start();
+      } else {
+        if (wavesurfer === undefined || result === undefined) {
+          source.buffer = preAudio[preAudio.length - 1].file;
+          // 这一句是必须的，表示结束，没有这一句没法播放，没有声音
+          // 这里直接结束，实际上可以对结束做一些特效处理
+          source.connect(audioCtx.destination);
+          // 资源开始播放
+          source.start();
+        } else {
+          source.buffer = result;
+          // 这一句是必须的，表示结束，没有这一句没法播放，没有声音
+          // 这里直接结束，实际上可以对结束做一些特效处理
+          source.connect(audioCtx.destination);
+          // 资源开始播放
+          source.start();
+        }
       }
-
-      wsRegion.getRegions()[0].play();
-
-      wsRegion.on("region-out", () => {
-        wavesurfer?.pause();
-      });
     } catch (error) {
       if (error instanceof Error) {
         showToast("error", error.message);
@@ -119,6 +144,8 @@ function WaveForm() {
       const clip = edit(audioBuffer);
 
       setResult(clip);
+
+      showToast("success", "修剪成功");
     } catch (error) {
       if (error instanceof Error) {
         showToast("error", error.message);
@@ -147,34 +174,54 @@ function WaveForm() {
     return newAudioBuffer;
   }
 
-  function test(e: React.MouseEvent<HTMLButtonElement>) {
+  function submit(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
-    const audioCtx = new AudioContext();
-    const source = audioCtx.createBufferSource();
-    source.buffer = result!;
-
-    source.connect(audioCtx.destination);
-    // 资源开始播放
-    source.start();
+    try {
+      if (result === null || file === undefined) {
+        throw new Error("請上傳檔案!");
+      }
+      addAudio({
+        name: file!.name,
+        file: result!,
+      });
+      showToast("success", "儲存成功");
+    } catch (error) {
+      if (error instanceof Error) {
+        showToast("error", error.message);
+      }
+    }
   }
+
   return (
     <form>
-      <div>
-        <input type="file" accept="audio/*" onChange={handleFileChange} />
+      <div className="my-3">
+        <label htmlFor="file-upload" className="btn  bg-[#263238] text-white ">
+          <input
+            type="file"
+            className="hidden"
+            id="file-upload"
+            accept="audio/*"
+            onChange={handleFileChange}
+          />
+          {file != null ? file.name : "檔案上傳"}
+        </label>
       </div>
 
       <div ref={containerRef}></div>
 
-      <div className="grid grid-flow-col grid-rows-1">
-        <div>
-          <button className="btn bg-[#263238] text-white" onClick={playPause}>
-            {isPlaying ? "PAUSE" : "PLAY"}
+      <div className="grid grid-flow-col grid-rows-1 my-3">
+        <div className="grid grid-flow-col grid-rows-1 w-1/2">
+          <button
+            className="btn bg-[#263238] text-white text-2xl"
+            onClick={playPause}
+          >
+            {isPlaying ? <AiFillPauseCircle /> : <AiFillPlayCircle />}
           </button>
           <button className="btn bg-[#263238] text-white" onClick={playClip}>
             試聽
           </button>
         </div>
-        <div className=" text-center grid grid-flow-col grid-rows-1 w-4/5">
+        <div className=" text-center grid grid-flow-col grid-rows-1">
           <label className="m-auto">剪裁時間</label>
           <input
             type="text"
@@ -214,8 +261,8 @@ function WaveForm() {
           <button className="btn bg-[#263238] text-white" onClick={handleTrim}>
             剪裁
           </button>
-          <button className="btn bg-[#263238] text-white" onClick={test}>
-            play
+          <button className="btn bg-[#263238] text-white" onClick={submit}>
+            儲存變更
           </button>
         </div>
       </div>

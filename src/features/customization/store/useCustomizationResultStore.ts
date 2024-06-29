@@ -1,9 +1,13 @@
 import createSelectors from "@/lib/zustand";
-import { CustomizationBrief } from "@/types/Customization/CustomizationBase";
+import {
+  AudioBrief,
+  CustomizationBrief,
+} from "@/types/Customization/CustomizationBase";
 import { create } from "zustand";
 
 type State = {
   customizationResult: CustomizationBrief[];
+  audioResult: AudioBrief[];
 };
 
 type Action = {
@@ -12,11 +16,13 @@ type Action = {
    * @param newCustomization The new customization to be added to the result
    */
   addCustomization: (newCustomization: State["customizationResult"][0]) => void;
+  addAudio: (newCustomization: State["audioResult"][0]) => void;
   reset: () => void;
 };
 
 const initialState: State = {
   customizationResult: [],
+  audioResult: [],
 };
 
 const useCustomizationResultStore = create<State & Action>((set, get) => ({
@@ -33,6 +39,20 @@ const useCustomizationResultStore = create<State & Action>((set, get) => ({
     } else {
       set({ customizationResult: [...customizationResult, newCustomization] });
     }
+  },
+  addAudio: (newCustomization) => {
+    const customizationResult = get().audioResult;
+    set({ audioResult: [...customizationResult, newCustomization] });
+    /*const index = customizationResult.findIndex(
+      (customization) => customization.name === newCustomization.name,
+    );
+    if (index !== -1) {
+      const newCustomizationResult = [...customizationResult];
+      newCustomizationResult[index] = newCustomization;
+      set({ audioResult: newCustomizationResult });
+    } else {
+      set({ audioResult: [...customizationResult, newCustomization] });
+    }*/
   },
   reset: () => set(initialState),
 }));
