@@ -14,7 +14,14 @@ type ImageResult = {
   fileType: string;
 }
 
+type VideoResult = {
+  name: string;
+  file: File[],
+  fileType: string;
+}
+
 export type {
   CustomizationContainerState,
   ImageResult,
+  VideoResult,
 }

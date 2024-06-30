@@ -5,6 +5,7 @@ import { useWaveSurfer } from "../hooks";
 import { showToast } from "@/utils/toastAlert";
 import updateFile from "@/actions/updateFile";
 import { getTrimmedVideo, trimVideo } from "@/actions/trimVideo";
+import useCustomizationResultStore from "../../store/useCustomizationResultStore";
 
 type VideoFactoryContainerProps = {
   factoryData: CustomizationDetail;
@@ -29,6 +30,8 @@ export function VideoFactoryContainer({
     file,
     videoRef,
   });
+
+  const addVideoToStore = useCustomizationResultStore.use.addVideo();
 
   const updateFileBlob = (file: File) => {
     setFile(file);
@@ -81,6 +84,19 @@ export function VideoFactoryContainer({
     }
   };
 
+  const storeVideo = () => {
+    if (!file) {
+      showToast("error", "尚未上傳檔案");
+      return;
+    }
+
+    addVideoToStore({
+      name: factoryData.name,
+      file: [file],
+      fileType: factoryData.customization.fileRequirePara.fileMimeTypes[0],
+    });
+  };
+
   return (
     <div className="space-y-5">
       {isProcessing && <LoadingComponent />}
@@ -119,13 +135,23 @@ export function VideoFactoryContainer({
 
       <div>
         {file && (
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={handleEdit}
-          >
-            剪輯
-          </button>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={handleEdit}
+            >
+              剪輯
+            </button>
+
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={storeVideo}
+            >
+              儲存客製化
+            </button>
+          </div>
         )}
       </div>
       <div ref={waveformRef} className="w-full" />
