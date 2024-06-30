@@ -8,6 +8,7 @@ import { CropDialog } from "./CropDialog";
 import { readFileAsDataURL, setCanvasPreview } from "../utils";
 import { showToast } from "@/utils/toastAlert";
 import { PixelCrop } from "react-image-crop";
+import useCustomizationResultStore from "../../store/useCustomizationResultStore";
 
 type ImageFactoryContainerProps = {
   factoryData: CustomizationDetail;
@@ -24,6 +25,7 @@ export function ImageFactoryContainer({
   const cropDialogRef = useRef<HTMLDialogElement>(null);
   const previewCanvasRef = useRef<HTMLCanvasElement>(null);
   const hasSourceImage = imageData.originalImage !== "";
+  const toStoreImage = useCustomizationResultStore.use.addImage();
 
   const changeFactoryAction = (action: FactoryAction) => {
     if (!hasSourceImage) {
@@ -68,14 +70,52 @@ export function ImageFactoryContainer({
     setCanvasPreview(img, canvas, crop);
   };
 
+  const handleStore = () => {
+    const canvas = previewCanvasRef.current;
+    const fileMimeType =
+      factoryData.customization.fileRequirePara.fileMimeTypes[0];
+    canvas?.toBlob(
+      (blob) => {
+        if (!blob) {
+          showToast("error", "儲存圖片錯誤");
+          return;
+        }
+
+        const fileResult = new File([blob], `圖片客製化_${factoryData.name}`, {
+          type: fileMimeType,
+        });
+
+        toStoreImage({
+          name: factoryData.name,
+          fileType: fileMimeType,
+          file: [fileResult],
+        });
+      },
+      fileMimeType,
+      1,
+    );
+  };
+
   return (
     <div className="flex gap-2 md:gap-5 lg:gap-8">
       <ActionContainer changeActionCallback={changeFactoryAction} />
       <div className="w-full space-y-2">
-        <UploadButton
-          changeSourceImageCallback={handleSourceImageChange}
-          hasSourceImage={hasSourceImage}
-        />
+        <div className="flex justify-end gap-2">
+          {/* @TODO: hasSourceImage ? */}
+          {hasSourceImage && (
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={handleStore}
+            >
+              儲存此客製化
+            </button>
+          )}
+          <UploadButton
+            changeSourceImageCallback={handleSourceImageChange}
+            hasSourceImage={hasSourceImage}
+          />
+        </div>
         <ImageContainer factoryData={factoryData} ref={previewCanvasRef} />
       </div>
 
