@@ -12,14 +12,11 @@ export default defineConfig(({ mode }) => {
       checker({ typescript: true }),
       tsconfigPaths(),
       mode === "production" &&
-        VitePluginRadar({
-          analytics: {
-            id: "G-SX2EH6Z0B5",
-          },
-        }),
+      VitePluginRadar({
+        analytics: {
+          id: "G-SX2EH6Z0B5",
+        },
+      }),
     ],
-    optimizeDeps: {
-      exclude: ["@ffmpeg/ffmpeg", "@ffmpeg/util"],
-    },
   };
 });
