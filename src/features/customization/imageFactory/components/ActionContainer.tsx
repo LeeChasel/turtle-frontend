@@ -9,8 +9,8 @@ export function ActionContainer(props: ActionContainerProps) {
   const actionButtonStyle =
     "hover:bg-gray-700 active:bg-gray-600 text-white p-1 m-2 md:p-2 lg:m-5 rounded";
   return (
-    <div className="grow basis-1/3 max-w-[300px] bg-gray-800 h-full flex">
-      <div className="basis-1/3 flex flex-col items-centerpy-5 gap-5 h-full">
+    <div className="basis-1/3 max-w-[300px] bg-gray-800 h-[540px] flex">
+      <div className="basis-1/3 flex flex-col items-centerpy-5 gap-5">
         <button
           className={actionButtonStyle}
           onClick={() => changeActionCallback("crop")}
