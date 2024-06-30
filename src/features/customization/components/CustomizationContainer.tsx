@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import useCustomizationResultStore from "../store/useCustomizationResultStore";
 import { ImageFactoryContainer } from "@/features/customization/imageFactory";
 import WaveForm from "../audioFactory/components/WaveForm";
+import { VideoFactoryContainer } from "../videoFactory";
 
 export function CustomizationContainer() {
   const locationState = useLocation().state as CustomizationContainerState;
@@ -61,7 +62,12 @@ export function CustomizationContainer() {
             case "audio":
               return <WaveForm />;
             case "video":
-              return <div>影片客製化</div>;
+              return (
+                <VideoFactoryContainer
+                  factoryData={customization}
+                  key={customization.name}
+                />
+              );
             default:
               return <div>未知客製化檔案類型</div>;
           }

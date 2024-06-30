@@ -263,6 +263,9 @@ function AddProducts() {
               image_width: 0,
               image_height: 0,
               audio_length: 0,
+              video_length: 0,
+              video_width: 0,
+              video_height: 0,
             },
           },
         });
@@ -1142,6 +1145,106 @@ function AddProducts() {
                     </div>
                   )}
                 />
+
+                <Controller
+                  name={
+                    `customizations.${index}.customization.fileRequirePara.video_length` as const
+                  }
+                  control={control}
+                  rules={{
+                    validate: (value) => value >= 0 || "影片長度必須大於等於0",
+                  }}
+                  render={({ field, fieldState: { error } }) => (
+                    <div className="">
+                      <label className="label label-text">
+                        <span>
+                          <span>影片長度(秒)</span>
+                        </span>
+                      </label>
+                      <input
+                        {...field}
+                        type="number"
+                        className="w-full input input-bordered"
+                        min="0"
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value || "0", 10))
+                        }
+                      />
+                      {error && (
+                        <label className="justify-end label label-text-alt text-error">
+                          {error.message}
+                        </label>
+                      )}
+                    </div>
+                  )}
+                />
+
+                <Controller
+                  name={
+                    `customizations.${index}.customization.fileRequirePara.video_width` as const
+                  }
+                  control={control}
+                  rules={{
+                    validate: (value) => value >= 0 || "影片寬度必須大於等於0",
+                  }}
+                  render={({ field, fieldState: { error } }) => (
+                    <div className="">
+                      <label className="label label-text">
+                        <span>
+                          <span>影片寬度</span>
+                        </span>
+                      </label>
+                      <input
+                        {...field}
+                        type="number"
+                        className="w-full input input-bordered"
+                        min="0"
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value || "0", 10))
+                        }
+                      />
+                      {error && (
+                        <label className="justify-end label label-text-alt text-error">
+                          {error.message}
+                        </label>
+                      )}
+                    </div>
+                  )}
+                />
+
+                <Controller
+                  name={
+                    `customizations.${index}.customization.fileRequirePara.video_height` as const
+                  }
+                  control={control}
+                  rules={{
+                    validate: (value) => value >= 0 || "影片高度必須大於等於0",
+                  }}
+                  render={({ field, fieldState: { error } }) => (
+                    <div className="">
+                      <label className="label label-text">
+                        <span>
+                          <span>影片高度</span>
+                        </span>
+                      </label>
+                      <input
+                        {...field}
+                        type="number"
+                        className="w-full input input-bordered"
+                        min="0"
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value || "0", 10))
+                        }
+                      />
+                      {error && (
+                        <label className="justify-end label label-text-alt text-error">
+                          {error.message}
+                        </label>
+                      )}
+                    </div>
+                  )}
+                />
+
               </>
             )}
           </div>
