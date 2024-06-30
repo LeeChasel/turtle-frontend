@@ -138,6 +138,9 @@ function WaveForm() {
       if (wavesurfer === undefined) {
         throw new Error("請選擇檔案!");
       }
+      if (endTime - startTime > 15) {
+        throw new Error("音檔超過15秒!");
+      }
       const audioContext = new AudioContext();
       const arrayBuffer = await file!.arrayBuffer();
       const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);

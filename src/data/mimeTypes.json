@@ -42,5 +42,9 @@
   "avi": {
     "extension": ".avi",
     "mime": "video/x-msvideo"
+  },
+  "wav": {
+    "extension": ".wav",
+    "mime": "audio/vnd.wav"
   }
 }
