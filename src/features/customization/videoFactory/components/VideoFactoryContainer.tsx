@@ -47,7 +47,8 @@ export function VideoFactoryContainer({
       }
 
       const duration = start - end;
-      if (duration > video_length) {
+      // video_length 0 means no limit
+      if (video_length !== 0 && duration > video_length) {
         throw new Error(`剪輯區間不得超過 ${video_length} 秒`);
       }
 
