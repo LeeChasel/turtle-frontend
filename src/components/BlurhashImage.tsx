@@ -24,20 +24,12 @@ function BlurhashImage({ productId, imageId, blurhash }: BlurhashImageProp) {
 
   return (
     <>
-      {!imageLoaded && (
-        <BlurhashCanvas
-          hash={blurhash}
-          className="w-full h-full aspect-square"
-        />
-      )}
+      {!imageLoaded && <BlurhashCanvas hash={blurhash} className="size-full" />}
       <img
         src={src}
         alt={imageId}
         loading="lazy"
-        className={clsx(
-          "w-full h-full aspect-square",
-          !imageLoaded && "hidden",
-        )}
+        className={clsx("size-full", !imageLoaded && "hidden")}
       />
     </>
   );

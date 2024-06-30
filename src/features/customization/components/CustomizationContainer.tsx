@@ -5,11 +5,11 @@ import { showToast } from "@/utils/toastAlert";
 import { CustomizationContainerState } from "../types";
 import { CustomizationProvider } from "../context/CustomizationProvider";
 import { CustomizationType } from "@/types/Customization/CustomizationBase";
-import { ImageCustomizationContainer } from "@/features/customization/customizationUtils/image";
 import { useCustomizationForm } from "../hooks/useCustomizationForm";
 import { FinishCustomization } from "./FinishCustomization";
 import { useEffect } from "react";
 import useCustomizationResultStore from "../store/useCustomizationResultStore";
+import { ImageFactoryContainer } from "@/features/customization/imageFactory";
 import WaveForm from "../audioFactory/components/WaveForm";
 
 export function CustomizationContainer() {
@@ -53,8 +53,8 @@ export function CustomizationContainer() {
           ) {
             case "image":
               return (
-                <ImageCustomizationContainer
-                  customizationData={customization}
+                <ImageFactoryContainer
+                  factoryData={customization}
                   key={customization.name}
                 />
               );
@@ -102,7 +102,7 @@ export function CustomizationContainer() {
         </div>
 
         {/* main customization */}
-        <div className="border-2 border-gray-800 p-6">{step}</div>
+        <div className="border-2 border-gray-800 p-2 lg:p-6">{step}</div>
 
         {/* step actions */}
         <div className="flex flex-row gap-7 justify-end pr-6">

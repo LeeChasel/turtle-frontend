@@ -258,8 +258,8 @@ function AddProducts() {
             price: 0,
             fileRequirePara: {
               fileMimeTypes: [],
-              minRequiredfilesCount: 0,
-              maxRequiredfilesCount: 0,
+              minRequiredfilesCount: 1,
+              maxRequiredfilesCount: 1,
               image_width: 0,
               image_height: 0,
               audio_length: 0,
@@ -957,11 +957,13 @@ function AddProducts() {
                       <input
                         {...field}
                         type="number"
-                        className="w-full input input-bordered"
-                        min="0"
+                        className="w-full input input-bordered disabled"
+                        min="1"
                         onChange={(e) =>
                           field.onChange(parseInt(e.target.value || "0", 10))
                         }
+                        // wip: for customization
+                        disabled
                       />
                       {error && (
                         <label className="justify-end label label-text-alt text-error">
@@ -991,11 +993,13 @@ function AddProducts() {
                       <input
                         {...field}
                         type="number"
-                        className="w-full input input-bordered"
-                        min="0"
+                        className="w-full input input-bordered disabled"
+                        min="1"
                         onChange={(e) =>
                           field.onChange(parseInt(e.target.value || "0", 10))
                         }
+                        // wip: for customization
+                        disabled
                       />
                       {error && (
                         <label className="justify-end label label-text-alt text-error">
