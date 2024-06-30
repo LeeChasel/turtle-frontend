@@ -398,7 +398,6 @@ export default function ModifyProductInfo({
         "success",
         `商品「${modifyProductResult.productName}」修改成功!`,
       );
-      console.log(variationDataArray);
 
       // Success will rest the form, if fail will throw error and don't trigger reset
       reset();
@@ -1913,11 +1912,9 @@ async function processVariationArraySequentially(
   defaultVariations: DefaultVariationData[],
 ) {
   const variationData: TVariation[] = [];
-  console.log(defaultVariations);
   for (const data of defaultVariations) {
     if (data.bannerIMG !== null) {
       const bannerImage = await getImageData({ image: data.bannerIMG! });
-      console.log(1);
       const result: TVariation = {
         variationName: data.variationName,
         variationSpec: data.variationSpec,
@@ -1929,7 +1926,6 @@ async function processVariationArraySequentially(
       };
       variationData.push(result);
     } else {
-      console.log(2);
       const result: TVariation = {
         variationName: data.variationName,
         variationSpec: data.variationSpec,
