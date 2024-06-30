@@ -1,21 +1,20 @@
 import useCustomizationResultStore from "../store/useCustomizationResultStore";
-import AudioPlayer from "react-h5-audio-player";
 import updateFile from "@/actions/updateFile";
 import { showToast } from "@/utils/toastAlert";
 
 export function FinishCustomization() {
-  const customizationResult =
-    useCustomizationResultStore.use.customizationResult();
   const audioResult = useCustomizationResultStore.use.audioResult();
 
-  const a = bufferToWave(audioResult[0].file);
-  const url = URL.createObjectURL(a);
-  const file = new File([a], "audio.wave", {
-    type: "audio/vnd.wav",
-  });
-
-  async function upload(file: File) {
+  async function upload() {
     try {
+      if (audioResult.length === 0) {
+        showToast("error", "沒有音樂檔案");
+        return;
+      }
+      const a = bufferToWave(audioResult[0].file);
+      const file = new File([a], "audio.wave", {
+        type: "audio/vnd.wav",
+      });
       await updateFile(file);
       showToast("success", "上傳成功");
     } catch (error) {
@@ -27,7 +26,7 @@ export function FinishCustomization() {
 
   async function send(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
-    await upload(file);
+    await upload();
   }
 
   return (
