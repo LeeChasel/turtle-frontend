@@ -88,9 +88,9 @@ export function VideoFactoryContainer({
         <div>
           <span className="font-bold">客製化限制</span>
           <ul className="list-disc ml-4">
-            {video_length && <li>影片長度不得超過 ${video_length} 秒</li>}
-            {video_width && <li>影片寬度不得超過 ${video_width} px</li>}
-            {video_height && <li>影片高度不得超過 ${video_height} px</li>}
+            {video_length !== 0 && <li>影片長度不得超過 ${video_length} 秒</li>}
+            {video_width !== 0 && <li>影片寬度不得超過 ${video_width} px</li>}
+            {video_height !== 0 && <li>影片高度不得超過 ${video_height} px</li>}
             {minRequiredfilesCount && (
               <li>最少需上傳 {minRequiredfilesCount} 個檔案</li>
             )}
