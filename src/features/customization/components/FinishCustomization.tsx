@@ -56,7 +56,10 @@ export function FinishCustomization() {
       */}
       <div className="text-left pt-10 text-[#263238] [text-shadow:_0_1.5px_0_rgb(0_0_0_/_40%)] grid grid-cols-2">
         <img
-          src="https://storage.googleapis.com/turtle_static/frontend/payment-completed.png"
+          src={
+            import.meta.env.VITE_TURTLE_FRONTEND_IMAGE_URL +
+            "/payment-completed.png"
+          }
           className="w-1/2 m-auto"
         />
 

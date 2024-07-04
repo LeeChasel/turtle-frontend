@@ -72,9 +72,7 @@ export default function ModifyProductInfo({
   tokenCookie: string;
 }) {
   const url =
-    "https://storage.googleapis.com/dev_turtle_static/backend/product/" +
-    data.productId +
-    "/";
+    import.meta.env.VITE_TURTLE_PRODUCT_IMAGE_URL + "/" + data.productId + "/";
 
   const mainPage = url + data.bannerImage?.imageId;
   const navigate = useNavigate();
