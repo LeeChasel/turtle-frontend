@@ -82,15 +82,7 @@ export function CustomizationContainer() {
 
   customizationStepElements.push(<FinishCustomization />);
 
-  const {
-    step,
-    isFirstStep,
-    isLastStep,
-    currentStepIndex,
-    goTo,
-    previous,
-    next,
-  } =
+  const { step, isFirstStep, isLastStep, currentStepIndex, previous, next } =
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useCustomizationForm(customizationStepElements);
 
@@ -103,13 +95,9 @@ export function CustomizationContainer() {
               key={customization.name}
               label={`第${index + 1}步：${customization.name}`}
               isFirst={index === 0}
-              onClick={() => goTo(index)}
             />
           ))}
-          <Step
-            label="完成客製化"
-            onClick={() => goTo(sortedCustomizations.length)}
-          />
+          <Step label="完成客製化" />
         </div>
 
         {/* main customization */}

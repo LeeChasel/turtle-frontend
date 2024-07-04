@@ -19,13 +19,7 @@ export function VideoFactoryContainer({
   const videoSrc = file ? URL.createObjectURL(file) : undefined;
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isProcessing, setIsPorcessing] = useState(false);
-  const {
-    video_length,
-    video_width,
-    video_height,
-    minRequiredfilesCount,
-    maxRequiredfilesCount,
-  } = factoryData.customization.fileRequirePara;
+  const { video_length } = factoryData.customization.fileRequirePara;
 
   const { waveformRef, getRegionTime } = useWaveSurfer({
     file,
