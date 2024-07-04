@@ -5,8 +5,14 @@ import Hover from "wavesurfer.js/dist/plugins/hover.esm.js";
 import RegionsPlugin from "wavesurfer.js/dist/plugins/regions.esm.js";
 import useCustomizationResultStore from "../../store/useCustomizationResultStore";
 import { AiFillPauseCircle, AiFillPlayCircle } from "react-icons/ai";
+import CustomizeRulesModal from "../../components/CustomizeRulesModal";
+import { CustomizationDetail } from "@/types/Customization/CustomizationBase";
 
-function WaveForm() {
+type WaveFormProps = {
+  factoryData: CustomizationDetail;
+};
+
+function WaveForm({ factoryData }: WaveFormProps) {
   const [file, setFile] = useState<File | null>(null);
   const containerRef = useRef(null);
   const [fileURL, setFileURL] = useState<string | null>(null);
@@ -197,7 +203,7 @@ function WaveForm() {
 
   return (
     <form>
-      <div className="my-3">
+      <div className="my-3 flex justify-between">
         <label htmlFor="file-upload" className="btn  bg-[#263238] text-white ">
           <input
             type="file"
@@ -208,6 +214,10 @@ function WaveForm() {
           />
           {file != null ? file.name : "檔案上傳"}
         </label>
+        <CustomizeRulesModal
+          data={factoryData.customization.fileRequirePara}
+          type="audio"
+        />
       </div>
 
       <div ref={containerRef}></div>

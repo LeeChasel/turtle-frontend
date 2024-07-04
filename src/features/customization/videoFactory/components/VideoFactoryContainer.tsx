@@ -6,6 +6,7 @@ import { showToast } from "@/utils/toastAlert";
 import updateFile from "@/actions/updateFile";
 import { getTrimmedVideo, trimVideo } from "@/actions/trimVideo";
 import useCustomizationResultStore from "../../store/useCustomizationResultStore";
+import CustomizeRulesModal from "../../components/CustomizeRulesModal";
 
 type VideoFactoryContainerProps = {
   factoryData: CustomizationDetail;
@@ -18,13 +19,7 @@ export function VideoFactoryContainer({
   const videoSrc = file ? URL.createObjectURL(file) : undefined;
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isProcessing, setIsPorcessing] = useState(false);
-  const {
-    video_length,
-    video_width,
-    video_height,
-    minRequiredfilesCount,
-    maxRequiredfilesCount,
-  } = factoryData.customization.fileRequirePara;
+  const { video_length } = factoryData.customization.fileRequirePara;
 
   const { waveformRef, getRegionTime } = useWaveSurfer({
     file,
@@ -101,20 +96,10 @@ export function VideoFactoryContainer({
     <div className="space-y-5">
       {isProcessing && <LoadingComponent />}
       <div className="flex justify-between">
-        <div>
-          <span className="font-bold">客製化限制</span>
-          <ul className="list-disc ml-4">
-            {video_length !== 0 && <li>影片長度不得超過 ${video_length} 秒</li>}
-            {video_width !== 0 && <li>影片寬度不得超過 ${video_width} px</li>}
-            {video_height !== 0 && <li>影片高度不得超過 ${video_height} px</li>}
-            {minRequiredfilesCount && (
-              <li>最少需上傳 {minRequiredfilesCount} 個檔案</li>
-            )}
-            {maxRequiredfilesCount && (
-              <li>最多需上傳 {maxRequiredfilesCount} 個檔案</li>
-            )}
-          </ul>
-        </div>
+        <CustomizeRulesModal
+          data={factoryData.customization.fileRequirePara}
+          type="video"
+        />
         <UploadButton
           hasVideo={Boolean(file)}
           updateFile={(targetFile) => updateFileBlob(targetFile)}
