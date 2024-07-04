@@ -9,6 +9,7 @@ import { readFileAsDataURL, setCanvasPreview } from "../utils";
 import { showToast } from "@/utils/toastAlert";
 import { PixelCrop } from "react-image-crop";
 import useCustomizationResultStore from "../../store/useCustomizationResultStore";
+import CustomizeRulesModal from "../../components/CustomizeRulesModal";
 
 type ImageFactoryContainerProps = {
   factoryData: CustomizationDetail;
@@ -99,6 +100,10 @@ export function ImageFactoryContainer({
   return (
     <div className="flex gap-2 md:gap-5 lg:gap-8">
       <ActionContainer changeActionCallback={changeFactoryAction} />
+      <CustomizeRulesModal
+        data={factoryData.customization.fileRequirePara}
+        type="image"
+      />
       <div className="w-full space-y-2">
         <div className="flex justify-end gap-2">
           {/* @TODO: hasSourceImage ? */}

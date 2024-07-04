@@ -1,13 +1,9 @@
 import createSelectors from "@/lib/zustand";
-import {
-  AudioBrief,
-  CustomizationBrief,
-} from "@/types/Customization/CustomizationBase";
+import { AudioBrief } from "@/types/Customization/CustomizationBase";
 import { create } from "zustand";
 import { ImageResult, VideoResult } from "../types";
 
 type State = {
-  customizationResult: CustomizationBrief[];
   audioResult: AudioBrief[];
   imageResult: ImageResult[];
   videoResult: VideoResult[],
@@ -22,7 +18,6 @@ type Action = {
 };
 
 const initialState: State = {
-  customizationResult: [],
   audioResult: [],
   imageResult: [],
   videoResult: [],

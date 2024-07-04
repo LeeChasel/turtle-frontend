@@ -60,7 +60,12 @@ export function CustomizationContainer() {
                 />
               );
             case "audio":
-              return <WaveForm />;
+              return (
+                <WaveForm
+                  factoryData={customization}
+                  key={customization.name}
+                />
+              );
             case "video":
               return (
                 <VideoFactoryContainer
