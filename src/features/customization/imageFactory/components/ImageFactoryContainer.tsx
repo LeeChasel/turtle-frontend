@@ -103,6 +103,7 @@ export function ImageFactoryContainer({
       <CustomizeRulesModal
         data={factoryData.customization.fileRequirePara}
         type="image"
+        name={factoryData.name}
       />
       <div className="w-full space-y-2">
         <div className="flex justify-end gap-2">

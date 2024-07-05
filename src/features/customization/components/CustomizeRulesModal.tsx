@@ -1,13 +1,16 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { SimpleFileRequirePara } from "@/types/Customization/SimpleFilesCustomization";
+import useCustomizationResultStore from "../store/useCustomizationResultStore";
 
 export default function CustomizeRulesModal({
   data,
   type,
+  name,
 }: {
   data: SimpleFileRequirePara;
   type: "image" | "audio" | "video";
+  name: string;
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const {
@@ -20,6 +23,15 @@ export default function CustomizeRulesModal({
     minRequiredfilesCount,
     maxRequiredfilesCount,
   } = data;
+  const visitedCustomizes = useCustomizationResultStore.use.visitedCustomizes();
+  const addVisit = useCustomizationResultStore.use.addVisitedCustomize();
+
+  useEffect(() => {
+    if (!visitedCustomizes.includes(name)) {
+      openDialog();
+    }
+    addVisit(name);
+  }, [name, visitedCustomizes, addVisit]);
 
   const content = (
     <ul className="list-disc ml-4">

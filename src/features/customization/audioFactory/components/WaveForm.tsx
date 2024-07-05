@@ -217,6 +217,7 @@ function WaveForm({ factoryData }: WaveFormProps) {
         <CustomizeRulesModal
           data={factoryData.customization.fileRequirePara}
           type="audio"
+          name={factoryData.name}
         />
       </div>
 

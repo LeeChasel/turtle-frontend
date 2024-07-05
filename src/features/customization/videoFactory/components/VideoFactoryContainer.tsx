@@ -99,6 +99,7 @@ export function VideoFactoryContainer({
         <CustomizeRulesModal
           data={factoryData.customization.fileRequirePara}
           type="video"
+          name={factoryData.name}
         />
         <UploadButton
           hasVideo={Boolean(file)}
