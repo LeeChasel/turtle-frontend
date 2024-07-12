@@ -18,7 +18,7 @@ function WaveForm({ factoryData }: WaveFormProps) {
   const containerRef = useRef(null);
   const [fileURL, setFileURL] = useState<string | null>(null);
   const [startTime, setStartTime] = useState(0);
-  const [endTime, setEndTime] = useState(0);
+  const [endTime, setEndTime] = useState(8);
   const [isPlaying, setIsPlaying] = useState(false);
   const [wavesurfer, setWavesurfer] = useState<WaveSurfer>();
   const [wsRegion, setWsRegion] = useState<RegionsPlugin>();
