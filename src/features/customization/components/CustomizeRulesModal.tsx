@@ -44,22 +44,22 @@ export default function CustomizeRulesModal({
 
       {type === "video" && (
         <>
-          {video_length !== 0 && <li>影片長度不得超過 ${video_length} 秒</li>}
-          {video_width !== 0 && <li>影片寬度不得超過 ${video_width} px</li>}
-          {video_height !== 0 && <li>影片高度不得超過 ${video_height} px</li>}
+          {video_length !== 0 && <li>影片長度不得超過 {video_length} 秒</li>}
+          {video_width !== 0 && <li>影片寬度不得超過 {video_width} px</li>}
+          {video_height !== 0 && <li>影片高度不得超過 {video_height} px</li>}
         </>
       )}
 
       {type === "image" && (
         <>
-          {image_width !== 0 && <li>圖片寬度不得超過 ${image_width} px</li>}
-          {image_height !== 0 && <li>圖片高度不得超過 ${image_height} px</li>}
+          {image_width !== 0 && <li>圖片寬度不得超過 {image_width} px</li>}
+          {image_height !== 0 && <li>圖片高度不得超過 {image_height} px</li>}
         </>
       )}
 
       {type === "audio" && (
         <>
-          {audio_length !== 0 && <li>音樂長度不得超過 ${audio_length} 秒</li>}
+          {audio_length !== 0 && <li>音樂長度不得超過 {audio_length} 秒</li>}
         </>
       )}
     </ul>
