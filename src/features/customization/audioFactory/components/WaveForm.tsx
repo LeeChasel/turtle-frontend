@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import WaveSurfer from "wavesurfer.js";
 import Hover from "wavesurfer.js/dist/plugins/hover.esm.js";
 import RegionsPlugin from "wavesurfer.js/dist/plugins/regions.esm.js";
-import TimelinePlugin from "wavesurfer.js/dist/plugins/timeline.js";
 import useCustomizationResultStore from "../../store/useCustomizationResultStore";
 import { AiFillPauseCircle, AiFillPlayCircle } from "react-icons/ai";
 import CustomizeRulesModal from "../../components/CustomizeRulesModal";
@@ -25,7 +24,6 @@ function WaveForm({ factoryData }: WaveFormProps) {
   const [result, setResult] = useState<AudioBuffer>();
   const addAudio = useCustomizationResultStore.use.addAudio();
   const preAudio = useCustomizationResultStore.getState().audioResult;
-  const clipTime = factoryData.customization.fileRequirePara.audio_length;
   //const [blob, setBlob] = useState<Blob>();
 
   useEffect(() => {
@@ -35,7 +33,6 @@ function WaveForm({ factoryData }: WaveFormProps) {
       container: container,
       url: fileURL,
       waveColor: "#263238",
-      progressColor: "rgb(100, 0, 100)",
       plugins: [
         Hover.create({
           lineColor: "#ff0000",
@@ -44,7 +41,6 @@ function WaveForm({ factoryData }: WaveFormProps) {
           labelColor: "#fff",
           labelSize: "11px",
         }),
-        TimelinePlugin.create(),
       ],
     });
     setWavesurfer(wavesurfer);
@@ -55,7 +51,6 @@ function WaveForm({ factoryData }: WaveFormProps) {
       wsRegion.addRegion({
         start: 0,
         end: 8,
-        color: "rgba(178, 178, 255, 0.3)",
         content: "修剪片段",
         drag: false,
         resize: true,
@@ -149,8 +144,8 @@ function WaveForm({ factoryData }: WaveFormProps) {
       if (wavesurfer === undefined) {
         throw new Error("請選擇檔案!");
       }
-      if (endTime - startTime > clipTime) {
-        throw new Error("音檔過長!");
+      if (endTime - startTime > 15) {
+        throw new Error("音檔超過15秒!");
       }
       const audioContext = new AudioContext();
       const arrayBuffer = await file!.arrayBuffer();
@@ -225,76 +220,66 @@ function WaveForm({ factoryData }: WaveFormProps) {
           name={factoryData.name}
         />
       </div>
-      {file != null ? (
-        <>
-          <div ref={containerRef}></div>
-          <div className="grid grid-flow-col grid-rows-1 my-3">
-            <div className="grid grid-flow-col grid-rows-1 w-1/2">
-              <button
-                className="btn bg-[#263238] text-white text-2xl"
-                onClick={playPause}
-              >
-                {isPlaying ? <AiFillPauseCircle /> : <AiFillPlayCircle />}
-              </button>
-              <button
-                className="btn bg-[#263238] text-white"
-                onClick={playClip}
-              >
-                試聽
-              </button>
-            </div>
-            <div className=" text-center grid grid-flow-col grid-rows-1">
-              <label className="m-auto">剪裁時間</label>
-              <input
-                type="text"
-                defaultValue={"00:00:00"}
-                value={
-                  Math.floor(startTime / 3600)
-                    .toString()
-                    .padStart(2, "0") +
-                  ":" +
-                  Math.floor(startTime / 60)
-                    .toString()
-                    .padStart(2, "0") +
-                  ":" +
-                  Math.floor(startTime % 60)
-                    .toString()
-                    .padStart(2, "0")
-                }
-              />
-              <label className="m-auto">到</label>
-              <input
-                type="text"
-                defaultValue={"00:00:00"}
-                value={
-                  Math.floor(endTime / 3600)
-                    .toString()
-                    .padStart(2, "0") +
-                  ":" +
-                  Math.floor(endTime / 60)
-                    .toString()
-                    .padStart(2, "0") +
-                  ":" +
-                  Math.floor(endTime % 60)
-                    .toString()
-                    .padStart(2, "0")
-                }
-              />
-              <button
-                className="btn bg-[#263238] text-white"
-                onClick={handleTrim}
-              >
-                剪裁
-              </button>
-              <button className="btn bg-[#263238] text-white" onClick={submit}>
-                儲存變更
-              </button>
-            </div>
-          </div>
-        </>
-      ) : (
-        ""
-      )}
+
+      <div ref={containerRef}></div>
+
+      <div className="grid grid-flow-col grid-rows-1 my-3">
+        <div className="grid grid-flow-col grid-rows-1 w-1/2">
+          <button
+            className="btn bg-[#263238] text-white text-2xl"
+            onClick={playPause}
+          >
+            {isPlaying ? <AiFillPauseCircle /> : <AiFillPlayCircle />}
+          </button>
+          <button className="btn bg-[#263238] text-white" onClick={playClip}>
+            試聽
+          </button>
+        </div>
+        <div className=" text-center grid grid-flow-col grid-rows-1">
+          <label className="m-auto">剪裁時間</label>
+          <input
+            type="text"
+            defaultValue={"00:00:00"}
+            value={
+              Math.floor(startTime / 3600)
+                .toString()
+                .padStart(2, "0") +
+              ":" +
+              Math.floor(startTime / 60)
+                .toString()
+                .padStart(2, "0") +
+              ":" +
+              Math.floor(startTime % 60)
+                .toString()
+                .padStart(2, "0")
+            }
+          />
+          <label className="m-auto">到</label>
+          <input
+            type="text"
+            defaultValue={"00:00:00"}
+            value={
+              Math.floor(endTime / 3600)
+                .toString()
+                .padStart(2, "0") +
+              ":" +
+              Math.floor(endTime / 60)
+                .toString()
+                .padStart(2, "0") +
+              ":" +
+              Math.floor(endTime % 60)
+                .toString()
+                .padStart(2, "0")
+            }
+          />
+          <button className="btn bg-[#263238] text-white" onClick={handleTrim}>
+            剪裁
+          </button>
+          <button className="btn bg-[#263238] text-white" onClick={submit}>
+            儲存變更
+          </button>
+        </div>
+      </div>
     </form>
   );
 }

@@ -34,7 +34,7 @@ export const useWaveSurfer = (props: UseWaveSurferProps) => {
         TimelinePlugin.create(),
         Hover.create({
           lineColor: "#ff0000",
-          lineWidth: 2,
+          lineWidth: 1,
           labelBackground: "#555",
           labelColor: "#fff",
           labelSize: "11px",
@@ -48,15 +48,20 @@ export const useWaveSurfer = (props: UseWaveSurferProps) => {
 
     // 添加 RegionsPlugin
     const wsRegion = ws.registerPlugin(RegionsPlugin.create());
-    ws.on("decode", () => {
-      wsRegion.addRegion({
-        start: 0,
-        end: 8,
-        content: "修剪片段",
-        color: "rgba(178, 178, 255, 0.3)",
-        drag: false,
-        resize: true,
+    wsRegion.enableDragSelection({
+      color: "rgba(0, 0, 255, 0.3)",
+    });
+
+    // 監聽 region-created 事件，當新的 region 被建立時，移除其他 region
+    wsRegion.on("region-created", async (newRegion) => {
+      wsRegion.getRegions().forEach((r) => {
+        if (r !== newRegion) {
+          r.remove();
+        }
       });
+      ws.setTime(newRegion.start);
+      region.current = newRegion;
+      await ws.play();
     });
 
     // region 被拖動或縮放時，更新目前播放時間
