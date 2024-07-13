@@ -130,8 +130,8 @@ export default function PurchaseInfo() {
         </button>
       </div>
 
-      {/* disable for prod env */}
-      {import.meta.env.MODE !== "production" && (
+      {/* also enable for prod env */}
+      {/* {import.meta.env.MODE !== "production" && ( */}
         <div className="flex flex-col gap-2 md:gap-3 md:flex-row">
           {!hasRequiredCustomization && (
             <>
@@ -173,7 +173,7 @@ export default function PurchaseInfo() {
             </Link>
           )}
         </div>
-      )}
+      {/* )} */}
     </div>
   );
 }
