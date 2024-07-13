@@ -53,7 +53,7 @@ function Checkout() {
     form.setAttribute("method", "post");
     form.setAttribute(
       "action",
-      "https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5",
+      import.meta.env.VITE_ECPAY_PAYMENT_URL as string,
     );
 
     for (let i = 0; i < key.length; i++) {
