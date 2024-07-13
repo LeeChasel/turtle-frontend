@@ -3,6 +3,7 @@ import { TShoppingCartDetail } from "../../types/ShoppingCart";
 import ShoppingCartItem from "./Item";
 import useSelectedCartItemStore from "../../store/useSelectedCartItemStore";
 import { useEffect } from "react";
+import { showToast } from "@/utils/toastAlert";
 
 type CartTableProps = {
   items: TShoppingCartDetail[] | CartItem[];
@@ -21,6 +22,14 @@ function CartTable({
 }: CartTableProps) {
   const selectedProducts = useSelectedCartItemStore.use.selectedProducts();
   const reset = useSelectedCartItemStore.use.reset();
+
+  const toCreateOrder = () => {
+    if (totalPrice < 40) {
+      showToast('error', '訂單金額需達 NT$40 才可結帳');
+      return;
+    }
+    createOrderFn();
+  };
 
   useEffect(() => {
     // clear selected products when exit the page
@@ -73,7 +82,7 @@ function CartTable({
         <button
           type="button"
           className="btn btn-xs md:btn-md"
-          onClick={createOrderFn}
+          onClick={toCreateOrder}
           disabled={isLoading}
         >
           去結帳

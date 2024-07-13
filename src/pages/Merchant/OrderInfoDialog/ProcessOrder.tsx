@@ -3,7 +3,7 @@ import useUserTokenCookie from "@/hooks/useUserTokenCookie";
 import useSelectedOrder from "@/store/useSelectedOrder";
 import { OrderDetail, OrderStatus } from "@/types/Order";
 import { showToast } from "@/utils/toastAlert";
-import { isEmpty } from "lodash";
+import { isEmpty, isNumber } from "lodash";
 import { useState } from "react";
 
 export default function ProcessOrder({ data }: { data: OrderDetail }) {
@@ -21,7 +21,7 @@ export default function ProcessOrder({ data }: { data: OrderDetail }) {
   } = data.shippingInfo;
   const canSendOrder =
     data.orderStatus === OrderStatus.PAIED &&
-    !isEmpty(goodsWeight) &&
+    (isNumber(goodsWeight) && goodsWeight > 0) &&
     !isEmpty(senderAddress) &&
     !isEmpty(senderName) &&
     !isEmpty(senderCellPhone) &&
