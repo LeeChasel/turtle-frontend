@@ -8,16 +8,16 @@ Frontend page of lazyTurtle e-commerce site.
 - [Gitea repository](https://gitea.turtlelazy.com/Turtle/Turtle_React)
 - [DroneCI](https://drone.turtlelazy.com)
 - [Swagger API](https://turtlelazy.com/api/swagger)
-- [Google cloud](https://console.cloud.google.com/welcome?project=lazyturtle-393117)
+- [Google cloud](#)
 - [Redmine](https://redmine.turtlelazy.com/projects/turtlelazy)
-- [Google analytics](https://analytics.google.com/analytics/web/#/p404402597/reports/reportinghub)
+- [Google analytics](#)
 
 ## How to use
 
 ### Installation
 
 ```bash
-git clone https://gitea.turtlelazy.com/Turtle/Turtle_React.git
+git clone https://github.com/LeeChasel/turtle-frontend.git
 ```
 
 ### Install dependencies
